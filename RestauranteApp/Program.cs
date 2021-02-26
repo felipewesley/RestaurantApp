@@ -7,6 +7,7 @@ using RestauranteApp.Services.Status;
 using RestauranteApp.Services.TipoProduto;
 using System.IO;
 using RestauranteApp.Views;
+using RestauranteApp.Services.Comanda.Models;
 
 namespace RestauranteApp
 {
@@ -14,6 +15,8 @@ namespace RestauranteApp
     {
         static void Main(string[] args)
         {
+            Console.Clear();
+
             ViewPrograma.Welcome();
 
             Console.Clear();
@@ -29,15 +32,38 @@ namespace RestauranteApp
 
             Console.WriteLine();
 
+            // Leitura e validacao ID Mesa
             ViewPrinter.Print("\tMesa: ");
+            int mesaId = int.Parse(Console.ReadLine());
 
-            int numeroMesa = int.Parse(Console.ReadLine());
+            bool mesaDisponivel = !MesaService.ValidarMesa(mesaId) || !MesaService.MesaOcupada(mesaId);
 
-            Console.WriteLine();
+            if (!mesaDisponivel) mesaId = ViewMesa.ObterMesaDisponivel(mesaId);
 
-            ViewPrinter.Print("\tQuantidade de rodizios: ");
+            // Leitura e validacao ID Comanda
+            ViewPrinter.Print("\tNº Comanda: ");
+            int comandaId = int.Parse(Console.ReadLine());
 
-            int quantidadeRodizios = int.Parse(Console.ReadLine());
+            bool comandaExistente = !MesaService.ValidarMesa(mesaId) || !MesaService.MesaOcupada(mesaId);
+
+            if (!comandaExistente) comandaId = ViewComanda.ObterComandaValida(comandaId);
+
+            // Leitura e validacao Quantidade de Clientes
+            ViewPrinter.Print("\tQuantidade de clientes: ");
+            int quantidadeClientes = int.Parse(Console.ReadLine());
+
+            bool quantidadeClientesValida = !MesaService.QuantidadeClientesValida(mesaId, quantidadeClientes);
+
+            if (!quantidadeClientesValida) quantidadeClientes = ViewMesa.ObterQuantidadeClientesValida(mesaId, quantidadeClientes);
+
+            var comanda = new ComandaFormularioModelCLI()
+            {
+                ComandaId = comandaId,
+                MesaId = mesaId,
+                QuantidadeCliente = quantidadeClientes
+            };
+
+            Console.WriteLine("Comanda instanciada!");
         }
     }
 }

@@ -10,5 +10,10 @@ namespace RestauranteApp.Views
         {
 
         }
+
+        public static int ObterComandaValida(int comandaId)
+        {
+            return 1;
+        }
     }
 }

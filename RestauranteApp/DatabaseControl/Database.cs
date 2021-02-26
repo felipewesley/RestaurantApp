@@ -40,7 +40,7 @@ namespace RestauranteApp.DatabaseControl
         {
 
             string path = GetPathOfEntity(entidade);
-            string selectedLine = null;
+            string selectedLine = string.Empty;
 
             using (StreamReader sr = File.OpenText(path))
             {
