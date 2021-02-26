@@ -13,14 +13,21 @@ namespace RestauranteApp.Services.Comanda
     class ComandaService
     {
 
-        public Entidades.Comanda ObterComandaEntidade(int comandaId)
+        private static Entidades.Comanda ObterComandaEntidade(int comandaId)
         {
             string comandaCsv = Database.Select(Entidade.Comanda, comandaId);
+
+            if (comandaCsv == null || comandaCsv == string.Empty) return null;
 
             return new Entidades.Comanda().ConverterEmEntidade(comandaCsv);
         }
 
-        public void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
+        public static bool JaExisteComanda(int comandaId)
+        {
+            return ObterComandaEntidade(comandaId) != null;
+        }
+
+        public static void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
         {
 
             try
@@ -32,7 +39,7 @@ namespace RestauranteApp.Services.Comanda
                     ComandaId = comandaModel.ComandaId,
                     MesaId = comandaModel.MesaId,
                     DataHoraEntrada = DateTime.Now,
-                    DataHoraSaida = null,
+                    //DataHoraSaida = null,
                     Valor = 0.0F,
                     Paga = false,
                     QuantidadeClientes = comandaModel.QuantidadeCliente
@@ -65,7 +72,7 @@ namespace RestauranteApp.Services.Comanda
             return (TimeSpan)(comanda.DataHoraSaida - comanda.DataHoraEntrada);
         }
 
-        public ComandaCompletaModel ObterComanda(int comandaId)
+        public ComandaCompletaModel ObterComandaCompleta(int comandaId)
         {
             var comanda = ObterComandaEntidade(comandaId);
 
@@ -78,6 +85,19 @@ namespace RestauranteApp.Services.Comanda
                 Valor = comanda.Valor,
                 Paga = comanda.Paga,
                 QuantidadeClientes = comanda.QuantidadeClientes
+            };
+        }
+
+        public static ComandaResumidaModel ObterComandaResumida(int comandaId)
+        {
+            var comanda = ObterComandaEntidade(comandaId);
+
+            return new ComandaResumidaModel()
+            {
+                MesaId = comanda.MesaId,
+                DataHoraEntrada = comanda.DataHoraEntrada,
+                QuantidadeClientes = comanda.QuantidadeClientes,
+                Valor = comanda.Valor
             };
         }
 

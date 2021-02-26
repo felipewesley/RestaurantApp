@@ -37,5 +37,14 @@ namespace RestauranteApp.Services.Mesa
 
             return mesa.Capacidade;
         }
+
+        public static bool QuantidadeClientesValida(int mesaId, int quantidadeClientes)
+        {
+            var mesa = ObterMesaEntidade(mesaId);
+
+            Console.WriteLine(mesa.Capacidade);
+
+            return !(quantidadeClientes > mesa.Capacidade || quantidadeClientes <= 0);
+        }
     }
 }

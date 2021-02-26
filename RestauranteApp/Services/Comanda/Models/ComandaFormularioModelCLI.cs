@@ -14,7 +14,7 @@ namespace RestauranteApp.Services.Comanda.Models
             {
 
                 if (value <= 0 || value > 4)
-                    throw new Exception("Quantidade informada de pessoas maior que o permitido!");
+                    throw new Exception("Quantidade informada de pessoas invalida!");
                 else
                     _quantidadeCliente = value;
             }

@@ -42,11 +42,15 @@ namespace RestauranteApp.Views
                 Console.WriteLine();
 
                 if (quantidadeClientes <= 0)
+                {
                     ViewPrinter.Println("\tQuantidade de clientes inválida! Tente novamente.", ConsoleColor.White, ConsoleColor.Red);
-                else if (quantidadeClientes > MesaService.ObterQuantidadeClientes(mesaId))
+                } else if (quantidadeClientes > MesaService.ObterQuantidadeClientes(mesaId))
+                {
                     ViewPrinter.Println("\tEsta mesa não comporta esta quantidade de pessoas! Tente novamente.", ConsoleColor.White, ConsoleColor.Red);
-                else
+                } else
+                {
                     ViewPrinter.Println("\tValor informado inválido! Tente novamente.", ConsoleColor.White, ConsoleColor.Red);
+                }
 
                 Console.WriteLine();
 

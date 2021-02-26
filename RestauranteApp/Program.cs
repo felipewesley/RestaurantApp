@@ -32,28 +32,25 @@ namespace RestauranteApp
 
             Console.WriteLine();
 
+
             // Leitura e validacao ID Mesa
             ViewPrinter.Print("\tMesa: ");
             int mesaId = int.Parse(Console.ReadLine());
-
             bool mesaDisponivel = !MesaService.ValidarMesa(mesaId) || !MesaService.MesaOcupada(mesaId);
-
             if (!mesaDisponivel) mesaId = ViewMesa.ObterMesaDisponivel(mesaId);
+
 
             // Leitura e validacao ID Comanda
             ViewPrinter.Print("\tNº Comanda: ");
             int comandaId = int.Parse(Console.ReadLine());
+            // bool comandaExistente = !ComandaService.JaExisteComanda(comandaId);
+            // if (!comandaExistente) comandaId = ViewComanda.ObterComandaValida(comandaId);
 
-            bool comandaExistente = !MesaService.ValidarMesa(mesaId) || !MesaService.MesaOcupada(mesaId);
-
-            if (!comandaExistente) comandaId = ViewComanda.ObterComandaValida(comandaId);
 
             // Leitura e validacao Quantidade de Clientes
             ViewPrinter.Print("\tQuantidade de clientes: ");
             int quantidadeClientes = int.Parse(Console.ReadLine());
-
-            bool quantidadeClientesValida = !MesaService.QuantidadeClientesValida(mesaId, quantidadeClientes);
-
+            bool quantidadeClientesValida = MesaService.QuantidadeClientesValida(mesaId, quantidadeClientes);
             if (!quantidadeClientesValida) quantidadeClientes = ViewMesa.ObterQuantidadeClientesValida(mesaId, quantidadeClientes);
 
             var comanda = new ComandaFormularioModelCLI()
@@ -62,6 +59,15 @@ namespace RestauranteApp
                 MesaId = mesaId,
                 QuantidadeCliente = quantidadeClientes
             };
+
+            ComandaService.RegistrarComanda(comanda);
+
+            // Mostrando o cabecalho da comanda
+            ViewComanda.MostrarCabecalho(comandaId);
+
+
+            // Iniciar processo de fazer pedidos
+
 
             Console.WriteLine("Comanda instanciada!");
         }
