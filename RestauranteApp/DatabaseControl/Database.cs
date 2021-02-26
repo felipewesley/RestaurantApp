@@ -8,7 +8,7 @@ namespace RestauranteApp.DatabaseControl
     class Database : DbOperations
     {
 
-        public void Insert<T>(T elemento, Entidade entidade) where T : ParseToCsv
+        public static void Insert<T>(T elemento, Entidade entidade) where T : ParseToCsv
         {
             string path = GetPathOfEntity(entidade);
 
@@ -22,13 +22,13 @@ namespace RestauranteApp.DatabaseControl
             }
             catch (IOException e)
             {
-                Console.WriteLine("Não foi possivel salvar os dados!");
+                Console.WriteLine("Não foi possivel salvar os dados! " + e.Message);
             }
 
             GenerateLog(entidade, TipoOperacao.insert);
         }
 
-        public string[] Select(Entidade entidade)
+        public static string[] Select(Entidade entidade)
         {
             string path = GetPathOfEntity(entidade);
 
@@ -36,7 +36,7 @@ namespace RestauranteApp.DatabaseControl
 
             return File.ReadAllLines(path);
         }
-        public string Select(Entidade entidade, int id)
+        public static string Select(Entidade entidade, int id)
         {
 
             string path = GetPathOfEntity(entidade);
@@ -61,7 +61,7 @@ namespace RestauranteApp.DatabaseControl
 
             return selectedLine;
         }
-        public string[] Select(Entidade entidade, int id, TipoOperacao tipoOperacao)
+        public static string[] Select(Entidade entidade, int id, TipoOperacao tipoOperacao)
         {
 
             if (tipoOperacao == TipoOperacao.leituraMuitosRegistros)
@@ -92,7 +92,7 @@ namespace RestauranteApp.DatabaseControl
             return null;
         }
 
-        public void Update<T>(int id, T elemento, Entidade entidade) where T : ParseToCsv
+        public static void Update<T>(int id, T elemento, Entidade entidade) where T : ParseToCsv
         {
             string path = GetPathOfEntity(entidade);
 
@@ -117,7 +117,7 @@ namespace RestauranteApp.DatabaseControl
             GenerateLog(entidade, TipoOperacao.update);
         }
 
-        private void GenerateLog(Entidade entidade, TipoOperacao tipoOperacao)
+        private static void GenerateLog(Entidade entidade, TipoOperacao tipoOperacao)
         {
             string path = DbOperations.GetPathOfEntity(0);
 
@@ -131,10 +131,10 @@ namespace RestauranteApp.DatabaseControl
             }
             catch (IOException e)
             {
-                Console.WriteLine("Não foi possivel registrar o log da operação!");
+                Console.WriteLine("Não foi possivel registrar o log da operação! " + e.Message);
             }
         }
-        private void GenerateLog(Entidade entidade, TipoOperacao tipoOperacao, string aditionalMessage)
+        private static void GenerateLog(Entidade entidade, TipoOperacao tipoOperacao, string aditionalMessage)
         {
             string path = DbOperations.GetPathOfEntity(0);
 
@@ -148,7 +148,7 @@ namespace RestauranteApp.DatabaseControl
             }
             catch (IOException e)
             {
-                Console.WriteLine("Não foi possivel registrar o log da operação!");
+                Console.WriteLine("Não foi possivel registrar o log da operação! " + e.Message);
             }
         }
     }
