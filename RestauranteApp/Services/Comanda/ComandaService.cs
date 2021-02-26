@@ -12,35 +12,22 @@ namespace RestauranteApp.Services.Comanda
 {
     class ComandaService
     {
-        private Database db = new Database();
-        public int ComandaId { get; private set; }
-        public int MesaId { get; private set; }
-        public DateTime DataHoraEntrada { get; private set; }
-        public DateTime? DataHoraSaida { get; private set; }
-        public float Valor { get; private set; }
-        public bool Paga { get; private set; }
-        public int QuantidadeCliente { get; set; }
 
-        // Construtor temporario
-        public ComandaService(int id, int mesa, int quantidadeClientes)
+        public Entidades.Comanda ObterComandaEntidade(int comandaId)
         {
-            ComandaId = id;
-            MesaId = mesa;
-            DataHoraEntrada = DateTime.Now;
-            DataHoraSaida = null;
-            Valor = 0;
-            Paga = false;
-            QuantidadeCliente = quantidadeClientes;
+            string comandaCsv = Database.Select(Entidade.Comanda, comandaId);
+
+            return new Entidades.Comanda().ConverterEmEntidade(comandaCsv);
         }
 
-        public void RegistrarNovaComanda(ComandaFormularioModelCLI comandaModel)
+        public void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
         {
 
             try
             {
                 comandaModel.Validar();
 
-                db.Insert(new Entidades.Comanda()
+                Database.Insert(new Entidades.Comanda()
                 {
                     ComandaId = comandaModel.ComandaId,
                     MesaId = comandaModel.MesaId,
@@ -49,7 +36,7 @@ namespace RestauranteApp.Services.Comanda
                     Valor = 0.0F,
                     Paga = false,
                     QuantidadeClientes = comandaModel.QuantidadeCliente
-                }, DatabaseControl.Comanda.Comanda);
+                }, Entidade.Comanda);
 
             } catch (Exception e)
             {
@@ -57,41 +44,46 @@ namespace RestauranteApp.Services.Comanda
             }
         }
 
-        public float? EncerrarComanda(ComandaEncerramento comandaModel)
+        public void EncerrarComanda(int comandaId)
         {
-            Valor = comandaModel.CalcularValorComanda();
-            Paga = true;
-            DataHoraSaida = DateTime.Now;
+            var comanda = ObterComandaEntidade(comandaId);
 
-            try
-            {
-                db.Update(ComandaId, new Entidades.Comanda()
-                {
-                    ComandaId = ComandaId,
-                    MesaId = MesaId,
-                    DataHoraEntrada = DataHoraEntrada,
-                    DataHoraSaida = DateTime.Now,
-                    Valor = Valor,
-                    Paga = true,
-                    QuantidadeClientes = QuantidadeCliente
-                }, DatabaseControl.Comanda.Comanda);
+            comanda.Paga = true;
+            comanda.DataHoraSaida = DateTime.Now;
+            comanda.Valor = CalcularValorComanda(comandaId);
 
-                return comandaModel.CalcularValorComanda();
-
-            } catch (Exception e)
-            {
-                Console.WriteLine("Ocorreu um erro! " + e.Message);
-            }
-            return null;
+            Database.Insert(comanda, Entidade.Comanda);
         }
         
-
-        public TimeSpan CalcularTempoAtividade()
+        public TimeSpan CalcularTempoAtividade(int comandaId)
         {
-            if (DataHoraSaida == null)
-                return DateTime.Now - DataHoraEntrada;
+            var comanda = ObterComandaEntidade(comandaId);
 
-            return (TimeSpan)(DataHoraSaida - DataHoraEntrada);
+            if (comanda.DataHoraSaida == null)
+                return DateTime.Now - comanda.DataHoraEntrada;
+
+            return (TimeSpan)(comanda.DataHoraSaida - comanda.DataHoraEntrada);
+        }
+
+        public ComandaCompletaModel ObterComanda(int comandaId)
+        {
+            var comanda = ObterComandaEntidade(comandaId);
+
+            return new ComandaCompletaModel()
+            {
+                ComandaId = comanda.ComandaId,
+                MesaId = comanda.MesaId,
+                DataHoraEntrada = comanda.DataHoraEntrada,
+                DataHoraSaida = comanda.DataHoraSaida,
+                Valor = comanda.Valor,
+                Paga = comanda.Paga,
+                QuantidadeClientes = comanda.QuantidadeClientes
+            };
+        }
+
+        public float CalcularValorComanda(int comandaId)
+        {
+            return 0.0F;
         }
 
     }
