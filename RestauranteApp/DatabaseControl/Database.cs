@@ -14,7 +14,8 @@ namespace RestauranteApp.DatabaseControl
 
             try
             {
-                using (StreamWriter sw = File.CreateText(path))
+                using (StreamWriter sw = File.AppendText(path))
+                // using (StreamWriter sw = File.CreateText(path))
                 {
                     sw.WriteLine(elemento.Imprimir());
                 }

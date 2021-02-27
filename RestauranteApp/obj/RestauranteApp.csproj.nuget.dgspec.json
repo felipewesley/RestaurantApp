@@ -10,11 +10,11 @@
         "projectUniqueName": "C:\\workspace\\RestauranteApp\\RestauranteApp\\RestauranteApp.csproj",
         "projectName": "RestauranteApp",
         "projectPath": "C:\\workspace\\RestauranteApp\\RestauranteApp\\RestauranteApp.csproj",
-        "packagesPath": "C:\\Users\\felipe.basso\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\fewes\\.nuget\\packages\\",
         "outputPath": "C:\\workspace\\RestauranteApp\\RestauranteApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\felipe.basso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fewes\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

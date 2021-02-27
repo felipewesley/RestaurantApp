@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using RestauranteApp.DatabaseControl;
+using RestauranteApp.Services.Mesa.Models;
 
 namespace RestauranteApp.Services.Mesa
 {
@@ -22,6 +24,28 @@ namespace RestauranteApp.Services.Mesa
             return !(mesaId <= 0 || mesaId > 16);
         }
 
+        public static List<MesaListagemModel> ObterMesas(bool apenasDisponiveis = false)
+        {
+            string[] mesasCsv = Database.Select(Entidade.Mesa);
+            List<MesaListagemModel> listaMesas = new List<MesaListagemModel>();
+
+            foreach (string mesaCsv in mesasCsv)
+            {
+                var mesa = new Entidades.Mesa().ConverterEmEntidade(mesaCsv);
+
+                if (apenasDisponiveis)
+                {
+                    if (mesa.Ocupada) continue;
+                }
+                listaMesas.Add(new MesaListagemModel()
+                {
+                    MesaId = mesa.MesaId,
+                    Ocupada = mesa.Ocupada
+                });
+            }
+            return listaMesas;
+        }
+
         public static bool MesaOcupada(int mesaId)
         {
             var mesa = ObterMesaEntidade(mesaId);
@@ -41,8 +65,6 @@ namespace RestauranteApp.Services.Mesa
         public static bool QuantidadeClientesValida(int mesaId, int quantidadeClientes)
         {
             var mesa = ObterMesaEntidade(mesaId);
-
-            Console.WriteLine(mesa.Capacidade);
 
             return !(quantidadeClientes > mesa.Capacidade || quantidadeClientes <= 0);
         }

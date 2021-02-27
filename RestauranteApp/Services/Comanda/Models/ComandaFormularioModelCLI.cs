@@ -1,4 +1,5 @@
 ﻿using System;
+using RestauranteApp.Services.Mesa;
 
 namespace RestauranteApp.Services.Comanda.Models
 {
@@ -13,10 +14,12 @@ namespace RestauranteApp.Services.Comanda.Models
             set
             {
 
-                if (value <= 0 || value > 4)
+                /*if (value <= 0 || value > MesaService.ObterQuantidadeClientes(MesaId))
                     throw new Exception("Quantidade informada de pessoas invalida!");
                 else
                     _quantidadeCliente = value;
+                */
+                _quantidadeCliente = value;
             }
         }
 
@@ -25,7 +28,7 @@ namespace RestauranteApp.Services.Comanda.Models
             if (MesaId <= 0 || MesaId > 16)
                 throw new Exception("A mesa informada não existe!");
 
-            if (_quantidadeCliente <= 0 || _quantidadeCliente > 4)
+            if (_quantidadeCliente <= 0 || _quantidadeCliente > MesaService.ObterQuantidadeClientes(MesaId))
                 throw new Exception("A mesa não pode comportar esta quantidade de pessoas!");
         }
     }

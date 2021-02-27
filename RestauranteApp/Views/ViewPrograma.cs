@@ -50,7 +50,20 @@ namespace RestauranteApp.Views
             Console.WriteLine("6 - Encerrar comanda");
         }
 
+        public static void MensagemContinuarAtendimento()
+        {
+            ViewPrinter.Print("\tPressione ", ConsoleColor.Black, ConsoleColor.White);
+            ViewPrinter.Print("Enter", ConsoleColor.Blue, ConsoleColor.White);
+            ViewPrinter.Print(" para continuar seu atendimento...", ConsoleColor.Black, ConsoleColor.White);
+            Console.ReadLine();
+        }
 
+        public static void CabecalhoDadosIniciais()
+        {
+            Console.WriteLine();
+            ViewPrinter.Println("\tPor favor, informe os dados solicitados a seguir:");
+            Console.WriteLine();
+        }
     }
 }
 

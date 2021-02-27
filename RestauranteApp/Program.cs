@@ -24,34 +24,34 @@ namespace RestauranteApp
             // Solicitando dados iniciais
             Console.WriteLine();
             ViewPrinter.Print("\tSEU ATENDIMENTO FOI INICIADO", ConsoleColor.Yellow);
-
             Console.WriteLine();
-            Console.WriteLine();
-
-            ViewPrinter.Println("\tPor favor, informe os seguintes dados solicitados:");
-
-            Console.WriteLine();
-
 
             // Leitura e validacao ID Mesa
-            ViewPrinter.Print("\tMesa: ");
+            ViewPrograma.CabecalhoDadosIniciais();
+            ViewMesa.LabelObterDadosMesa();
             int mesaId = int.Parse(Console.ReadLine());
             bool mesaDisponivel = !MesaService.ValidarMesa(mesaId) || !MesaService.MesaOcupada(mesaId);
             if (!mesaDisponivel) mesaId = ViewMesa.ObterMesaDisponivel(mesaId);
-
+            ViewMesa.MostrarMesaSelecionada(mesaId);
+            Console.Clear();
 
             // Leitura e validacao ID Comanda
-            ViewPrinter.Print("\tNº Comanda: ");
+            ViewPrograma.CabecalhoDadosIniciais();
+            ViewComanda.LabelObterDadosComanda();
             int comandaId = int.Parse(Console.ReadLine());
             // bool comandaExistente = !ComandaService.JaExisteComanda(comandaId);
             // if (!comandaExistente) comandaId = ViewComanda.ObterComandaValida(comandaId);
-
+            ViewComanda.MostrarComandaSelecionada(comandaId);
+            Console.Clear();
 
             // Leitura e validacao Quantidade de Clientes
-            ViewPrinter.Print("\tQuantidade de clientes: ");
+            ViewPrograma.CabecalhoDadosIniciais();
+            ViewMesa.LabelObterQuantidadeClientes(mesaId);
             int quantidadeClientes = int.Parse(Console.ReadLine());
             bool quantidadeClientesValida = MesaService.QuantidadeClientesValida(mesaId, quantidadeClientes);
             if (!quantidadeClientesValida) quantidadeClientes = ViewMesa.ObterQuantidadeClientesValida(mesaId, quantidadeClientes);
+            ViewMesa.MostrarQuantidadeClientesSelecionada(quantidadeClientes);
+            Console.Clear();
 
             var comanda = new ComandaFormularioModelCLI()
             {
@@ -63,13 +63,15 @@ namespace RestauranteApp
             ComandaService.RegistrarComanda(comanda);
 
             // Mostrando o cabecalho da comanda
-            ViewComanda.MostrarCabecalho(comandaId);
+            Console.WriteLine();
+            ViewComanda.MostrarComandaResumida(comandaId);
+            Console.WriteLine();
+
+            Console.ReadLine();
 
 
             // Iniciar processo de fazer pedidos
 
-
-            Console.WriteLine("Comanda instanciada!");
         }
     }
 }
