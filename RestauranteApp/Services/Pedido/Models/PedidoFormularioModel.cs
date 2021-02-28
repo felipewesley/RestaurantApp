@@ -6,6 +6,7 @@ namespace RestauranteApp.Services.Pedido.Models
 {
     class PedidoFormularioModel
     {
+        public int ComandaId { get; set; }
         public int ProdutoId { get; set; }
         public int Quantidade { get; set; }
 

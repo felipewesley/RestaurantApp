@@ -51,7 +51,7 @@ namespace RestauranteApp.Services.Comanda
             }
         }
 
-        public void EncerrarComanda(int comandaId)
+        public static void EncerrarComanda(int comandaId)
         {
             var comanda = ObterComandaEntidade(comandaId);
 
@@ -62,17 +62,17 @@ namespace RestauranteApp.Services.Comanda
             Database.Insert(comanda, Entidade.Comanda);
         }
         
-        public TimeSpan CalcularTempoAtividade(int comandaId)
+        public static TimeSpan CalcularTempoAtividade(int comandaId)
         {
             var comanda = ObterComandaEntidade(comandaId);
 
-            if (comanda.DataHoraSaida == null)
+            if (comanda.DataHoraSaida == null || comanda.DataHoraSaida > comanda.DataHoraEntrada)
                 return DateTime.Now - comanda.DataHoraEntrada;
 
             return (TimeSpan)(comanda.DataHoraSaida - comanda.DataHoraEntrada);
         }
 
-        public ComandaCompletaModel ObterComandaCompleta(int comandaId)
+        public static ComandaCompletaModel ObterComandaCompleta(int comandaId)
         {
             var comanda = ObterComandaEntidade(comandaId);
 
@@ -101,7 +101,7 @@ namespace RestauranteApp.Services.Comanda
             };
         }
 
-        public float CalcularValorComanda(int comandaId)
+        public static float CalcularValorComanda(int comandaId)
         {
             return 0.0F;
         }

@@ -9,20 +9,14 @@ namespace RestauranteApp.Services.Pedido
     class PedidoService
     {
 
-        public int PedidoId { get; private set; }
-        public int ComandaId { get; private set; }
-        public int ProdutoId { get; private set; }
-        public int Status { get; private set; }
-        public int Quantidade { get; private set; }
-
-        private Entidades.Pedido ObterPedidoByIdEntidade(int pedidoId)
+        private static Entidades.Pedido ObterPedidoByIdEntidade(int pedidoId)
         {
             string pedidoCsv = Database.Select(Entidade.Pedido, pedidoId);
 
             return new Entidades.Pedido().ConverterEmEntidade(pedidoCsv);
         }
 
-        public void RegistrarNovoPedido(PedidoFormularioModel pedidoModel)
+        public static void RegistrarNovoPedido(PedidoFormularioModel pedidoModel)
         {
             try
             {
@@ -31,7 +25,7 @@ namespace RestauranteApp.Services.Pedido
                 Database.Insert(new Entidades.Pedido()
                 {
                     PedidoId = 1,
-                    ComandaId = ComandaId,
+                    ComandaId = pedidoModel.ComandaId,
                     ProdutoId = pedidoModel.ProdutoId,
                     // Status = StatusEnum.Produzindo,
                     Status = 3,
@@ -44,7 +38,7 @@ namespace RestauranteApp.Services.Pedido
             }
         }
 
-        public void CancelarPedido(int pedidoId)
+        public static void CancelarPedido(int pedidoId)
         {
             // Implementar chamada de ID comanda
             int comandaId = 123;
@@ -60,18 +54,19 @@ namespace RestauranteApp.Services.Pedido
             }, Entidade.Pedido);
         }
 
-        public PedidoFormularioModel ObterPedido(int pedidoId)
+        public static PedidoFormularioModel ObterPedido(int pedidoId)
         {
             var pedido = ObterPedidoByIdEntidade(pedidoId);
 
             return new PedidoFormularioModel()
             {
+                ComandaId = pedido.ComandaId,
                 ProdutoId = pedido.ProdutoId,
                 Quantidade = pedido.Quantidade
             };
         }
 
-        public List<PedidoRealizadoModel> ObterPedidosPorComanda(int comandaId, bool validarEntregues = false)
+        public static List<PedidoRealizadoModel> ObterPedidosPorComanda(int comandaId, bool validarEntregues = false)
         {
             List<PedidoRealizadoModel> pedidosRealizados = new List<PedidoRealizadoModel>();
 
@@ -89,9 +84,10 @@ namespace RestauranteApp.Services.Pedido
                     }
                     pedidosRealizados.Add(new PedidoRealizadoModel()
                     {
+                        PedidoId = pedidoEntidade.PedidoId,
                         ProdutoId = pedidoEntidade.ProdutoId,
                         Quantidade = pedidoEntidade.Quantidade,
-                        Status = pedidoEntidade.Quantidade
+                        Status = pedidoEntidade.Status
                     });
                 }
             }
@@ -99,7 +95,7 @@ namespace RestauranteApp.Services.Pedido
             return pedidosRealizados;
         }
 
-        public int VerificarStatusPedido(int pedidoId)
+        public static int VerificarStatusPedido(int pedidoId)
         {
             return ObterPedidoByIdEntidade(pedidoId).Status;
         }

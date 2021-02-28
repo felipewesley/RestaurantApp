@@ -23,14 +23,14 @@ namespace RestauranteApp
 
             // Solicitando dados iniciais
             Console.WriteLine();
-            ViewPrinter.Print("\tSEU ATENDIMENTO FOI INICIADO", ConsoleColor.Yellow);
+            ViewPrinter.Print("\tSEU ATENDIMENTO FOI INICIADO", ConsoleColor.Green);
             Console.WriteLine();
 
             // Leitura e validacao ID Mesa
             ViewPrograma.CabecalhoDadosIniciais();
             ViewMesa.LabelObterDadosMesa();
             int mesaId = int.Parse(Console.ReadLine());
-            bool mesaDisponivel = !MesaService.ValidarMesa(mesaId) || !MesaService.MesaOcupada(mesaId);
+            bool mesaDisponivel = MesaService.ValidarMesa(mesaId) && !MesaService.MesaOcupada(mesaId);
             if (!mesaDisponivel) mesaId = ViewMesa.ObterMesaDisponivel(mesaId);
             ViewMesa.MostrarMesaSelecionada(mesaId);
             Console.Clear();
@@ -53,6 +53,7 @@ namespace RestauranteApp
             ViewMesa.MostrarQuantidadeClientesSelecionada(quantidadeClientes);
             Console.Clear();
 
+            // Criacao do modelo de comanda recebido via formulario
             var comanda = new ComandaFormularioModelCLI()
             {
                 ComandaId = comandaId,
@@ -60,17 +61,35 @@ namespace RestauranteApp
                 QuantidadeCliente = quantidadeClientes
             };
 
+            int tipoExibicaoCardapio = ViewPrograma.EscolhaFormatoExibicaoCardapio();
+
+            Console.Clear();
+
+            bool continuarAtendimento = true;
+
+            // Salvando comanda no banco de dados
             ComandaService.RegistrarComanda(comanda);
 
-            // Mostrando o cabecalho da comanda
-            Console.WriteLine();
+            /*
+            // Mostrando comanda resumida antes de iniciar o loop principal do programa
             ViewComanda.MostrarComandaResumida(comandaId);
-            Console.WriteLine();
 
-            Console.ReadLine();
+            ViewPrograma.MensagemContinuarAtendimento();
+            */
 
+            do
+            {
+                // Executa um loop mostrando o menu enquanto nao for explicitamente encerrado
+                ViewPrograma.MostrarMenu(comandaId, tipoExibicaoCardapio);
 
-            // Iniciar processo de fazer pedidos
+                Console.WriteLine();
+
+                ViewPrinter.Print("\tConfirma o encerramento da comanda? (s/n) ", ConsoleColor.Yellow);
+                continuarAtendimento = char.Parse(Console.ReadLine()) != 's';
+
+                Console.Clear();
+
+            } while (continuarAtendimento);
 
         }
     }

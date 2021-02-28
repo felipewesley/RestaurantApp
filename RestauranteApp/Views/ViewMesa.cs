@@ -82,8 +82,10 @@ namespace RestauranteApp.Views
 
         public static void MostrarQuantidadeClientesSelecionada(int quantidadeClientes)
         {
-            Console.Clear();
-            Console.WriteLine();
+            // Console.Clear();
+
+            ViewPrograma.ShowSucesso();
+
             ViewPrinter.Print("\tQUANTIDADE DE CLIENTES: ");
             ViewPrinter.Println($" { quantidadeClientes } ", ConsoleColor.White, ConsoleColor.DarkGreen);
             Console.WriteLine();
@@ -92,8 +94,10 @@ namespace RestauranteApp.Views
 
         public static void MostrarMesaSelecionada(int mesaId)
         {
-            Console.Clear();
-            Console.WriteLine();
+            // Console.Clear();
+
+            ViewPrograma.ShowSucesso();
+
             ViewPrinter.Print("\tSELECIONADA: ");
             ViewPrinter.Println($" MESA [ { mesaId } ] ", ConsoleColor.White, ConsoleColor.DarkGreen);
             Console.WriteLine();

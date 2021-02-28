@@ -21,7 +21,7 @@ namespace RestauranteApp.Services.Mesa
 
         public static bool ValidarMesa(int mesaId)
         {
-            return !(mesaId <= 0 || mesaId > 16);
+            return (mesaId > 0 && mesaId <= 16);
         }
 
         public static List<MesaListagemModel> ObterMesas(bool apenasDisponiveis = false)
