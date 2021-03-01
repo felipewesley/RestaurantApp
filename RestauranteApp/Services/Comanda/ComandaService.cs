@@ -82,7 +82,7 @@ namespace RestauranteApp.Services.Comanda
                 MesaId = comanda.MesaId,
                 DataHoraEntrada = comanda.DataHoraEntrada,
                 DataHoraSaida = comanda.DataHoraSaida,
-                Valor = comanda.Valor,
+                Valor = CalcularValorComanda(comandaId),
                 Paga = comanda.Paga,
                 QuantidadeClientes = comanda.QuantidadeClientes
             };
@@ -97,13 +97,31 @@ namespace RestauranteApp.Services.Comanda
                 MesaId = comanda.MesaId,
                 DataHoraEntrada = comanda.DataHoraEntrada,
                 QuantidadeClientes = comanda.QuantidadeClientes,
-                Valor = comanda.Valor
+                Valor = CalcularValorComanda(comandaId)
             };
         }
 
-        public static float CalcularValorComanda(int comandaId)
+        public static float CalcularValorComanda(int comandaId, bool porcentagemGarcom = false)
         {
-            return 0.0F;
+            var comanda = ObterComandaEntidade(comandaId);
+            var pedidos = PedidoService.ObterPedidosPorComanda(comandaId);
+
+            float valorTotal = comanda.QuantidadeClientes * MesaService.ValorRodizio;
+
+            foreach (var pedido in pedidos)
+            {
+                // Em andamento ou entregue
+                if (pedido.Status == 1 || pedido.Status == 3)
+                {
+                    var produto = ProdutoService.ObterProduto(pedido.ProdutoId);
+                    
+                    if (produto.Valor == 0) continue;
+
+                    valorTotal += pedido.Quantidade * produto.Valor;
+                }
+            }
+
+            return porcentagemGarcom ? (valorTotal * 1.1F) : valorTotal;
         }
 
     }
