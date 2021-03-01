@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RestauranteApp.Services.Produto;
 using RestauranteApp.Services.Produto.Models;
+using RestauranteApp.Services.Comanda;
 
 namespace RestauranteApp.Views
 {
@@ -127,7 +128,16 @@ namespace RestauranteApp.Views
                     break;
                 case 4:
                     ViewPrinter.Println(" Encerrar comanda ", ConsoleColor.White, ConsoleColor.DarkGreen);
-                    return false;
+                    PressioneEnterParaContinuar("prosseguir com encerramento da comanda");
+                    bool encerrar = ViewComanda.EncerramentoComanda(comandaId);
+                    if (encerrar)
+                    {
+                        ComandaService.EncerrarComanda(comandaId);
+                        ViewPrinter.Println("\n\t    COMANDA FINALIZADA COM SUCESSO!    ", ConsoleColor.White, ConsoleColor.Green);
+                        PressioneEnterParaContinuar("encerrar o atendimento");
+                        return false;
+                    }
+                    break;
                 default:
                     ViewPrinter.Println(" Opcao escolhida invalida! ", ConsoleColor.White, ConsoleColor.Red);
                     break;

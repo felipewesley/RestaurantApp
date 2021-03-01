@@ -1,5 +1,6 @@
 ﻿using RestauranteApp.Interfaces;
 using System;
+using System.Globalization;
 
 namespace RestauranteApp.Entidades
 {
@@ -31,7 +32,7 @@ namespace RestauranteApp.Entidades
 
         public string Imprimir()
         {
-            return string.Join(",", ComandaId, MesaId, DataHoraEntrada, DataHoraSaida, Valor, Paga, QuantidadeClientes);
+            return string.Join(",", ComandaId, MesaId, DataHoraEntrada, DataHoraSaida, Valor.ToString("F2", CultureInfo.InvariantCulture), Paga, QuantidadeClientes);
         }
 
         public int ObterEntidadeId(string dados)

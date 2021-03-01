@@ -111,7 +111,12 @@ namespace RestauranteApp.DatabaseControl
                 }
             }
             using (StreamWriter sw = File.CreateText(path))
-                sw.Write(lines);
+            {
+                lines.ForEach(line =>
+                {
+                    sw.WriteLine(line);
+                });
+            }
 
             Insert(elemento, entidade);
 

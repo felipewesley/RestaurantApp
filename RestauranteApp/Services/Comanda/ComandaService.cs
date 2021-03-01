@@ -57,9 +57,10 @@ namespace RestauranteApp.Services.Comanda
 
             comanda.Paga = true;
             comanda.DataHoraSaida = DateTime.Now;
-            comanda.Valor = CalcularValorComanda(comandaId);
+            comanda.Valor = CalcularValorComanda(comandaId, true);
 
-            Database.Insert(comanda, Entidade.Comanda);
+            // Database.Insert(comanda, Entidade.Comanda);
+            Database.Update(comandaId, comanda, Entidade.Comanda);
         }
         
         public static TimeSpan CalcularTempoAtividade(int comandaId)

@@ -65,8 +65,6 @@ namespace RestauranteApp
 
             Console.Clear();
 
-            bool continuarAtendimento = true;
-
             // Salvando comanda no banco de dados
             ComandaService.RegistrarComanda(comanda);
 
@@ -77,19 +75,8 @@ namespace RestauranteApp
             ViewPrograma.MensagemContinuarAtendimento();
             */
 
-            do
-            {
-                // Executa um loop mostrando o menu enquanto nao for explicitamente encerrado
-                ViewPrograma.MostrarMenu(comandaId, tipoExibicaoCardapio);
-
-                Console.WriteLine();
-
-                ViewPrinter.Print("\tConfirma o encerramento da comanda? (s/n) ", ConsoleColor.Yellow);
-                continuarAtendimento = char.Parse(Console.ReadLine()) != 's';
-
-                Console.Clear();
-
-            } while (continuarAtendimento);
+            // Executa um loop mostrando o menu principal enquanto nao for explicitamente encerrado
+            ViewPrograma.MostrarMenu(comandaId, tipoExibicaoCardapio);
 
         }
     }

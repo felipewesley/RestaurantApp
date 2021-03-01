@@ -62,11 +62,14 @@ namespace RestauranteApp.Views
             Console.WriteLine();
         }
 
-        public static void MostrarAcompanhamento(int comandaId)
+        public static void MostrarAcompanhamento(int comandaId, bool comandaCompleta = false)
         {
             Console.WriteLine();
 
-            ViewPrinter.Println("\t              ACOMPANHAMENTO DA COMANDA               ", ConsoleColor.White, ConsoleColor.DarkGreen);
+            if (comandaCompleta)
+                ViewPrinter.Println("\t                  COMANDA DETALHADA                   ", ConsoleColor.White, ConsoleColor.DarkGreen);
+            else
+                ViewPrinter.Println("\t              ACOMPANHAMENTO DA COMANDA               ", ConsoleColor.White, ConsoleColor.DarkGreen);
 
             var comanda = ComandaService.ObterComandaResumida(comandaId);
 
@@ -142,8 +145,70 @@ namespace RestauranteApp.Views
 
             ViewPrinter.Println("\t------------------------------------------------------", ConsoleColor.Cyan);
 
-            ViewPrinter.Print("\tValor atual da comanda: ");
+            ViewPrinter.Print("\tValor parcial da comanda: ");
             ViewPrinter.Print($" R$ { comanda.Valor.ToString("F2", CultureInfo.InvariantCulture) } ", ConsoleColor.DarkBlue, ConsoleColor.White);
+
+            Console.WriteLine();
+        }
+
+        public static bool EncerramentoComanda(int comandaId)
+        {
+            bool pedidosEmAberto = PedidoService.VerificarPedidosEmAberto(comandaId);
+
+            Console.WriteLine();
+
+            if (pedidosEmAberto)
+            {
+                ViewPrinter.Println("\tAinda há pedidos em aberto relacionados a esta comanda.", ConsoleColor.Black, ConsoleColor.Yellow);
+                Console.WriteLine();
+                ViewPrinter.Println("\tSe você continuar, estes pedidos serão incluídos no valor total!", ConsoleColor.Yellow);
+                Console.WriteLine();
+                ViewPrinter.Print("\tDeseja continuar o encerramento? (s/n) ");
+                char continuar = char.Parse(Console.ReadLine());
+                if (continuar == 'n')
+                    return false;
+
+                Console.WriteLine();
+                ViewPrinter.Print("\tPressione 'Enter' para visualizar o valor total a ser pago...");
+                Console.ReadLine();
+                Console.Clear();
+            } else
+            {
+                ViewPrinter.Println("\t      ENCERRAMENTO DA COMANDA     ", ConsoleColor.White, ConsoleColor.DarkGreen);
+                
+                Console.WriteLine();
+
+                ViewPrinter.Print("\tDeseja continuar com o encerramento? (s/n) ");
+                char continuar = char.Parse(Console.ReadLine());
+                if (continuar == 'n')
+                    return false;
+
+                Console.WriteLine();
+                ViewPrinter.Print("\tPressione 'Enter' para visualizar o valor total a ser pago...");
+                Console.ReadLine();
+                Console.Clear();
+            }
+
+            Console.WriteLine();
+
+            MostrarComandaCompleta(comandaId);
+
+            Console.WriteLine();
+            ViewPrinter.Print("\tPressione 'Enter' para confirmar o pagamento! ", ConsoleColor.DarkGreen);
+            Console.ReadLine();
+
+            return true;
+        }
+
+        public static void MostrarComandaCompleta(int comandaId)
+        {
+            MostrarAcompanhamento(comandaId, true);
+            
+            ViewPrinter.Println("\t--------------------------------------------------------", ConsoleColor.Cyan);
+
+            ViewPrinter.Print("\tValor Final: ");
+            ViewPrinter.Print($" R$ { ComandaService.CalcularValorComanda(comandaId, true).ToString("F2", CultureInfo.InvariantCulture) } ", ConsoleColor.White, ConsoleColor.Green);
+            ViewPrinter.Print("\t * Incluído 10% garçom", ConsoleColor.Yellow);
 
             Console.WriteLine();
         }

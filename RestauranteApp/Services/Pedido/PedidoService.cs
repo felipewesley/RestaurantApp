@@ -104,5 +104,19 @@ namespace RestauranteApp.Services.Pedido
         {
             return ObterPedidoByIdEntidade(pedidoId).Status;
         }
+
+        public static bool VerificarPedidosEmAberto(int comandaId)
+        {
+            string[] pedidosCsv = Database.Select(Entidade.Pedido);
+
+            foreach (var pedidoCsv in pedidosCsv)
+            {
+                var pedido = new Entidades.Pedido().ConverterEmEntidade(pedidoCsv);
+                // Pedido em aberto
+                if (pedido.ComandaId == comandaId)
+                    if (pedido.Status == 1) return true;
+            }
+            return false;
+        }
     }
 }
