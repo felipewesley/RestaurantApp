@@ -20,5 +20,10 @@ namespace RestauranteApp.Entidades
                 Ocupada = bool.Parse(arrDados[2])
             };
         }
+
+        public int ObterEntidadeId(string dados)
+        {
+            return ConverterEmEntidade(dados).MesaId;
+        }
     }
 }

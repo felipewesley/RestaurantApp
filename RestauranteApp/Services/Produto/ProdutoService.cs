@@ -11,7 +11,7 @@ namespace RestauranteApp.Services.Produto
     class ProdutoService
     {
 
-        private Entidades.Produto ObterProdutoEntidade(int produtoId)
+        private static Entidades.Produto ObterProdutoEntidade(int produtoId)
         {
             string produtoCsv = Database.Select(Entidade.Produto, produtoId);
 
@@ -92,12 +92,12 @@ namespace RestauranteApp.Services.Produto
             return listaProdutos;
         }
 
-        public int ObterQuantidadePermitida(int produtoId)
+        public static int ObterQuantidadePermitida(int produtoId)
         {
             return ObterProdutoEntidade(produtoId).QuantidadePermitida;
         }
 
-        public bool ValidarQuantidade(int produtoId, int quantidade)
+        public static bool ValidarQuantidade(int produtoId, int quantidade)
         {
             return !(quantidade > ObterProdutoEntidade(produtoId).QuantidadePermitida);
         }
@@ -105,6 +105,11 @@ namespace RestauranteApp.Services.Produto
         public bool VerificarDisponibilidade(int produtoId)
         {
             return ObterProdutoEntidade(produtoId).Disponivel;
+        }
+
+        public static bool ProdutoValido(int produtoId)
+        {
+            return (produtoId > 0 && produtoId <= 8);
         }
 
     }

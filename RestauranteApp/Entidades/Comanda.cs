@@ -33,5 +33,10 @@ namespace RestauranteApp.Entidades
         {
             return string.Join(",", ComandaId, MesaId, DataHoraEntrada, DataHoraSaida, Valor, Paga, QuantidadeClientes);
         }
+
+        public int ObterEntidadeId(string dados)
+        {
+            return ConverterEmEntidade(dados).ComandaId;
+        }
     }
 }

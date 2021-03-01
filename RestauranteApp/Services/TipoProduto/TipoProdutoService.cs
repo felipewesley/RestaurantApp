@@ -41,5 +41,10 @@ namespace RestauranteApp.Services.TipoProduto
                 Descricao = tipoProduto.Descricao
             };
         }
+
+        public static bool TipoProdutoValido(int tipoId)
+        {
+            return (tipoId > 0 && tipoId <= 3);
+        }
     }
 }

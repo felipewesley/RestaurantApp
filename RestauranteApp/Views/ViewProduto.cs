@@ -16,33 +16,17 @@ namespace RestauranteApp.Views
             {
                 ViewPrinter.Print($"\t[ { produto.ProdutoId } ] { produto.Nome }");
                 if (produto.Valor == 0)
-                    ViewPrinter.Print($" * INCLUSO * ", ConsoleColor.DarkGreen);
+                    ViewPrinter.Println($" * INCLUSO * ", ConsoleColor.DarkGreen);
                 else
-                    ViewPrinter.Print($" R$ { produto.Valor } ");
+                    ViewPrinter.Println($" R$ { produto.Valor } ", ConsoleColor.DarkCyan);
 
                 DivisorListaProdutos();
             });
         }
 
-        /*public static void MostrarListaProdutos(int tipo = 0)
-        {
-            var listaProdutos = tipo == 0 ? ProdutoService.ObterProdutos(true) : ProdutoService.ObterProdutosPorTipo(tipo);
-
-            listaProdutos.ForEach(produto =>
-            {
-                ViewPrinter.Print($"\t[ { produto.ProdutoId } ] { produto.Nome }");
-                if (produto.Valor == 0)
-                    ViewPrinter.Print($" * INCLUSO * ", ConsoleColor.DarkGreen);
-                else
-                    ViewPrinter.Print($" R$ { produto.Valor } ");
-
-                DivisorListaProdutos();
-            });
-        }*/
-
         public static void DivisorListaProdutos()
         {
-            ViewPrinter.Println("\n\t----------------------------------------------------");
+            ViewPrinter.Println("\t----------------------------------------------------");
         }
 
         public static void MostrarTiposProduto()
@@ -51,8 +35,9 @@ namespace RestauranteApp.Views
 
             foreach (var tipoProduto in listaTipos)
             {
-                ViewPrinter.Print($"\t[ { tipoProduto.Tipo} ] { tipoProduto.Descricao }");
-                DivisorListaProdutos();
+                ViewPrinter.Print($"\t[{ tipoProduto.Tipo }]", ConsoleColor.Cyan);
+                ViewPrinter.Println($" { tipoProduto.Descricao }");
+                // DivisorListaProdutos();
             }
         }
     }

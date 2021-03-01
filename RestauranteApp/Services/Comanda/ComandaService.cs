@@ -67,9 +67,9 @@ namespace RestauranteApp.Services.Comanda
             var comanda = ObterComandaEntidade(comandaId);
 
             if (comanda.DataHoraSaida == null || comanda.DataHoraSaida > comanda.DataHoraEntrada)
-                return DateTime.Now - comanda.DataHoraEntrada;
+                return DateTime.Now.Subtract(comanda.DataHoraEntrada);
 
-            return (TimeSpan)(comanda.DataHoraSaida - comanda.DataHoraEntrada);
+            return comanda.DataHoraSaida.Subtract(comanda.DataHoraEntrada);
         }
 
         public static ComandaCompletaModel ObterComandaCompleta(int comandaId)

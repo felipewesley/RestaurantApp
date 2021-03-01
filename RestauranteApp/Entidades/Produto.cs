@@ -29,5 +29,10 @@ namespace RestauranteApp.Entidades
                 Tipo = int.Parse(arrDados[6])
             };
         }
+
+        public int ObterEntidadeId(string dados)
+        {
+            return ConverterEmEntidade(dados).ProdutoId;
+        }
     }
 }

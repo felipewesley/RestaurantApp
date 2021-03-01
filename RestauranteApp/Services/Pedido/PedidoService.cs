@@ -3,6 +3,7 @@ using RestauranteApp.Services.Pedido.Models;
 using RestauranteApp.DatabaseControl;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace RestauranteApp.Services.Pedido
 {
@@ -16,6 +17,11 @@ namespace RestauranteApp.Services.Pedido
             return new Entidades.Pedido().ConverterEmEntidade(pedidoCsv);
         }
 
+        private static int ObterProximoId(Entidade entidade)
+        {
+            return new Entidades.Pedido().ObterEntidadeId(Database.Select(Entidade.Pedido)[^1]);
+        }
+
         public static void RegistrarNovoPedido(PedidoFormularioModel pedidoModel)
         {
             try
@@ -24,11 +30,10 @@ namespace RestauranteApp.Services.Pedido
 
                 Database.Insert(new Entidades.Pedido()
                 {
-                    PedidoId = 1,
+                    PedidoId = ObterProximoId(Entidade.Pedido),
                     ComandaId = pedidoModel.ComandaId,
                     ProdutoId = pedidoModel.ProdutoId,
-                    // Status = StatusEnum.Produzindo,
-                    Status = 3,
+                    Status = 1, //Em andamento
                     Quantidade = pedidoModel.Quantidade
                 }, Entidade.Pedido);
 

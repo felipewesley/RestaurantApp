@@ -59,7 +59,8 @@ namespace RestauranteApp.Views
             Console.WriteLine();
 
             ViewPrinter.Print("\t [1] ", ConsoleColor.DarkCyan);
-            ViewPrinter.Println("Produtos separados por categoria;");
+            ViewPrinter.Print("Produtos separados por categoria; ");
+            ViewPrinter.Println("[BETA]", ConsoleColor.DarkYellow);
 
             ViewPrinter.Print("\t [2] ", ConsoleColor.DarkCyan);
             ViewPrinter.Println("Listagem de todos os produtos;");
@@ -75,7 +76,7 @@ namespace RestauranteApp.Views
             return int.Parse(Console.ReadLine());
         }
 
-        public static void MostrarMenu(int comandaId, int tipoExibicao)
+        public static void MostrarMenu(int comandaId, int tipoExibicaoCardapio)
         {
             bool mostrarMenuNovamente = true;
 
@@ -84,47 +85,47 @@ namespace RestauranteApp.Views
 
                 ViewComanda.MostrarComandaResumida(comandaId);
 
-                ViewPrinter.Println("\t         MENU PRINCIPAL         ", ConsoleColor.White, ConsoleColor.DarkBlue);
+                ViewPrinter.Println("\t           MENU PRINCIPAL           ", ConsoleColor.White, ConsoleColor.DarkBlue);
 
                 Console.WriteLine();
 
-                MostrarOpcaoMenu(1, "Ver meus pedidos");
-                MostrarOpcaoMenu(2, "Fazer novo pedido");
-                MostrarOpcaoMenu(3, "Cancelar um pedido");
-                MostrarOpcaoMenu(4, "Acompanhamento da comanda");
-                MostrarOpcaoMenu(5, "Encerrar minha comanda");
+                MostrarOpcaoMenu(1, "Fazer novo pedido");
+                MostrarOpcaoMenu(2, "Cancelar um pedido", false);
+                MostrarOpcaoMenu(3, "Acompanhamento da comanda");
+                MostrarOpcaoMenu(4, "Encerrar minha comanda");
 
                 Console.WriteLine();
 
                 ViewPrinter.Print("\tEscolha: ");
                 int escolha = int.Parse(Console.ReadLine());
 
-                if (!ChamarOpcaoEscolhida(comandaId, escolha)) mostrarMenuNovamente = false;
+                if (!ChamarOpcaoEscolhida(comandaId, escolha, tipoExibicaoCardapio)) mostrarMenuNovamente = false;
 
             }
         }
 
-        public static bool ChamarOpcaoEscolhida(int comandaId, int opcaoEscolhida)
+        public static bool ChamarOpcaoEscolhida(int comandaId, int opcaoEscolhida, int tipoExibicaoCardapio)
         {
             ViewPrinter.Print("\tOPCAO ESCOLHIDA: ");
 
             switch (opcaoEscolhida)
             {
                 case 1:
-                    ViewPrinter.Println(" Ver meus pedidos ", ConsoleColor.White, ConsoleColor.DarkGreen);
+                    ViewPrinter.Println(" Fazer novo pedido ", ConsoleColor.White, ConsoleColor.DarkGreen);
+                    PressioneEnterParaContinuar("ir ao cardápio");
+                    ViewPedido.MostrarCardapio(comandaId, tipoExibicaoCardapio);
                     break;
                 case 2:
-                    ViewPrinter.Println(" Fazer novo pedido ", ConsoleColor.White, ConsoleColor.DarkGreen);
+                    ViewPrinter.Println(" Cancelar um pedido ", ConsoleColor.White, ConsoleColor.DarkGreen);
+                    Console.WriteLine();
+                    ViewPrinter.Println("\t    Esta funcionalidade ainda não está operando  ", ConsoleColor.Black, ConsoleColor.Yellow);
                     break;
                 case 3:
-                    ViewPrinter.Println(" Cancelar um pedido ", ConsoleColor.White, ConsoleColor.DarkGreen);
-                    break;
-                case 4:
                     ViewPrinter.Println(" Acompanhamento da comanda ", ConsoleColor.White, ConsoleColor.DarkGreen);
                     PressioneEnterParaContinuar("visualizar o acompanhamento da comanda");
                     ViewComanda.MostrarAcompanhamento(comandaId);
                     break;
-                case 5:
+                case 4:
                     ViewPrinter.Println(" Encerrar comanda ", ConsoleColor.White, ConsoleColor.DarkGreen);
                     return false;
                 default:
@@ -148,36 +149,14 @@ namespace RestauranteApp.Views
             Console.Clear();
         }
 
-        public static void MostrarOpcaoMenu(int opcaoId, string descricao)
+        public static void MostrarOpcaoMenu(int opcaoId, string descricao, bool operando = true)
         {
             ViewPrinter.Print($"\t[{ opcaoId }] ", ConsoleColor.Yellow);
-            ViewPrinter.Println(descricao);
-        }
-
-        public static void MostrarCardapio(int tipoExibicao)
-        {
-            List<ProdutoMenuModel> listaProdutos;
-
-            if (tipoExibicao == 1)
-            {
-                Console.Clear();
-                ViewPrinter.Print("\tEscolha uma categoria: ");
-                Console.WriteLine();
-
-                // Selecionar categoria de produto
-                ViewProduto.DivisorListaProdutos();
-                ViewProduto.MostrarTiposProduto();
-                int categoria = int.Parse(Console.ReadLine());
-
-                listaProdutos = ProdutoService.ObterProdutosPorTipo(categoria);
-
-            }
+            ViewPrinter.Print(descricao);
+            if (!operando)
+                ViewPrinter.Println(" [Em breve]", ConsoleColor.Green);
             else
-            {
-                listaProdutos = ProdutoService.ObterProdutos(true);
-            }
-
-            ViewProduto.MostrarListaProdutos(listaProdutos);
+                ViewPrinter.Println(" ");
         }
 
         public static void MensagemContinuarAtendimento()

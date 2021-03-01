@@ -1,6 +1,7 @@
 ﻿using RestauranteApp.Interfaces;
 using System;
 using System.IO;
+using RestauranteApp.Interfaces;
 
 namespace RestauranteApp.DatabaseControl
 {
@@ -44,6 +45,15 @@ namespace RestauranteApp.DatabaseControl
 
             return path;
         }
+
+        /*
+        public static int GetNextIdDaClasse<T>(Entidade entidade) where T : ParseToEntity<T>
+        {
+            string path = GetPathOfEntity(entidade);
+            
+            return T.ObterEntidadeId(File.ReadAllLines(path)[^1]);
+        }
+        */
         
 
         /*

@@ -85,7 +85,9 @@ namespace RestauranteApp.Views
                 ViewPrinter.Println(" pessoas");
 
             ViewPrinter.Print("\tTempo em atividade: ");
-            ViewPrinter.Println(ComandaService.CalcularTempoAtividade(comandaId).ToString(), ConsoleColor.Cyan);
+            TimeSpan tempo = ComandaService.CalcularTempoAtividade(comandaId);
+            string strTempo = string.Join(':', tempo.Hours, tempo.Minutes, tempo.Seconds);
+            ViewPrinter.Println(strTempo, ConsoleColor.Cyan);
 
             ViewPrinter.Println("\t------------------------------------------------------");
 

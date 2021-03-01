@@ -18,5 +18,10 @@ namespace RestauranteApp.Entidades
                 Descricao = arrDados[1]
             };
         }
+
+        public int ObterEntidadeId(string dados)
+        {
+            return ConverterEmEntidade(dados).Tipo;
+        }
     }
 }
