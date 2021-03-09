@@ -1,54 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
+using RestauranteApp.Contexto;
 using RestauranteApp.DatabaseControl;
 using RestauranteApp.Services.Mesa.Models;
+using System.Linq;
 
 namespace RestauranteApp.Services.Mesa
 {
     class MesaService
     {
-        public static float ValorRodizio = 45.0F;
+        private static float ValorRodizio = 45.0F;
 
-        private static Entidades.Mesa ObterMesaEntidade(int mesaId)
+        public static float ObterValorRodizio()
         {
-            string mesaCsv = Database.Select(Entidade.Mesa, mesaId);
+            return ValorRodizio;
+        }
 
-            //  if (mesaCsv == null || mesaCsv == string.Empty) throw new Exception("A mesa selecionada nao existe!");
-            if (mesaCsv == null || mesaCsv == string.Empty) return null;
+        public static void AtualizarStatusMesa(int mesaId, bool ocupada)
+        {
+            var context = new RestauranteContext();
 
-            return new Entidades.Mesa().ConverterEmEntidade(mesaCsv);
+            var mesa = context.Mesa
+                        .Where(m => m.MesaId == mesaId)
+                        .FirstOrDefault();
+
+            mesa.Ocupada = ocupada;
+
+            if (context.SaveChanges() <= 0)
+                throw new Exception("Não foi possível atualizar o status da mesa para 'Ocupada'!");
         }
 
         public static bool ValidarMesa(int mesaId)
         {
-            return (mesaId > 0 && mesaId <= 16);
+            var context = new RestauranteContext();
+
+            return context.Mesa
+                    .ToList()
+                    .Exists(m => m.MesaId == mesaId);
         }
 
         public static List<MesaListagemModel> ObterMesas(bool apenasDisponiveis = false)
         {
-            string[] mesasCsv = Database.Select(Entidade.Mesa);
-            List<MesaListagemModel> listaMesas = new List<MesaListagemModel>();
+            var context = new RestauranteContext();
 
-            foreach (string mesaCsv in mesasCsv)
-            {
-                var mesa = new Entidades.Mesa().ConverterEmEntidade(mesaCsv);
+            var listaMesas = context.Mesa
+                            .Where(m => m.Ocupada == false)
+                            .Select(m => new MesaListagemModel {
+                                MesaId = m.MesaId,
+                                Ocupada = m.Ocupada
+                            })
+                            .OrderBy(m => m.MesaId)
+                            .ToList();
 
-                if (apenasDisponiveis)
-                {
-                    if (mesa.Ocupada) continue;
-                }
-                listaMesas.Add(new MesaListagemModel()
-                {
-                    MesaId = mesa.MesaId,
-                    Ocupada = mesa.Ocupada
-                });
-            }
             return listaMesas;
         }
 
         public static bool MesaOcupada(int mesaId)
         {
-            var mesa = ObterMesaEntidade(mesaId);
+            var context = new RestauranteContext();
+
+            var mesa = context.Mesa
+                        .Where(m => m.MesaId == mesaId)
+                        .FirstOrDefault();
 
             if (!ValidarMesa(mesaId)) throw new Exception("A mesa selecionada não existe!");
 
@@ -57,14 +70,22 @@ namespace RestauranteApp.Services.Mesa
 
         public static int ObterQuantidadeClientes(int mesaId)
         {
-            var mesa = ObterMesaEntidade(mesaId);
+            var context = new RestauranteContext();
+
+            var mesa = context.Mesa
+                        .Where(m => m.MesaId == mesaId)
+                        .FirstOrDefault();
 
             return mesa.Capacidade;
         }
 
         public static bool QuantidadeClientesValida(int mesaId, int quantidadeClientes)
         {
-            var mesa = ObterMesaEntidade(mesaId);
+            var context = new RestauranteContext();
+
+            var mesa = context.Mesa
+                        .Where(m => m.MesaId == mesaId)
+                        .FirstOrDefault();
 
             return !(quantidadeClientes > mesa.Capacidade || quantidadeClientes <= 0);
         }

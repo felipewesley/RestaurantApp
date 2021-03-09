@@ -88,11 +88,13 @@ namespace RestauranteApp.Views
             else
                 ViewPrinter.Println(" pessoas");
 
-            /*ViewPrinter.Print("\tTempo em atividade: ");
+            /*
+            ViewPrinter.Print("\tTempo em atividade: ");
             TimeSpan tempo = ComandaService.CalcularTempoAtividade(comandaId);
             string strTempo = string.Join(':', tempo.Hours, tempo.Minutes, tempo.Seconds);
             ViewPrinter.Println(strTempo, ConsoleColor.Cyan);
             */
+
             ViewPrinter.Print("\tData/hora entrada: ");
             ViewPrinter.Println(comanda.DataHoraEntrada.ToString(), ConsoleColor.Cyan);
 
@@ -109,7 +111,7 @@ namespace RestauranteApp.Views
 
             // Imprimindo os rodizios como pedidos
             ViewPrinter.Print($"\t   # - ");
-            ViewPrinter.Print($"{ comanda.QuantidadeClientes } x Rodízio  -  R$ { MesaService.ValorRodizio.ToString("F2", CultureInfo.InvariantCulture) } --- ");
+            ViewPrinter.Print($"{ comanda.QuantidadeClientes } x Rodízio  -  R$ { MesaService.ObterValorRodizio().ToString("F2", CultureInfo.InvariantCulture) } --- ");
             ViewPrinter.Println(" Ativo ", ConsoleColor.White, ConsoleColor.Green);
 
             if (listaPedidos.Count == 0)
@@ -118,10 +120,10 @@ namespace RestauranteApp.Views
                 ViewPrinter.Println("\t  Ainda não há pedidos relacionados a esta comanda  ", ConsoleColor.Black, ConsoleColor.Yellow);
             } else
             {
+                // Imprimindo listagem de pedidos realizados
                 listaPedidos.ForEach(pedido => { 
                 
-                    var produto = ProdutoService.ObterProduto(pedido.ProdutoId, false);
-                    var status = StatusService.ObterStatus(pedido.Status);
+                    var produto = ProdutoService.ObterProduto(pedido.Produto.ProdutoId, false);
 
                     ViewPrinter.Print($"\t   { pedido.PedidoId } - ");
                     ViewPrinter.Print($"{ pedido.Quantidade } x { produto.Nome }  -  ");
@@ -132,12 +134,12 @@ namespace RestauranteApp.Views
                         ViewPrinter.Print($"R$ { produto.Valor.ToString("F2", CultureInfo.InvariantCulture) }");
 
                     ViewPrinter.Print("  --- ");
-                    switch (pedido.Status)
+                    switch (pedido.Status.StatusId)
                     {
-                        case 1: ViewPrinter.Print($" { status.Descricao } ", ConsoleColor.Black, ConsoleColor.Yellow); break;
-                        case 2: ViewPrinter.Print($" { status.Descricao } ", ConsoleColor.White, ConsoleColor.Red); break;
-                        case 3: ViewPrinter.Print($" { status.Descricao } ", ConsoleColor.White, ConsoleColor.Green); break;
-                        default: ViewPrinter.Print($" { status.Descricao } ", ConsoleColor.Black, ConsoleColor.Gray); break;
+                        case 1: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.Black, ConsoleColor.Yellow); break;
+                        case 2: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.White, ConsoleColor.Red); break;
+                        case 3: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.White, ConsoleColor.Green); break;
+                        default: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.Black, ConsoleColor.Gray); break;
                     }
                     Console.WriteLine();
                 });
@@ -205,10 +207,6 @@ namespace RestauranteApp.Views
             MostrarAcompanhamento(comandaId, true);
             
             ViewPrinter.Println("\t--------------------------------------------------------", ConsoleColor.Cyan);
-
-            ViewPrinter.Print("\tValor Final: ");
-            ViewPrinter.Print($" R$ { ComandaService.CalcularValorComanda(comandaId, true).ToString("F2", CultureInfo.InvariantCulture) } ", ConsoleColor.White, ConsoleColor.Green);
-            ViewPrinter.Print("\t * Incluído 10% garçom", ConsoleColor.Yellow);
 
             Console.WriteLine();
         }

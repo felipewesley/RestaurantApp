@@ -1,7 +1,5 @@
 ﻿using RestauranteApp.Interfaces;
-using System;
 using System.IO;
-using RestauranteApp.Interfaces;
 
 namespace RestauranteApp.DatabaseControl
 {
@@ -81,10 +79,5 @@ namespace RestauranteApp.DatabaseControl
             return T.ConverterEmEntidade(selectedLine);
         }
         */
-
-        
-
-        
-
     }
 }

@@ -4,64 +4,62 @@ using RestauranteApp.DatabaseControl;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using RestauranteApp.Contexto;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestauranteApp.Services.Pedido
 {
     class PedidoService
     {
 
-        private static Entidades.Pedido ObterPedidoByIdEntidade(int pedidoId)
+        private static int ObterProximoId()
         {
-            string pedidoCsv = Database.Select(Entidade.Pedido, pedidoId);
+            var context = new RestauranteContext();
 
-            return new Entidades.Pedido().ConverterEmEntidade(pedidoCsv);
-        }
-
-        private static int ObterProximoId(Entidade entidade)
-        {
-            return new Entidades.Pedido().ObterEntidadeId(Database.Select(Entidade.Pedido)[^1]);
+            return context.Pedido.ToList().Count + 1;
         }
 
         public static void RegistrarNovoPedido(PedidoFormularioModel pedidoModel)
         {
-            try
-            {
-                pedidoModel.Validar();
 
-                Database.Insert(new Entidades.Pedido()
-                {
-                    PedidoId = ObterProximoId(Entidade.Pedido),
-                    ComandaId = pedidoModel.ComandaId,
-                    ProdutoId = pedidoModel.ProdutoId,
-                    Status = 1, //Em andamento
-                    Quantidade = pedidoModel.Quantidade
-                }, Entidade.Pedido);
+            var context = new RestauranteContext();
 
-            } catch (Exception e)
+            context.Pedido.Add(new Entidades.Pedido()
             {
-                Console.WriteLine("Ocorreu um erro! " + e.Message);
-            }
+                PedidoId = ObterProximoId(),
+                ComandaId = pedidoModel.ComandaId,
+                ProdutoId = pedidoModel.ProdutoId,
+                StatusId = 1, //Em andamento
+                Quantidade = pedidoModel.Quantidade
+            });
+
+            if (context.SaveChanges() <= 0)
+                throw new Exception("Não foi possivel salvar o pedido! ");
         }
 
         public static void CancelarPedido(int pedidoId)
         {
-            // Implementar chamada de ID comanda
-            int comandaId = 123;
+            var context = new RestauranteContext();
 
-            string pedidoCsv = Database.Select(Entidade.Pedido, pedidoId);
-            // Criar um pedido que implemente a interface ParseToEntity
+            var pedido = context.Pedido
+                        .Include(p => p.Status)
+                        .Where(p => p.PedidoId == pedidoId)
+                        .FirstOrDefault();
 
-            Database.Update(pedidoId, new Entidades.Pedido()
-            {
-                PedidoId = pedidoId,
-                ComandaId = comandaId,
-                //ProdutoId
-            }, Entidade.Pedido);
+            pedido.Status.StatusId = 3;
+
+            if (context.SaveChanges() <= 0)
+                throw new Exception("Não foi possível cancelar o pedido!");
         }
 
         public static PedidoFormularioModel ObterPedido(int pedidoId)
         {
-            var pedido = ObterPedidoByIdEntidade(pedidoId);
+            var context = new RestauranteContext();
+
+            var pedido = context.Pedido
+                        .Where(p => p.PedidoId == pedidoId)
+                        .FirstOrDefault();
 
             return new PedidoFormularioModel()
             {
@@ -73,50 +71,31 @@ namespace RestauranteApp.Services.Pedido
 
         public static List<PedidoRealizadoModel> ObterPedidosPorComanda(int comandaId, bool validarEntregues = false)
         {
-            List<PedidoRealizadoModel> pedidosRealizados = new List<PedidoRealizadoModel>();
 
-            string[] pedidos = Database.Select(Entidade.Pedido);
+            var context = new RestauranteContext();
 
-            foreach (string pedidoCsv in pedidos)
-            {
-                var pedidoEntidade = new Entidades.Pedido().ConverterEmEntidade(pedidoCsv);
-
-                if (pedidoEntidade.ComandaId == comandaId)
-                {
-                    if (validarEntregues)
+            var listaPedidos = context.Pedido
+                    .AsNoTracking()
+                    .Include(p => p.Status)
+                    .Include(p => p.Produto)
+                    .Where(p => p.ComandaId == comandaId)
+                    .Select(p => new PedidoRealizadoModel()
                     {
-                        if (pedidoEntidade.Status != 3) continue;
-                    }
-                    pedidosRealizados.Add(new PedidoRealizadoModel()
-                    {
-                        PedidoId = pedidoEntidade.PedidoId,
-                        ProdutoId = pedidoEntidade.ProdutoId,
-                        Quantidade = pedidoEntidade.Quantidade,
-                        Status = pedidoEntidade.Status
+                        PedidoId = p.PedidoId,
+                        Produto = p.Produto,
+                        Quantidade = p.Quantidade,
+                        Status = p.Status
                     });
-                }
-            }
 
-            return pedidosRealizados;
-        }
-
-        public static int VerificarStatusPedido(int pedidoId)
-        {
-            return ObterPedidoByIdEntidade(pedidoId).Status;
+            return validarEntregues ? listaPedidos.Where(p => p.Status.StatusId == 2).ToList() : listaPedidos.ToList();
         }
 
         public static bool VerificarPedidosEmAberto(int comandaId)
         {
-            string[] pedidosCsv = Database.Select(Entidade.Pedido);
+            var context = new RestauranteContext();
 
-            foreach (var pedidoCsv in pedidosCsv)
-            {
-                var pedido = new Entidades.Pedido().ConverterEmEntidade(pedidoCsv);
-                // Pedido em aberto
-                if (pedido.ComandaId == comandaId)
-                    if (pedido.Status == 1) return true;
-            }
-            return false;
+            // return context.Pedido.Find();
+            return context.Pedido.Where(p => p.ComandaId == comandaId && p.StatusId == 1).Count() > 0;
         }
     }
 }

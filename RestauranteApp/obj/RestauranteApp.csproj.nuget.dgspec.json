@@ -10,11 +10,11 @@
         "projectUniqueName": "C:\\workspace\\RestauranteApp\\RestauranteApp\\RestauranteApp.csproj",
         "projectName": "RestauranteApp",
         "projectPath": "C:\\workspace\\RestauranteApp\\RestauranteApp\\RestauranteApp.csproj",
-        "packagesPath": "C:\\Users\\fewes\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\felipe.basso\\.nuget\\packages\\",
         "outputPath": "C:\\workspace\\RestauranteApp\\RestauranteApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\fewes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\felipe.basso\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,6 +39,16 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

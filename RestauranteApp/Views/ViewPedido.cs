@@ -74,7 +74,7 @@ namespace RestauranteApp.Views
             }
             if (quantidadeMaxima != 0)
             {
-                if (!ProdutoService.ValidarQuantidade(produtoId, quantidade))
+                if (ProdutoService.ObterQuantidadePermitida(produtoId) < quantidade)
                 {
                     ViewPrinter.Println("\t Quantidade solicitada além do permitido para este produto! \n", ConsoleColor.White, ConsoleColor.Red);
                     return null;

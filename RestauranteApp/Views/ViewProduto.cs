@@ -37,7 +37,6 @@ namespace RestauranteApp.Views
             {
                 ViewPrinter.Print($"\t[{ tipoProduto.Tipo }]", ConsoleColor.Cyan);
                 ViewPrinter.Println($" { tipoProduto.Descricao }");
-                // DivisorListaProdutos();
             }
         }
     }

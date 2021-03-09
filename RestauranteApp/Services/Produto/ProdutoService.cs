@@ -5,111 +5,81 @@ using System.Globalization;
 using RestauranteApp.Services.Produto.Models;
 using RestauranteApp.DatabaseControl;
 using RestauranteApp.Services.TipoProduto;
+using RestauranteApp.Contexto;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestauranteApp.Services.Produto
 {
     class ProdutoService
     {
 
-        private static Entidades.Produto ObterProdutoEntidade(int produtoId)
-        {
-            string produtoCsv = Database.Select(Entidade.Produto, produtoId);
-
-            return new Entidades.Produto().ConverterEmEntidade(produtoCsv);
-        }
-
         public static ProdutoMenuModel ObterProduto(int produtoId, bool validarDisponibilidade = true)
         {
-            string produtoCsv = Database.Select(Entidade.Produto, produtoId);
+            var context = new RestauranteContext();
 
-            var produtoEntidade = new Entidades.Produto().ConverterEmEntidade(produtoCsv);
-
-            if (validarDisponibilidade)
-            {
-                if (!produtoEntidade.Disponivel)
-                    return null;
-            }
-
-            return new ProdutoMenuModel() { 
-                ProdutoId = produtoEntidade.ProdutoId,
-                Nome = produtoEntidade.Nome,
-                Valor = produtoEntidade.Valor,
-                QuantidadePermitida = produtoEntidade.QuantidadePermitida
-            };
+            return context.Produto
+                    .Where(p => p.ProdutoId == produtoId)
+                    .Select(p => new ProdutoMenuModel()
+                    {
+                        ProdutoId = p.ProdutoId,
+                        Nome = p.Nome,
+                        QuantidadePermitida = p.QuantidadePermitida,
+                        Valor = p.Valor
+                    })
+                    .FirstOrDefault();
         }
 
         public static List<ProdutoMenuModel> ObterProdutos(bool apenasDisponiveis)
         {
-            string[] produtosCsv = Database.Select(Entidade.Produto);
+            var context = new RestauranteContext();
 
-            var listaProdutos = new List<ProdutoMenuModel>();
-
-            foreach (string produtoCsv in produtosCsv)
-            {
-                var produto = new Entidades.Produto().ConverterEmEntidade(produtoCsv);
-
-                if (apenasDisponiveis)
-                {
-                    if (!produto.Disponivel) continue;
-                }
-                listaProdutos.Add(new ProdutoMenuModel()
-                {
-                    ProdutoId = produto.ProdutoId,
-                    Nome = produto.Nome,
-                    QuantidadePermitida = produto.QuantidadePermitida,
-                    Valor = produto.Valor
-                });
-            }
-            return listaProdutos;
+            return context.Produto
+                    .Where(p => p.Disponivel == true)
+                    .Select(p => new ProdutoMenuModel()
+                    {
+                        ProdutoId = p.ProdutoId,
+                        Nome = p.Nome,
+                        QuantidadePermitida = p.QuantidadePermitida,
+                        Valor = p.Valor
+                    })
+                    .ToList();
         }
 
         public static List<ProdutoMenuModel> ObterProdutosPorTipo(int tipoProduto, bool validarDisponibilidade = true)
         {
-            List<ProdutoMenuModel> listaProdutos = new List<ProdutoMenuModel>();
+            var context = new RestauranteContext();
 
-            string[] produtosCsv = Database.Select(Entidade.Produto);
-
-            foreach (string produtoCsv in produtosCsv)
-            {
-                var produto = new Entidades.Produto().ConverterEmEntidade(produtoCsv);
-
-                if (tipoProduto == produto.Tipo)
-                {
-                    if (validarDisponibilidade)
+            return context.Produto
+                    .Include(p => p.Tipo)
+                    .Where(p => p.Tipo.Tipo == tipoProduto)
+                    .Select(p => new ProdutoMenuModel()
                     {
-                        if (!produto.Disponivel) continue;
-                    }
-                    listaProdutos.Add(new ProdutoMenuModel()
-                    {
-                        ProdutoId = produto.ProdutoId,
-                        Nome = produto.Nome,
-                        Valor = produto.Valor,
-                        QuantidadePermitida = produto.QuantidadePermitida
-                    });
-                }
-            }
-
-            return listaProdutos;
+                        ProdutoId = p.ProdutoId,
+                        Nome = p.Nome,
+                        QuantidadePermitida = p.QuantidadePermitida,
+                        Valor = p.Valor
+                    })
+                    .ToList();
         }
 
         public static int ObterQuantidadePermitida(int produtoId)
         {
-            return ObterProdutoEntidade(produtoId).QuantidadePermitida;
-        }
+            var context = new RestauranteContext();
 
-        public static bool ValidarQuantidade(int produtoId, int quantidade)
-        {
-            return !(quantidade > ObterProdutoEntidade(produtoId).QuantidadePermitida);
-        }
-
-        public bool VerificarDisponibilidade(int produtoId)
-        {
-            return ObterProdutoEntidade(produtoId).Disponivel;
+            return context.Produto
+                    .Where(p => p.ProdutoId == produtoId)
+                    .Select(p => p.QuantidadePermitida)
+                    .FirstOrDefault();
         }
 
         public static bool ProdutoValido(int produtoId)
         {
-            return (produtoId > 0 && produtoId <= 8);
+            var context = new RestauranteContext();
+
+            return context.Produto
+                    .ToList()
+                    .Exists(p => p.ProdutoId == produtoId);
         }
 
     }

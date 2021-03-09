@@ -1,18 +1,15 @@
 ﻿using System;
-using RestauranteApp.Services.Comanda;
-using RestauranteApp.Services.Mesa;
-using RestauranteApp.Services.Pedido;
-using RestauranteApp.Services.Produto;
-using RestauranteApp.Services.Status;
-using RestauranteApp.Services.TipoProduto;
-using System.IO;
 using RestauranteApp.Views;
+using RestauranteApp.Services.Mesa;
+using RestauranteApp.Services.Comanda;
 using RestauranteApp.Services.Comanda.Models;
+using RestauranteApp.DatabaseControl;
 
 namespace RestauranteApp
 {
     class Program
     {
+
         static void Main(string[] args)
         {
             Console.Clear();
@@ -33,14 +30,14 @@ namespace RestauranteApp
             bool mesaDisponivel = MesaService.ValidarMesa(mesaId) && !MesaService.MesaOcupada(mesaId);
             if (!mesaDisponivel) mesaId = ViewMesa.ObterMesaDisponivel(mesaId);
             ViewMesa.MostrarMesaSelecionada(mesaId);
+            // Ocupando mesa no banco de dados
+            MesaService.AtualizarStatusMesa(mesaId, true);
             Console.Clear();
 
             // Leitura e validacao ID Comanda
             ViewPrograma.CabecalhoDadosIniciais();
             ViewComanda.LabelObterDadosComanda();
             int comandaId = int.Parse(Console.ReadLine());
-            // bool comandaExistente = !ComandaService.JaExisteComanda(comandaId);
-            // if (!comandaExistente) comandaId = ViewComanda.ObterComandaValida(comandaId);
             ViewComanda.MostrarComandaSelecionada(comandaId);
             Console.Clear();
 
@@ -68,15 +65,11 @@ namespace RestauranteApp
             // Salvando comanda no banco de dados
             ComandaService.RegistrarComanda(comanda);
 
-            /*
-            // Mostrando comanda resumida antes de iniciar o loop principal do programa
-            ViewComanda.MostrarComandaResumida(comandaId);
-
-            ViewPrograma.MensagemContinuarAtendimento();
-            */
-
             // Executa um loop mostrando o menu principal enquanto nao for explicitamente encerrado
             ViewPrograma.MostrarMenu(comandaId, tipoExibicaoCardapio);
+
+            // Desocupando mesa no banco de dados
+            MesaService.AtualizarStatusMesa(mesaId, false);
 
         }
     }
