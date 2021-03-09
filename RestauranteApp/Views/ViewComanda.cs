@@ -23,6 +23,32 @@ namespace RestauranteApp.Views
             ViewPrinter.Print("\tNº Comanda: ");
         }
 
+        public static int ObterComandaDisponivel(int comandaId)
+        {
+            bool mesaDisponivel = false;
+
+            while (!mesaDisponivel)
+            {
+                Console.Clear();
+
+                ViewPrograma.CabecalhoDadosIniciais();
+
+                if (!ComandaService.ValidarComanda(comandaId))
+                    ViewPrinter.Println("\t A comanda informada contém um valor inválido! ", ConsoleColor.White, ConsoleColor.Red);
+                else
+                    ViewPrinter.Println("\t A comanda informada já está cadastrada! Utilize outro código. ", ConsoleColor.White, ConsoleColor.Red);
+
+                Console.WriteLine();
+
+                LabelObterDadosComanda();
+                comandaId = int.Parse(Console.ReadLine());
+
+                if (ComandaService.ValidarComanda(comandaId) && ComandaService.ComandaDisponivel(comandaId)) mesaDisponivel = true;
+            }
+
+            return comandaId;
+        }
+
         public static void MostrarComandaSelecionada(int comandaId)
         {
             // Console.Clear();

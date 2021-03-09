@@ -38,6 +38,8 @@ namespace RestauranteApp
             ViewPrograma.CabecalhoDadosIniciais();
             ViewComanda.LabelObterDadosComanda();
             int comandaId = int.Parse(Console.ReadLine());
+            bool comandaDisponivel = ComandaService.ValidarComanda(comandaId) && ComandaService.ComandaDisponivel(comandaId);
+            if (!comandaDisponivel) comandaId = ViewComanda.ObterComandaDisponivel(comandaId);
             ViewComanda.MostrarComandaSelecionada(comandaId);
             Console.Clear();
 

@@ -12,6 +12,19 @@ namespace RestauranteApp.Services.Comanda
 {
     class ComandaService
     {
+        public static bool ValidarComanda(int comandaId)
+        {
+            return comandaId > 0;
+        }
+        
+        public static bool ComandaDisponivel(int comandaId)
+        {
+            var context = new RestauranteContext();
+
+            return !context.Comanda
+                    .ToList()
+                    .Exists(c => c.ComandaId == comandaId);
+        }
 
         public static void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
         {
