@@ -137,8 +137,8 @@ namespace RestauranteApp.Views
                     switch (pedido.Status.StatusId)
                     {
                         case 1: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.Black, ConsoleColor.Yellow); break;
-                        case 2: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.White, ConsoleColor.Red); break;
-                        case 3: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.White, ConsoleColor.Green); break;
+                        case 2: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.White, ConsoleColor.Green); break;
+                        case 3: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.White, ConsoleColor.Red); break;
                         default: ViewPrinter.Print($" { pedido.Status.Descricao } ", ConsoleColor.Black, ConsoleColor.Gray); break;
                     }
                     Console.WriteLine();
