@@ -8,7 +8,16 @@ namespace RestauranteApp.Views
 {
     class ViewMesa
     {
-        public static void LabelObterDadosMesa()
+
+        private readonly ViewPrograma _viewPrograma;
+        private readonly MesaService _mesaService;
+
+        public ViewMesa(MesaService mesaService)
+        {
+            _mesaService = mesaService;
+        }
+
+        public void LabelObterDadosMesa()
         {
             ViewPrinter.Println("\tObtendo dados da mesa \t", ConsoleColor.Yellow);
             
@@ -21,9 +30,9 @@ namespace RestauranteApp.Views
             ViewPrinter.Print("\tMesa: ");
         }
 
-        public static void MostrarMesasDisponiveis()
+        public void MostrarMesasDisponiveis()
         {
-            var listaMesas = MesaService.ObterMesas(true);
+            var listaMesas = _mesaService.ObterMesas(true);
 
             ViewPrinter.Print("\tMesas disponiveis: \n\t");
 
@@ -40,7 +49,7 @@ namespace RestauranteApp.Views
             // ViewPrinter.Print("] ", ConsoleColor.White, ConsoleColor.DarkGreen);
         }
 
-        public static int ObterMesaDisponivel(int mesaId)
+        public int ObterMesaDisponivel(int mesaId)
         {
             bool mesaDisponivel = false;
 
@@ -50,7 +59,7 @@ namespace RestauranteApp.Views
 
                 ViewPrograma.CabecalhoDadosIniciais();
 
-                if (!MesaService.ValidarMesa(mesaId))
+                if (!_mesaService.ValidarMesa(mesaId))
                     ViewPrinter.Println("\t A mesa escolhida não está disponível! ", ConsoleColor.White, ConsoleColor.Red);
 
                 Console.WriteLine();
@@ -58,19 +67,19 @@ namespace RestauranteApp.Views
                 LabelObterDadosMesa();
                 mesaId = int.Parse(Console.ReadLine());
 
-                if (MesaService.ValidarMesa(mesaId)) mesaDisponivel = true;
+                if (_mesaService.ValidarMesa(mesaId)) mesaDisponivel = true;
             }
 
             return mesaId;
         }
 
-        public static void LabelObterQuantidadeClientes(int mesaId)
+        public void LabelObterQuantidadeClientes(int mesaId)
         {
             ViewPrinter.Println("\tObtendo quantidade de clientes \t", ConsoleColor.Yellow);
             
             Console.WriteLine();
 
-            int quantidadeClientes = MesaService.ObterQuantidadeClientes(mesaId);
+            int quantidadeClientes = _mesaService.ObterQuantidadeClientes(mesaId);
             ViewPrinter.Println($"\t  * A mesa [{ mesaId }] comporta, no máximo, { quantidadeClientes } pessoas  ", ConsoleColor.Black, ConsoleColor.Yellow);
 
             Console.WriteLine();
@@ -78,7 +87,7 @@ namespace RestauranteApp.Views
             ViewPrinter.Print("\tQuantidade de clientes: ");
         }
 
-        public static void MostrarQuantidadeClientesSelecionada(int quantidadeClientes)
+        public void MostrarQuantidadeClientesSelecionada(int quantidadeClientes)
         {
             // Console.Clear();
 
@@ -90,7 +99,7 @@ namespace RestauranteApp.Views
             ViewPrograma.MensagemContinuarAtendimento();
         }
 
-        public static void MostrarMesaSelecionada(int mesaId)
+        public void MostrarMesaSelecionada(int mesaId)
         {
             // Console.Clear();
 
@@ -102,7 +111,7 @@ namespace RestauranteApp.Views
             ViewPrograma.MensagemContinuarAtendimento();
         }
 
-        public static int ObterQuantidadeClientesValida(int mesaId, int quantidadeClientes)
+        public int ObterQuantidadeClientesValida(int mesaId, int quantidadeClientes)
         {
             bool quantidadeValida = false;
 
@@ -115,7 +124,7 @@ namespace RestauranteApp.Views
                 if (quantidadeClientes <= 0)
                 {
                     ViewPrinter.Println("\t Quantidade de clientes inválida! ", ConsoleColor.White, ConsoleColor.Red);
-                } else if (quantidadeClientes > MesaService.ObterQuantidadeClientes(mesaId))
+                } else if (quantidadeClientes > _mesaService.ObterQuantidadeClientes(mesaId))
                 {
                     ViewPrinter.Println("\t Esta mesa não comporta esta quantidade de pessoas! ", ConsoleColor.White, ConsoleColor.Red);
                 } else
@@ -128,7 +137,7 @@ namespace RestauranteApp.Views
                 LabelObterQuantidadeClientes(mesaId);
                 quantidadeClientes = int.Parse(Console.ReadLine());
 
-                if (quantidadeClientes <= MesaService.ObterQuantidadeClientes(mesaId) && quantidadeClientes > 0) quantidadeValida = true;
+                if (quantidadeClientes <= _mesaService.ObterQuantidadeClientes(mesaId) && quantidadeClientes > 0) quantidadeValida = true;
             }
 
             return quantidadeClientes;

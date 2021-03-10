@@ -10,7 +10,16 @@ namespace RestauranteApp.Views
     class ViewProduto
     {
 
-        public static void MostrarListaProdutos(List<ProdutoMenuModel> listaProdutos)
+        private readonly ProdutoService _produtoService;
+        private readonly TipoProdutoService _tipoProdutoService;
+
+        public ViewProduto(ProdutoService produtoService, TipoProdutoService tipoProdutoService)
+        {
+            _produtoService = produtoService;
+            _tipoProdutoService = tipoProdutoService;
+        }
+
+        public void MostrarListaProdutos(List<ProdutoMenuModel> listaProdutos)
         {
             listaProdutos.ForEach(produto =>
             {
@@ -29,13 +38,13 @@ namespace RestauranteApp.Views
             ViewPrinter.Println("\t----------------------------------------------------");
         }
 
-        public static void MostrarTiposProduto()
+        public void MostrarTiposProduto()
         {
-            var listaTipos = TipoProdutoService.ObterTipoProduto();
+            var listaTipos = _tipoProdutoService.ObterTipoProduto();
 
             foreach (var tipoProduto in listaTipos)
             {
-                ViewPrinter.Print($"\t[{ tipoProduto.Tipo }]", ConsoleColor.Cyan);
+                ViewPrinter.Print($"\t[{ tipoProduto.TipoProdutoId }]", ConsoleColor.Cyan);
                 ViewPrinter.Println($" { tipoProduto.Descricao }");
             }
         }

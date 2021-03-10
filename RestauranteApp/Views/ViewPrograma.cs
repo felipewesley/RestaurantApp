@@ -9,6 +9,18 @@ namespace RestauranteApp.Views
     class ViewPrograma
     {
 
+        private readonly ViewComanda _viewComanda;
+        private readonly ViewPedido _viewPedido;
+
+        private readonly ComandaService _comandaService;
+
+        public ViewPrograma(ComandaService comandaService, ViewComanda viewComanda, ViewPedido viewPedido)
+        {
+            _viewComanda = viewComanda;
+            _viewPedido = viewPedido;
+            _comandaService = comandaService;
+        }
+
         public static void ShowSucesso()
         {
             Console.WriteLine();
@@ -16,7 +28,7 @@ namespace RestauranteApp.Views
             Console.WriteLine();
             Console.WriteLine();
         }
-        public static void Welcome()
+        public void Welcome()
         {
             Console.WriteLine();
 
@@ -50,7 +62,7 @@ namespace RestauranteApp.Views
             Console.ReadLine();
         }
 
-        public static int EscolhaFormatoExibicaoCardapio()
+        public int EscolhaFormatoExibicaoCardapio()
         {
             Console.WriteLine();
 
@@ -77,14 +89,14 @@ namespace RestauranteApp.Views
             return int.Parse(Console.ReadLine());
         }
 
-        public static void MostrarMenu(int comandaId, int tipoExibicaoCardapio)
+        public void MostrarMenu(int comandaId, int tipoExibicaoCardapio)
         {
             bool mostrarMenuNovamente = true;
 
             while (mostrarMenuNovamente)
             {
 
-                ViewComanda.MostrarComandaResumida(comandaId);
+                _viewComanda.MostrarComandaResumida(comandaId);
 
                 ViewPrinter.Println("\t           MENU PRINCIPAL           ", ConsoleColor.White, ConsoleColor.DarkBlue);
 
@@ -105,7 +117,7 @@ namespace RestauranteApp.Views
             }
         }
 
-        public static bool ChamarOpcaoEscolhida(int comandaId, int opcaoEscolhida, int tipoExibicaoCardapio)
+        public bool ChamarOpcaoEscolhida(int comandaId, int opcaoEscolhida, int tipoExibicaoCardapio)
         {
             ViewPrinter.Print("\tOPCAO ESCOLHIDA: ");
 
@@ -114,25 +126,26 @@ namespace RestauranteApp.Views
                 case 1:
                     ViewPrinter.Println(" Fazer novo pedido ", ConsoleColor.White, ConsoleColor.DarkGreen);
                     PressioneEnterParaContinuar("ir ao cardápio");
-                    ViewPedido.MostrarCardapio(comandaId, tipoExibicaoCardapio);
+                    _viewPedido.MostrarCardapio(comandaId, tipoExibicaoCardapio);
                     break;
                 case 2:
                     ViewPrinter.Println(" Cancelar um pedido ", ConsoleColor.White, ConsoleColor.DarkGreen);
-                    Console.WriteLine();
+                    // PressioneEnterParaContinuar("prosseguir com o cancelamento de um pedido");
+                    // ViewPedido.CancelarPedido(comandaId);
                     ViewPrinter.Println("\t    Esta funcionalidade ainda não está operando  ", ConsoleColor.Black, ConsoleColor.Yellow);
                     break;
                 case 3:
                     ViewPrinter.Println(" Acompanhamento da comanda ", ConsoleColor.White, ConsoleColor.DarkGreen);
                     PressioneEnterParaContinuar("visualizar o acompanhamento da comanda");
-                    ViewComanda.MostrarAcompanhamento(comandaId);
+                    _viewComanda.MostrarAcompanhamento(comandaId);
                     break;
                 case 4:
                     ViewPrinter.Println(" Encerrar comanda ", ConsoleColor.White, ConsoleColor.DarkGreen);
                     PressioneEnterParaContinuar("prosseguir com encerramento da comanda");
-                    bool encerrar = ViewComanda.EncerramentoComanda(comandaId);
+                    bool encerrar = _viewComanda.EncerramentoComanda(comandaId);
                     if (encerrar)
                     {
-                        ComandaService.EncerrarComanda(comandaId);
+                        _comandaService.EncerrarComanda(comandaId);
                         ViewPrinter.Println("\n\t    COMANDA FINALIZADA COM SUCESSO!    ", ConsoleColor.White, ConsoleColor.Green);
                         PressioneEnterParaContinuar("encerrar o atendimento");
                         return false;
@@ -149,7 +162,7 @@ namespace RestauranteApp.Views
             return true;
         }
 
-        public static void PressioneEnterParaContinuar(string message)
+        public void PressioneEnterParaContinuar(string message)
         {
             Console.WriteLine();
             ViewPrinter.Print("\t Pressione ", ConsoleColor.Blue, ConsoleColor.White);
@@ -159,7 +172,7 @@ namespace RestauranteApp.Views
             Console.Clear();
         }
 
-        public static void MostrarOpcaoMenu(int opcaoId, string descricao, bool operando = true)
+        public void MostrarOpcaoMenu(int opcaoId, string descricao, bool operando = true)
         {
             ViewPrinter.Print($"\t[{ opcaoId }] ", ConsoleColor.Yellow);
             ViewPrinter.Print(descricao);

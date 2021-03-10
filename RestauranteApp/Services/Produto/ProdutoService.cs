@@ -14,11 +14,17 @@ namespace RestauranteApp.Services.Produto
     class ProdutoService
     {
 
-        public static ProdutoMenuModel ObterProduto(int produtoId, bool validarDisponibilidade = true)
-        {
-            var context = new RestauranteContext();
+        private readonly RestauranteContext _context;
 
-            return context.Produto
+        public ProdutoService(RestauranteContext context)
+        {
+            _context = context;
+        }
+
+        public ProdutoMenuModel ObterProduto(int produtoId, bool validarDisponibilidade = true)
+        {
+
+            return _context.Produto
                     .Where(p => p.ProdutoId == produtoId)
                     .Select(p => new ProdutoMenuModel()
                     {
@@ -30,11 +36,10 @@ namespace RestauranteApp.Services.Produto
                     .FirstOrDefault();
         }
 
-        public static List<ProdutoMenuModel> ObterProdutos(bool apenasDisponiveis)
+        public List<ProdutoMenuModel> ObterProdutos(bool apenasDisponiveis)
         {
-            var context = new RestauranteContext();
 
-            return context.Produto
+            return _context.Produto
                     .Where(p => p.Disponivel == true)
                     .Select(p => new ProdutoMenuModel()
                     {
@@ -46,13 +51,12 @@ namespace RestauranteApp.Services.Produto
                     .ToList();
         }
 
-        public static List<ProdutoMenuModel> ObterProdutosPorTipo(int tipoProduto, bool validarDisponibilidade = true)
+        public List<ProdutoMenuModel> ObterProdutosPorTipo(int tipoProduto, bool validarDisponibilidade = true)
         {
-            var context = new RestauranteContext();
 
-            return context.Produto
-                    .Include(p => p.Tipo)
-                    .Where(p => p.Tipo.Tipo == tipoProduto)
+            return _context.Produto
+                    .Include(p => p.TipoProduto)
+                    .Where(p => p.TipoProduto.TipoProdutoId == tipoProduto)
                     .Select(p => new ProdutoMenuModel()
                     {
                         ProdutoId = p.ProdutoId,
@@ -63,21 +67,19 @@ namespace RestauranteApp.Services.Produto
                     .ToList();
         }
 
-        public static int ObterQuantidadePermitida(int produtoId)
+        public int ObterQuantidadePermitida(int produtoId)
         {
-            var context = new RestauranteContext();
 
-            return context.Produto
+            return _context.Produto
                     .Where(p => p.ProdutoId == produtoId)
                     .Select(p => p.QuantidadePermitida)
                     .FirstOrDefault();
         }
 
-        public static bool ProdutoValido(int produtoId)
+        public bool ProdutoValido(int produtoId)
         {
-            var context = new RestauranteContext();
 
-            return context.Produto
+            return _context.Produto
                     .ToList()
                     .Exists(p => p.ProdutoId == produtoId);
         }

@@ -36,7 +36,10 @@ SELECT TOP(10) * FROM Pedido
 ORDER BY Pedido.PedidoId DESC
 
 -- Definir pedidos como 'Entregue'
-UPDATE Pedido SET StatusId = 2 WHERE ComandaId = 101
+UPDATE Pedido SET StatusId = 1 WHERE ComandaId = 107
 
 -- Obter pedidos de uma comanda #id
-SP_OBTER_PEDIDOS 101
+SP_OBTER_PEDIDOS 109
+
+ALTER TABLE Comanda ALTER COLUMN Valor REAL
+ALTER TABLE Produto ALTER COLUMN Valor REAL

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RestauranteApp.Services.Pedido;
 using RestauranteApp.Services.Pedido.Models;
 using RestauranteApp.Services.Produto;
@@ -12,15 +13,31 @@ namespace RestauranteApp.Views
     class ViewPedido
     {
 
-        public static void MostrarCardapio(int comandaId, int tipoExibicao)
+        private readonly PedidoService _pedidoService;
+        private readonly ProdutoService _produtoService;
+        private readonly TipoProdutoService _tipoProdutoService;
+
+        private readonly ViewProduto _viewProduto;
+
+        public ViewPedido(PedidoService pedidoService, ProdutoService produtoService, TipoProdutoService tipoProdutoService)
         {
+            _pedidoService = pedidoService;
+            _produtoService = produtoService;
+            _tipoProdutoService = tipoProdutoService;
+
+            _viewProduto = new ViewProduto(produtoService, tipoProdutoService);
+        }
+
+        public void MostrarCardapio(int comandaId, int tipoExibicao)
+        {
+
             bool novoPedido = true;
             // var listaPedidos = new List<PedidoFormularioModel>();
 
             while (novoPedido)
             {
                 Console.WriteLine();
-                ViewProduto.MostrarListaProdutos(ExibirMenuPorTipoExibicao(tipoExibicao));
+                _viewProduto.MostrarListaProdutos(ExibirMenuPorTipoExibicao(tipoExibicao));
 
                 var pedido = FazerPedido(comandaId);
 
@@ -30,7 +47,7 @@ namespace RestauranteApp.Views
                 } else
                 {
                     ViewPrinter.Println("\t Pedido registrado! ", ConsoleColor.White, ConsoleColor.DarkGreen);
-                    PedidoService.RegistrarNovoPedido(pedido);
+                    _pedidoService.RegistrarNovoPedido(pedido);
                 }
                     
                 ViewProduto.DivisorListaProdutos();
@@ -41,7 +58,7 @@ namespace RestauranteApp.Views
             Console.WriteLine();
         }
 
-        public static PedidoFormularioModel FazerPedido(int comandaId)
+        public PedidoFormularioModel FazerPedido(int comandaId)
         {
             ViewPrinter.Println("\t     NOVO PEDIDO    ", ConsoleColor.White, ConsoleColor.Blue);
             
@@ -50,13 +67,14 @@ namespace RestauranteApp.Views
             ViewPrinter.Print("\tProduto: ");
             int produtoId = int.Parse(Console.ReadLine());
 
-            if (!ProdutoService.ProdutoValido(produtoId))
+            if (!_produtoService.ProdutoValido(produtoId))
             {
+                ViewPrinter.Print("qualquer texto", ConsoleColor.Cyan, ConsoleColor.DarkBlue);
                 ViewPrinter.Println("\t O produto selecionado não está contido no cardápio! \n", ConsoleColor.White, ConsoleColor.Red);
                 return null;
             }
 
-            int quantidadeMaxima = ProdutoService.ObterQuantidadePermitida(produtoId);
+            int quantidadeMaxima = _produtoService.ObterQuantidadePermitida(produtoId);
             if (quantidadeMaxima != 0)
             {
                 Console.WriteLine();
@@ -74,7 +92,7 @@ namespace RestauranteApp.Views
             }
             if (quantidadeMaxima != 0)
             {
-                if (ProdutoService.ObterQuantidadePermitida(produtoId) < quantidade)
+                if (_produtoService.ObterQuantidadePermitida(produtoId) < quantidade)
                 {
                     ViewPrinter.Println("\t Quantidade solicitada além do permitido para este produto! \n", ConsoleColor.White, ConsoleColor.Red);
                     return null;
@@ -96,7 +114,31 @@ namespace RestauranteApp.Views
             };
         }
 
-        public static int SolicitarCategoria()
+        public void CancelarPedido(int comandaId)
+        {
+            Console.WriteLine();
+            ViewPrinter.Println("\t              Cancelamento de pedido                ", ConsoleColor.White, ConsoleColor.Red);
+            Console.WriteLine();
+
+            var pedidos = _pedidoService.ObterPedidosPorComanda(comandaId);
+
+            Console.WriteLine("\tPedidos disponíveis para cancelamento: ");
+            Console.WriteLine();
+            
+            Console.WriteLine("\tCOD | QTDE x PRODUTO   --- STATUS");
+            Console.WriteLine("\t------------------------------------------");
+
+            pedidos.ToList().ForEach(p =>
+            {
+                Console.WriteLine($"{ p.PedidoId } ");
+
+            });
+
+            Console.Write("\tInforme o código do pedido: ");
+            var pedidoId = int.Parse(Console.ReadLine());
+        }
+
+        public int SolicitarCategoria()
         {
             Console.WriteLine();
             ViewPrinter.Print("\tEscolha uma categoria: ", ConsoleColor.Green);
@@ -104,14 +146,14 @@ namespace RestauranteApp.Views
 
             // Selecionar categoria de produto
             ViewProduto.DivisorListaProdutos();
-            ViewProduto.MostrarTiposProduto();
+            _viewProduto.MostrarTiposProduto();
 
             Console.WriteLine();
             ViewPrinter.Print("\tCategoria desejada: ");
 
             int categoria = int.Parse(Console.ReadLine());
 
-            if (!TipoProdutoService.TipoProdutoValido(categoria))
+            if (!_tipoProdutoService.TipoProdutoValido(categoria))
             {
                 bool categoriaValida = false;
                 while (!categoriaValida)
@@ -127,19 +169,19 @@ namespace RestauranteApp.Views
 
                     // Selecionar categoria de produto
                     ViewProduto.DivisorListaProdutos();
-                    ViewProduto.MostrarTiposProduto();
+                    _viewProduto.MostrarTiposProduto();
 
                     Console.WriteLine();
                     ViewPrinter.Print("\tCategoria desejada: ");
                     categoria = int.Parse(Console.ReadLine());
-                    categoriaValida = TipoProdutoService.TipoProdutoValido(categoria);
+                    categoriaValida = _tipoProdutoService.TipoProdutoValido(categoria);
                 }
             }
 
             return categoria;
         }
 
-        public static List<ProdutoMenuModel> ExibirMenuPorTipoExibicao(int tipoExibicao)
+        public List<ProdutoMenuModel> ExibirMenuPorTipoExibicao(int tipoExibicao)
         {
             List<ProdutoMenuModel> listaProdutos;
 
@@ -149,18 +191,18 @@ namespace RestauranteApp.Views
 
                 int categoria = SolicitarCategoria();
 
-                listaProdutos = ProdutoService.ObterProdutosPorTipo(categoria);
-                var tipo = TipoProdutoService.ObterTipoProduto(categoria);
+                listaProdutos = _produtoService.ObterProdutosPorTipo(categoria);
+                var tipo = _tipoProdutoService.ObterTipoProduto(categoria);
 
                 Console.Clear();
                 Console.WriteLine();
 
-                ViewPrinter.Println($"\t      Listando: [{ tipo.Tipo }] { tipo.Descricao }       ", ConsoleColor.White, ConsoleColor.Blue);
+                ViewPrinter.Println($"\t      Listando: [{ tipo.TipoProdutoId }] { tipo.Descricao }       ", ConsoleColor.White, ConsoleColor.Blue);
                 Console.WriteLine();
             }
             else
             {
-                listaProdutos = ProdutoService.ObterProdutos(true);
+                listaProdutos = _produtoService.ObterProdutos(true);
 
                 Console.Clear();
                 Console.WriteLine();

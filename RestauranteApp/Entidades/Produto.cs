@@ -13,9 +13,9 @@ namespace RestauranteApp.Entidades
         public float Valor { get; set; }
         public bool Disponivel { get; set; }
         public int QuantidadePermitida { get; set; }
-        public int TipoId { get; set; }
-        [ForeignKey(nameof(TipoId))]
-        public TipoProduto Tipo { get; set; }
+        public int TipoProdutoId { get; set; }
+        [ForeignKey(nameof(TipoProdutoId))]
+        public TipoProduto TipoProduto { get; set; }
 
     }
 }

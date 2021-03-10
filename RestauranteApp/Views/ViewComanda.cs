@@ -8,13 +8,30 @@ using RestauranteApp.Services.Produto;
 using RestauranteApp.Services.Status;
 using RestauranteApp.Services.Comanda.Models;
 using System.Globalization;
+using System.Linq;
+using RestauranteApp.Contexto;
 
 namespace RestauranteApp.Views
 {
     class ViewComanda
     {
 
-        public static void LabelObterDadosComanda()
+        public static RestauranteContext context { get; set; }
+
+        private readonly MesaService _mesaService;
+        private readonly ComandaService _comandaService;
+        private readonly PedidoService _pedidoService;
+        private readonly ProdutoService _produtoService;
+
+        public ViewComanda(MesaService mesaService, ComandaService comandaService, PedidoService pedidoService, ProdutoService produtoService)
+        {
+            _mesaService = mesaService;
+            _comandaService = comandaService;
+            _pedidoService = pedidoService;
+            _produtoService = produtoService;
+        }
+
+        public void LabelObterDadosComanda()
         {
             ViewPrinter.Println("\tObtendo dados da comanda \t", ConsoleColor.Yellow);
 
@@ -23,7 +40,7 @@ namespace RestauranteApp.Views
             ViewPrinter.Print("\tNº Comanda: ");
         }
 
-        public static int ObterComandaDisponivel(int comandaId)
+        public int ObterComandaDisponivel(int comandaId)
         {
             bool comandaDisponivel = false;
 
@@ -33,7 +50,7 @@ namespace RestauranteApp.Views
 
                 ViewPrograma.CabecalhoDadosIniciais();
 
-                if (!ComandaService.ValidarComanda(comandaId))
+                if (!_comandaService.ValidarComanda(comandaId))
                     ViewPrinter.Println("\t A comanda informada não pode ser utilizada! Utilize outro código. ", ConsoleColor.White, ConsoleColor.Red);
 
                 Console.WriteLine();
@@ -41,13 +58,13 @@ namespace RestauranteApp.Views
                 LabelObterDadosComanda();
                 comandaId = int.Parse(Console.ReadLine());
 
-                if (ComandaService.ValidarComanda(comandaId)) comandaDisponivel = true;
+                if (_comandaService.ValidarComanda(comandaId)) comandaDisponivel = true;
             }
 
             return comandaId;
         }
 
-        public static void MostrarComandaSelecionada(int comandaId)
+        public void MostrarComandaSelecionada(int comandaId)
         {
             // Console.Clear();
 
@@ -59,13 +76,13 @@ namespace RestauranteApp.Views
             ViewPrograma.MensagemContinuarAtendimento();
         }
 
-        public static void MostrarComandaResumida(int comandaId)
+        public void MostrarComandaResumida(int comandaId)
         {
             Console.WriteLine();
 
             ViewPrinter.Println("\t             DESCRICAO RESUMIDA DA COMANDA            ", ConsoleColor.White, ConsoleColor.DarkGreen);
 
-            var comanda = ComandaService.ObterComandaResumida(comandaId);
+            var comanda = _comandaService.ObterComandaResumida(comandaId);
 
             ViewPrinter.Println("\t------------------------------------------------------");
 
@@ -86,7 +103,7 @@ namespace RestauranteApp.Views
             Console.WriteLine();
         }
 
-        public static void MostrarAcompanhamento(int comandaId, bool comandaCompleta = false)
+        public void MostrarAcompanhamento(int comandaId, bool comandaCompleta = false)
         {
             Console.WriteLine();
 
@@ -95,7 +112,7 @@ namespace RestauranteApp.Views
             else
                 ViewPrinter.Println("\t              ACOMPANHAMENTO DA COMANDA               ", ConsoleColor.White, ConsoleColor.DarkGreen);
 
-            var comanda = ComandaService.ObterComandaResumida(comandaId);
+            var comanda = _comandaService.ObterComandaResumida(comandaId);
 
             ViewPrinter.Println("\t------------------------------------------------------");
 
@@ -126,7 +143,7 @@ namespace RestauranteApp.Views
 
             ViewPrinter.Println("\tPedidos relacionados a esta comanda: ");
 
-            var listaPedidos = PedidoService.ObterPedidosPorComanda(comandaId);
+            var listaPedidos = _pedidoService.ObterPedidosPorComanda(comandaId);
 
             Console.WriteLine();
 
@@ -135,19 +152,24 @@ namespace RestauranteApp.Views
 
             // Imprimindo os rodizios como pedidos
             ViewPrinter.Print($"\t   # - ");
-            ViewPrinter.Print($"{ comanda.QuantidadeClientes } x Rodízio  -  R$ { MesaService.ObterValorRodizio().ToString("F2", CultureInfo.InvariantCulture) } --- ");
+            ViewPrinter.Print($"{ comanda.QuantidadeClientes } x Rodízio  -  R$ { MesaService.ValorRodizio.ToString("F2", CultureInfo.InvariantCulture) } --- ");
             ViewPrinter.Println(" Ativo ", ConsoleColor.White, ConsoleColor.Green);
 
             if (listaPedidos.Count == 0)
             {
                 Console.WriteLine();
-                ViewPrinter.Println("\t  Ainda não há pedidos relacionados a esta comanda  ", ConsoleColor.Black, ConsoleColor.Yellow);
+
+                if (comandaCompleta)
+                    ViewPrinter.Println("\t  Não houveram pedidos nesta comanda  ", ConsoleColor.Black, ConsoleColor.Yellow);
+                else
+                    ViewPrinter.Println("\t  Ainda não há pedidos relacionados a esta comanda  ", ConsoleColor.Black, ConsoleColor.Yellow);
+
             } else
             {
                 // Imprimindo listagem de pedidos realizados
-                listaPedidos.ForEach(pedido => { 
+                listaPedidos.ToList().ForEach(pedido => { 
                 
-                    var produto = ProdutoService.ObterProduto(pedido.Produto.ProdutoId, false);
+                    var produto = _produtoService.ObterProduto(pedido.Produto.ProdutoId, false);
 
                     ViewPrinter.Print($"\t   { pedido.PedidoId } - ");
                     ViewPrinter.Print($"{ pedido.Quantidade } x { produto.Nome }  -  ");
@@ -181,9 +203,9 @@ namespace RestauranteApp.Views
             Console.WriteLine();
         }
 
-        public static bool EncerramentoComanda(int comandaId)
+        public bool EncerramentoComanda(int comandaId)
         {
-            bool pedidosEmAberto = PedidoService.VerificarPedidosEmAberto(comandaId);
+            bool pedidosEmAberto = _pedidoService.VerificarPedidosEmAberto(comandaId);
 
             Console.WriteLine();
 
@@ -230,7 +252,7 @@ namespace RestauranteApp.Views
             return true;
         }
 
-        public static void MostrarComandaCompleta(int comandaId)
+        public void MostrarComandaCompleta(int comandaId)
         {
             MostrarAcompanhamento(comandaId, true);
             

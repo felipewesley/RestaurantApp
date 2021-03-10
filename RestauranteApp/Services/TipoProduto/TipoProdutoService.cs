@@ -9,40 +9,43 @@ namespace RestauranteApp.Services.TipoProduto
 {
     class TipoProdutoService
     {
-        public static List<TipoProdutoModel> ObterTipoProduto()
-        {
-            var context = new RestauranteContext();
 
-            return context.TipoProduto
+        private readonly RestauranteContext _context;
+
+        // Injetando contexto através do construtor da classe
+        public TipoProdutoService(RestauranteContext context)
+        {
+            _context = context;
+        }
+
+        public List<TipoProdutoModel> ObterTipoProduto()
+        {
+
+            return _context.TipoProduto
                     .Select(t => new TipoProdutoModel() 
                     { 
-                        Tipo = t.Tipo,
+                        TipoProdutoId = t.TipoProdutoId,
                         Descricao = t.Descricao
                     })
                     .ToList();
         }
 
-        public static TipoProdutoModel ObterTipoProduto(int tipoId)
+        public TipoProdutoModel ObterTipoProduto(int tipoId)
         {
-            var context = new RestauranteContext();
 
-            return context.TipoProduto
-                    .Where(t => t.Tipo == tipoId)
+            return _context.TipoProduto
+                    .Where(t => t.TipoProdutoId == tipoId)
                     .Select(t => new TipoProdutoModel()
                     {
-                        Tipo = t.Tipo,
+                        TipoProdutoId = t.TipoProdutoId,
                         Descricao = t.Descricao
                     })
                     .FirstOrDefault();
         }
 
-        public static bool TipoProdutoValido(int tipoId)
+        public bool TipoProdutoValido(int tipoId)
         {
-            var context = new RestauranteContext();
-
-            return context.TipoProduto
-                    .ToList()
-                    .Exists(t => t.Tipo == tipoId);
+            return _context.TipoProduto.Any(t => t.TipoProdutoId == tipoId);
         }
     }
 }

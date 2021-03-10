@@ -12,24 +12,26 @@ namespace RestauranteApp.Services.Comanda
 {
     class ComandaService
     {
-        public static bool ValidarComanda(int comandaId)
-        {
-            var context = new RestauranteContext();
+        private readonly RestauranteContext _context;
 
-            // Comanda maior que zero e não existir no banco de dados
-            return comandaId > 0 && !context.Comanda
-                                    .ToList()
-                                    .Exists(c => c.ComandaId == comandaId);
+        public ComandaService(RestauranteContext context)
+        {
+            _context = context;
         }
 
-        public static void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
+        public bool ValidarComanda(int comandaId)
         {
 
-            var context = new RestauranteContext();
+            // Comanda maior que zero e não existir no banco de dados
+            return comandaId > 0 && !_context.Comanda.Any(c => c.ComandaId == comandaId);
+        }
+
+        public void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
+        {
 
             // comandaModel.Validar();
 
-            context.Comanda.Add(new Entidades.Comanda
+            _context.Comanda.Add(new Entidades.Comanda
             {
                 ComandaId = comandaModel.ComandaId,
                 // MesaId = comandaModel.MesaId
@@ -41,16 +43,15 @@ namespace RestauranteApp.Services.Comanda
                 QuantidadeClientes = comandaModel.QuantidadeCliente
             });
 
-            if (context.SaveChanges() <= 0)
+            if (_context.SaveChanges() <= 0)
                 throw new Exception("Não foi possível salvar a comanda!");
 
         }
 
-        public static void EncerrarComanda(int comandaId, bool porcentagemGarcom = false)
+        public void EncerrarComanda(int comandaId, bool porcentagemGarcom = false)
         {
-            var context = new RestauranteContext();
 
-            var comanda = context.Comanda
+            var comanda = _context.Comanda
                             .Where(c => c.ComandaId == comandaId)
                             .FirstOrDefault();
 
@@ -60,33 +61,16 @@ namespace RestauranteApp.Services.Comanda
             comanda.DataHoraSaida = DateTime.Now;
             comanda.Valor = ObterComandaResumida(comandaId).Valor;
 
-            if (context.SaveChanges() <= 0)
+            if (_context.SaveChanges() <= 0)
                 throw new Exception("Não foi possível encerrar a comanda!");
         }
         
-        /*
-        public static TimeSpan CalcularTempoAtividade(int comandaId)
+        public ComandaResumidaModel ObterComandaResumida(int comandaId)
         {
-            var context = new RestauranteContext();
 
-            var comanda = context.Comanda
-                            .Where(c => c.ComandaId == comandaId)
-                            .FirstOrDefault();
+            var valorRodizio = MesaService.ValorRodizio;
 
-            if (comanda.DataHoraSaida == null || comanda.DataHoraSaida > comanda.DataHoraEntrada)
-                return DateTime.Now.Subtract(comanda.DataHoraEntrada);
-
-            return (TimeSpan)comanda.DataHoraSaida.Subtract(comanda.DataHoraEntrada);
-        }
-        */
-
-        public static ComandaResumidaModel ObterComandaResumida(int comandaId)
-        {
-            var context = new RestauranteContext();
-
-            var valorRodizio = MesaService.ObterValorRodizio();
-
-            var comanda = context.Comanda
+            var comanda = _context.Comanda
                         .AsQueryable()
                         .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Produto)

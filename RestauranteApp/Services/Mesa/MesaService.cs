@@ -9,36 +9,34 @@ namespace RestauranteApp.Services.Mesa
 {
     class MesaService
     {
-        private static float ValorRodizio = 45.0F;
+        private readonly RestauranteContext _context;
+        public static readonly float ValorRodizio = 45.0F;
 
-        public static float ObterValorRodizio()
+        public MesaService(RestauranteContext context)
         {
-            return ValorRodizio;
+            _context = context;
         }
 
-        public static void AtualizarStatusMesa(int mesaId, bool ocupada)
+        public void AtualizarStatusMesa(int mesaId, bool ocupada)
         {
-            var context = new RestauranteContext();
 
-            var mesa = context.Mesa
+            var mesa = _context.Mesa
                         .Where(m => m.MesaId == mesaId)
                         .FirstOrDefault();
 
             mesa.Ocupada = ocupada;
 
-            if (context.SaveChanges() <= 0)
+            if (_context.SaveChanges() <= 0)
                 throw new Exception("Não foi possível atualizar o status da mesa para 'Ocupada'!");
         }
 
-        public static bool ValidarMesa(int mesaId)
+        public bool ValidarMesa(int mesaId)
         {
-            var context = new RestauranteContext();
 
-            if (!context.Mesa.ToList()
-                    .Exists(m => m.MesaId == mesaId))
+            if (!_context.Mesa.Any(m => m.MesaId == mesaId))
                 return false;
 
-            var mesa = context.Mesa
+            var mesa = _context.Mesa
                         .Where(m => m.MesaId == mesaId)
                         .FirstOrDefault();
 
@@ -46,11 +44,10 @@ namespace RestauranteApp.Services.Mesa
             return !mesa.Ocupada;
         }
 
-        public static List<MesaFormularioModel> ObterMesas(bool apenasDisponiveis = false)
+        public ICollection<MesaFormularioModel> ObterMesas(bool apenasDisponiveis = false)
         {
-            var context = new RestauranteContext();
 
-            var listaMesas = context.Mesa
+            var listaMesas = _context.Mesa
                             .Where(m => m.Ocupada == false)
                             .Select(m => new MesaFormularioModel {
                                 MesaId = m.MesaId,
@@ -62,26 +59,14 @@ namespace RestauranteApp.Services.Mesa
             return listaMesas;
         }
 
-        public static int ObterQuantidadeClientes(int mesaId)
+        public int ObterQuantidadeClientes(int mesaId)
         {
-            var context = new RestauranteContext();
 
-            var mesa = context.Mesa
+            var mesa = _context.Mesa
                         .Where(m => m.MesaId == mesaId)
                         .FirstOrDefault();
 
             return mesa.Capacidade;
-        }
-
-        public static bool QuantidadeClientesValida(int mesaId, int quantidadeClientes)
-        {
-            var context = new RestauranteContext();
-
-            var mesa = context.Mesa
-                        .Where(m => m.MesaId == mesaId)
-                        .FirstOrDefault();
-
-            return !(quantidadeClientes > mesa.Capacidade || quantidadeClientes <= 0);
         }
     }
 }
