@@ -6,6 +6,9 @@
 # Debug obj
 RestauranteApp/obj/*
 
+# Updates in database scripts
+RestauranteApp/Contexto/*.sql
+
 # User-specific files
 *.rsuser
 *.suo
