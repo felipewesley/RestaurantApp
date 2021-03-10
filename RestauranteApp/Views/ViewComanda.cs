@@ -25,25 +25,23 @@ namespace RestauranteApp.Views
 
         public static int ObterComandaDisponivel(int comandaId)
         {
-            bool mesaDisponivel = false;
+            bool comandaDisponivel = false;
 
-            while (!mesaDisponivel)
+            while (!comandaDisponivel)
             {
                 Console.Clear();
 
                 ViewPrograma.CabecalhoDadosIniciais();
 
                 if (!ComandaService.ValidarComanda(comandaId))
-                    ViewPrinter.Println("\t A comanda informada contém um valor inválido! ", ConsoleColor.White, ConsoleColor.Red);
-                else
-                    ViewPrinter.Println("\t A comanda informada já está cadastrada! Utilize outro código. ", ConsoleColor.White, ConsoleColor.Red);
+                    ViewPrinter.Println("\t A comanda informada não pode ser utilizada! Utilize outro código. ", ConsoleColor.White, ConsoleColor.Red);
 
                 Console.WriteLine();
 
                 LabelObterDadosComanda();
                 comandaId = int.Parse(Console.ReadLine());
 
-                if (ComandaService.ValidarComanda(comandaId) && ComandaService.ComandaDisponivel(comandaId)) mesaDisponivel = true;
+                if (ComandaService.ValidarComanda(comandaId)) comandaDisponivel = true;
             }
 
             return comandaId;
@@ -173,7 +171,11 @@ namespace RestauranteApp.Views
 
             ViewPrinter.Println("\t------------------------------------------------------", ConsoleColor.Cyan);
 
-            ViewPrinter.Print("\tValor parcial da comanda: ");
+            if (comandaCompleta)
+                ViewPrinter.Print("\tValor final da comanda: ");
+            else
+                ViewPrinter.Print("\tValor parcial da comanda: ");
+
             ViewPrinter.Print($" R$ { comanda.Valor.ToString("F2", CultureInfo.InvariantCulture) } ", ConsoleColor.DarkBlue, ConsoleColor.White);
 
             Console.WriteLine();

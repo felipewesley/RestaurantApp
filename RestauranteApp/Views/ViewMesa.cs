@@ -29,7 +29,7 @@ namespace RestauranteApp.Views
 
             ViewPrinter.Print(" # ", ConsoleColor.White, ConsoleColor.DarkGreen);
 
-            foreach (MesaListagemModel mesa in listaMesas)
+            foreach (MesaFormularioModel mesa in listaMesas)
             {
                 ViewPrinter.Print($"[{ mesa.MesaId }] ", ConsoleColor.White, ConsoleColor.DarkGreen);
             }
@@ -51,8 +51,6 @@ namespace RestauranteApp.Views
                 ViewPrograma.CabecalhoDadosIniciais();
 
                 if (!MesaService.ValidarMesa(mesaId))
-                    ViewPrinter.Println("\t A mesa escolhida não existe! ", ConsoleColor.White, ConsoleColor.Red);
-                else
                     ViewPrinter.Println("\t A mesa escolhida não está disponível! ", ConsoleColor.White, ConsoleColor.Red);
 
                 Console.WriteLine();
@@ -60,7 +58,7 @@ namespace RestauranteApp.Views
                 LabelObterDadosMesa();
                 mesaId = int.Parse(Console.ReadLine());
 
-                if (MesaService.ValidarMesa(mesaId) && !MesaService.MesaOcupada(mesaId)) mesaDisponivel = true;
+                if (MesaService.ValidarMesa(mesaId)) mesaDisponivel = true;
             }
 
             return mesaId;

@@ -14,16 +14,12 @@ namespace RestauranteApp.Services.Comanda
     {
         public static bool ValidarComanda(int comandaId)
         {
-            return comandaId > 0;
-        }
-        
-        public static bool ComandaDisponivel(int comandaId)
-        {
             var context = new RestauranteContext();
 
-            return !context.Comanda
-                    .ToList()
-                    .Exists(c => c.ComandaId == comandaId);
+            // Comanda maior que zero e não existir no banco de dados
+            return comandaId > 0 && !context.Comanda
+                                    .ToList()
+                                    .Exists(c => c.ComandaId == comandaId);
         }
 
         public static void RegistrarComanda(ComandaFormularioModelCLI comandaModel)
@@ -31,28 +27,23 @@ namespace RestauranteApp.Services.Comanda
 
             var context = new RestauranteContext();
 
-            try
+            // comandaModel.Validar();
+
+            context.Comanda.Add(new Entidades.Comanda
             {
-                comandaModel.Validar();
+                ComandaId = comandaModel.ComandaId,
+                // MesaId = comandaModel.MesaId
+                MesaId = comandaModel.Mesa.MesaId,
+                DataHoraEntrada = DateTime.Now,
+                DataHoraSaida = null,
+                Valor = 0.0F,
+                Paga = false,
+                QuantidadeClientes = comandaModel.QuantidadeCliente
+            });
 
-                context.Comanda.Add(new Entidades.Comanda
-                {
-                    ComandaId = comandaModel.ComandaId,
-                    MesaId = comandaModel.MesaId,
-                    DataHoraEntrada = DateTime.Now,
-                    DataHoraSaida = null,
-                    Valor = 0.0F,
-                    Paga = false,
-                    QuantidadeClientes = comandaModel.QuantidadeCliente
-                });
+            if (context.SaveChanges() <= 0)
+                throw new Exception("Não foi possível salvar a comanda!");
 
-                if (context.SaveChanges() <= 0)
-                    throw new Exception("A comanda não pode ser salva!");
-
-            } catch (Exception e)
-            {
-                Console.WriteLine("Ocorreu um erro ao registrar a comanda! " + e.Message);
-            }
         }
 
         public static void EncerrarComanda(int comandaId, bool porcentagemGarcom = false)

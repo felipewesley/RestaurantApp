@@ -1,5 +1,6 @@
 ﻿using System;
 using RestauranteApp.Services.Mesa;
+using RestauranteApp.Services.Mesa.Models;
 
 namespace RestauranteApp.Services.Comanda.Models
 {
@@ -7,29 +8,23 @@ namespace RestauranteApp.Services.Comanda.Models
     {
         public int ComandaId { get; set; }
         public int MesaId { get; set; }
+        public MesaFormularioModel Mesa { get; set; }
+
         private int _quantidadeCliente;
         public int QuantidadeCliente
         {
             get => _quantidadeCliente;
-            set
-            {
-
-                /*if (value <= 0 || value > MesaService.ObterQuantidadeClientes(MesaId))
-                    throw new Exception("Quantidade informada de pessoas invalida!");
-                else
-                    _quantidadeCliente = value;
-                */
-                _quantidadeCliente = value;
-            }
+            set => _quantidadeCliente = value;
         }
 
         public void Validar()
         {
-            if (MesaId <= 0 || MesaId > 16)
+
+            if (Mesa.MesaId <= 0 || Mesa.MesaId > 16)
                 throw new Exception("A mesa informada não existe!");
 
-            if (_quantidadeCliente <= 0 || _quantidadeCliente > MesaService.ObterQuantidadeClientes(MesaId))
-                throw new Exception("A mesa não pode comportar esta quantidade de pessoas!");
+            if (_quantidadeCliente <= 0 || _quantidadeCliente > Mesa.Capacidade)
+                throw new Exception("A mesa não comporta esta quantidade de pessoas!");
         }
     }
 }

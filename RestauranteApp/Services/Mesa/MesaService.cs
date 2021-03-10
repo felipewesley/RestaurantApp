@@ -34,18 +34,25 @@ namespace RestauranteApp.Services.Mesa
         {
             var context = new RestauranteContext();
 
-            return context.Mesa
-                    .ToList()
-                    .Exists(m => m.MesaId == mesaId);
+            if (!context.Mesa.ToList()
+                    .Exists(m => m.MesaId == mesaId))
+                return false;
+
+            var mesa = context.Mesa
+                        .Where(m => m.MesaId == mesaId)
+                        .FirstOrDefault();
+
+            // False se a mesa estiver ocupada
+            return !mesa.Ocupada;
         }
 
-        public static List<MesaListagemModel> ObterMesas(bool apenasDisponiveis = false)
+        public static List<MesaFormularioModel> ObterMesas(bool apenasDisponiveis = false)
         {
             var context = new RestauranteContext();
 
             var listaMesas = context.Mesa
                             .Where(m => m.Ocupada == false)
-                            .Select(m => new MesaListagemModel {
+                            .Select(m => new MesaFormularioModel {
                                 MesaId = m.MesaId,
                                 Ocupada = m.Ocupada
                             })
@@ -53,19 +60,6 @@ namespace RestauranteApp.Services.Mesa
                             .ToList();
 
             return listaMesas;
-        }
-
-        public static bool MesaOcupada(int mesaId)
-        {
-            var context = new RestauranteContext();
-
-            var mesa = context.Mesa
-                        .Where(m => m.MesaId == mesaId)
-                        .FirstOrDefault();
-
-            if (!ValidarMesa(mesaId)) throw new Exception("A mesa selecionada não existe!");
-
-            return mesa.Ocupada;
         }
 
         public static int ObterQuantidadeClientes(int mesaId)

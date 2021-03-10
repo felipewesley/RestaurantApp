@@ -25,6 +25,8 @@ GO
 SELECT * FROM Mesa
 WHERE Mesa.Ocupada = 0
 
+UPDATE Mesa SET Ocupada = 0 WHERE MesaId IN (1, 2, 5, 10, 12, 16)
+
 -- Última comanda cadastrada
 SELECT TOP(1) * FROM Comanda
 ORDER BY Comanda.DataHoraEntrada DESC

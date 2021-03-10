@@ -1,6 +1,7 @@
 ﻿using System;
 using RestauranteApp.Views;
 using RestauranteApp.Services.Mesa;
+using RestauranteApp.Services.Mesa.Models;
 using RestauranteApp.Services.Comanda;
 using RestauranteApp.Services.Comanda.Models;
 using RestauranteApp.DatabaseControl;
@@ -23,55 +24,55 @@ namespace RestauranteApp
             ViewPrinter.Print("\tSEU ATENDIMENTO FOI INICIADO", ConsoleColor.Green);
             Console.WriteLine();
 
+            // Criação do modelo de mesa recebido via formulario
+            var mesa = new MesaFormularioModel();
+
             // Leitura e validacao ID Mesa
             ViewPrograma.CabecalhoDadosIniciais();
             ViewMesa.LabelObterDadosMesa();
-            int mesaId = int.Parse(Console.ReadLine());
-            bool mesaDisponivel = MesaService.ValidarMesa(mesaId) && !MesaService.MesaOcupada(mesaId);
-            if (!mesaDisponivel) mesaId = ViewMesa.ObterMesaDisponivel(mesaId);
-            ViewMesa.MostrarMesaSelecionada(mesaId);
-            // Ocupando mesa no banco de dados
-            MesaService.AtualizarStatusMesa(mesaId, true);
+            mesa.MesaId = int.Parse(Console.ReadLine());
+            if (!MesaService.ValidarMesa(mesa.MesaId)) mesa.MesaId = ViewMesa.ObterMesaDisponivel(mesa.MesaId);
+            ViewMesa.MostrarMesaSelecionada(mesa.MesaId);
             Console.Clear();
+
+            // Criação do modelo de comanda recebido via formulario
+            var comanda = new ComandaFormularioModelCLI()
+            {
+                Mesa = mesa
+            };
 
             // Leitura e validacao ID Comanda
             ViewPrograma.CabecalhoDadosIniciais();
             ViewComanda.LabelObterDadosComanda();
-            int comandaId = int.Parse(Console.ReadLine());
-            bool comandaDisponivel = ComandaService.ValidarComanda(comandaId) && ComandaService.ComandaDisponivel(comandaId);
-            if (!comandaDisponivel) comandaId = ViewComanda.ObterComandaDisponivel(comandaId);
-            ViewComanda.MostrarComandaSelecionada(comandaId);
+            comanda.ComandaId = int.Parse(Console.ReadLine());
+            if (!ComandaService.ValidarComanda(comanda.ComandaId)) comanda.ComandaId = ViewComanda.ObterComandaDisponivel(comanda.ComandaId);
+            ViewComanda.MostrarComandaSelecionada(comanda.ComandaId);
             Console.Clear();
 
             // Leitura e validacao Quantidade de Clientes
             ViewPrograma.CabecalhoDadosIniciais();
-            ViewMesa.LabelObterQuantidadeClientes(mesaId);
-            int quantidadeClientes = int.Parse(Console.ReadLine());
-            bool quantidadeClientesValida = MesaService.QuantidadeClientesValida(mesaId, quantidadeClientes);
-            if (!quantidadeClientesValida) quantidadeClientes = ViewMesa.ObterQuantidadeClientesValida(mesaId, quantidadeClientes);
-            ViewMesa.MostrarQuantidadeClientesSelecionada(quantidadeClientes);
+            ViewMesa.LabelObterQuantidadeClientes(mesa.MesaId);
+            comanda.QuantidadeCliente = int.Parse(Console.ReadLine());
+            if (comanda.QuantidadeCliente <= 0 || comanda.QuantidadeCliente > comanda.Mesa.Capacidade) 
+                comanda.QuantidadeCliente = ViewMesa.ObterQuantidadeClientesValida(mesa.MesaId, comanda.QuantidadeCliente);
+            ViewMesa.MostrarQuantidadeClientesSelecionada(comanda.QuantidadeCliente);
             Console.Clear();
 
-            // Criacao do modelo de comanda recebido via formulario
-            var comanda = new ComandaFormularioModelCLI()
-            {
-                ComandaId = comandaId,
-                MesaId = mesaId,
-                QuantidadeCliente = quantidadeClientes
-            };
+            // Ocupando mesa no banco de dados
+            MesaService.AtualizarStatusMesa(comanda.Mesa.MesaId, true);
+
+            // Salvando comanda no banco de dados
+            ComandaService.RegistrarComanda(comanda);
 
             int tipoExibicaoCardapio = ViewPrograma.EscolhaFormatoExibicaoCardapio();
 
             Console.Clear();
 
-            // Salvando comanda no banco de dados
-            ComandaService.RegistrarComanda(comanda);
-
             // Executa um loop mostrando o menu principal enquanto nao for explicitamente encerrado
-            ViewPrograma.MostrarMenu(comandaId, tipoExibicaoCardapio);
+            ViewPrograma.MostrarMenu(comanda.ComandaId, tipoExibicaoCardapio);
 
             // Desocupando mesa no banco de dados
-            MesaService.AtualizarStatusMesa(mesaId, false);
+            MesaService.AtualizarStatusMesa(comanda.Mesa.MesaId, false);
 
         }
     }
