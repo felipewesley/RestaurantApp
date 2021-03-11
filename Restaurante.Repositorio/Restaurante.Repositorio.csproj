@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Mesa\" />
     <Folder Include="Services\Produto\Models\" />
     <Folder Include="Services\TipoProduto\" />
   </ItemGroup>

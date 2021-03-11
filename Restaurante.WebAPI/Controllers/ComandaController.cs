@@ -22,13 +22,6 @@ namespace Restaurante.WebAPI.Controllers
             _service = service;
         }
 
-        // GET: api/<ComandaController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET api/<ComandaController>/5
         [HttpGet("ObterComandaResumida/{id}")]
         public ComandaResumidaModel ObterComandaResumida(int id)
@@ -37,19 +30,17 @@ namespace Restaurante.WebAPI.Controllers
         }
 
         // GET api/<ComandaController>/5
-        [HttpGet("{id}")]
-        public ComandaResumidaModel ObterComandaCompleta(int id)
+        [HttpGet("ObterComandaCompleta/{id}")]
+        public async Task<ComandaCompletaModel> ObterComandaCompleta(int id)
         {
-            var comanda = _service.ObterComandaResumida(id);
-            comanda.MesaId = 10;
-
-            return comanda;
+            return await _service.ObterComandaCompleta(id);
         }
 
         // POST api/<ComandaController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("NovaComanda")]
+        public void Post(ComandaFormularioModel comanda)
         {
+            _service.RegistrarComanda(comanda);
         }
 
         // PUT api/<ComandaController>/5
