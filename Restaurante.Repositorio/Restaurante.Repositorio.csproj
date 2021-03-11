@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Database\**" />
+    <EmbeddedResource Remove="Database\**" />
+    <None Remove="Database\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Restaurante.Dominio\Restaurante.Dominio.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Mesa\" />
+    <Folder Include="Services\Produto\Models\" />
+    <Folder Include="Services\TipoProduto\" />
+  </ItemGroup>
+
+</Project>
