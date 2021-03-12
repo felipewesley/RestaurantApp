@@ -36,7 +36,7 @@ namespace Restaurante.WebAPI.Controllers
         }
 
         // PUT api/<ComandaController>/Encerrar/5/true?
-        [HttpPut("EncerrarComanda/{id}/{porcentagemGarcom?}")]
+        [HttpPut("Encerrar/{id}/{porcentagemGarcom?}")]
         public async Task Encerrar(int id, bool porcentagemGarcom = false)
         {
             await _service.EncerrarComanda(id, porcentagemGarcom);
