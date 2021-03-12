@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Services.Comanda.Models;
 using Restaurante.Repositorio.Services.Mesa;
@@ -19,10 +19,12 @@ namespace Restaurante.Repositorio.Services.Comanda
             // Comanda maior que zero e não existir no banco de dados
 
             if (comandaId < 0)
-                throw new Exception("A código da comanda solicitada é inválido");
+                throw new Exception("O código da comanda solicitada é inválido");
 
+            /*
             if (!_context.Comanda.Any(c => c.ComandaId == comandaId))
                 throw new Exception("A comanda solicitada não existe");
+            */
         }
 
         public async Task RegistrarComanda(ComandaFormularioModel comandaModel)
@@ -50,11 +52,15 @@ namespace Restaurante.Repositorio.Services.Comanda
                             .Where(c => c.ComandaId == comandaId)
                             .FirstOrDefault();
 
-            if (comanda.Paga)
-                throw new Exception("A comanda requisitada já foi encerrada!");
+            _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada");
 
-            //if (comanda.Valor != CalcularValorFinal(comandaId))
-            //    throw new Exception("O cálculo completo retornou um valor diferente!");
+            if (comanda.Paga)
+                throw new Exception("A comanda solicitada já foi encerrada em: " + comanda.DataHoraSaida.ToString());
+
+            /*
+            if (comanda.Valor != CalcularValorFinal(comandaId))
+                throw new Exception("O cálculo completo retornou um valor diferente!");
+            */
 
             if (porcentagemGarcom)
                 comanda.Valor *= 1.1;
@@ -62,14 +68,15 @@ namespace Restaurante.Repositorio.Services.Comanda
             comanda.Paga = true;
             comanda.DataHoraSaida = DateTime.Now;
 
-            await SaveChangesAsync("Não foi possível registrar o encerramento da comanda!");
+            await SaveChangesAsync("Não foi possível registrar o encerramento da comanda");
         }
 
         public double CalcularValorFinal(int comandaId)
         {
             ValidarComanda(comandaId);
 
-            // Implementar validação de re-cálculo do valor total da comanda, para garantir que os valores obtidos realmente estão corretos
+            /* Implementar validação de re-cálculo do valor total da comanda, 
+            para garantir que os valores obtidos realmente estão corretos */
 
             return 0.0;
         }
@@ -113,7 +120,10 @@ namespace Restaurante.Repositorio.Services.Comanda
                         })
                         .FirstOrDefaultAsync();
 
-            var res = new ComandaCompletaModel()
+            _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada");
+
+            // Cria uma model de Comanda sem a listagem de pedidos
+            var model = new ComandaCompletaModel()
             {
                 MesaId = comanda.MesaId,
                 DataHoraEntrada = comanda.DataHoraEntrada,
@@ -122,7 +132,8 @@ namespace Restaurante.Repositorio.Services.Comanda
                 Paga = comanda.Paga
             };
 
-            res.Pedidos = comanda.Pedidos
+            // Cria uma listagem de PedidoModel dentro da model de Comanda
+            model.Pedidos = comanda.Pedidos
                 .Select(p => new PedidoModel()
                 {
                     PedidoId = p.PedidoId,
@@ -132,7 +143,7 @@ namespace Restaurante.Repositorio.Services.Comanda
                     Status = p.Status.Descricao
                 }).ToList();
 
-            return res;
+            return model;
         }
     }
 }
