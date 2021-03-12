@@ -1,14 +1,17 @@
-using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Services;
-using Restaurante.Repositorio.Services.Comanda;
 using Restaurante.Repositorio.Services.Mesa;
+using Restaurante.Repositorio.Services.Pedido;
+using Restaurante.Repositorio.Services.Comanda;
+using Restaurante.Repositorio.Services.Produto;
+using Restaurante.Repositorio.Services.TipoProduto;
 
 namespace Restaurante.WebAPI
 {
@@ -34,6 +37,9 @@ namespace Restaurante.WebAPI
             services.AddScoped<RestauranteService, RestauranteService>();
             services.AddScoped<IComandaService, ComandaService>();
             services.AddScoped<IMesaService, MesaService>();
+            services.AddScoped<IPedidoService, PedidoService>();
+            services.AddScoped<IProdutoService, ProdutoService>();
+            services.AddScoped<ITipoProdutoService, TipoProdutoService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

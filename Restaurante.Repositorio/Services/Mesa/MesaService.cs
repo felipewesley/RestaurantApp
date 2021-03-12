@@ -19,8 +19,10 @@ namespace Restaurante.Repositorio.Services.Mesa
             if (mesaId <= 0)
                 throw new Exception("A mesa solicitada não existe");
 
+            /*
             if (!_context.Mesa.Any(m => m.MesaId == mesaId))
                 throw new Exception("Não existe uma mesa correspondente à solicitada");
+            */
         }
 
         public async Task AtualizarStatusMesa(int mesaId, bool ocupada)

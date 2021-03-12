@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Restaurante.Repositorio.Contexto;
-using Restaurante.Repositorio.Services.Comanda.Models;
 using Restaurante.Repositorio.Services.Mesa;
+using Restaurante.Repositorio.Services.Comanda.Models;
 using Restaurante.Repositorio.Services.Pedido.Models;
-
+using Restaurante.Repositorio.Services.Produto.Models;
 
 namespace Restaurante.Repositorio.Services.Comanda
 {
@@ -96,6 +96,8 @@ namespace Restaurante.Repositorio.Services.Comanda
                         })
                         .FirstOrDefaultAsync();
 
+            _ = comanda ?? throw new Exception("Não foi possível obter a comanda solicitada");
+
             return comanda;
         }
 
@@ -109,6 +111,7 @@ namespace Restaurante.Repositorio.Services.Comanda
                         .ThenInclude(c => c.Status)
                         .Include(c => c.Pedidos) // Verificar se há uma maneira melhor de realizar esta inclusão
                         .ThenInclude(c => c.Produto)
+                        .ThenInclude(c => c.TipoProduto)
                         .Select(c => new
                         {
                             c.MesaId,
@@ -137,11 +140,17 @@ namespace Restaurante.Repositorio.Services.Comanda
                 .Select(p => new PedidoModel()
                 {
                     PedidoId = p.PedidoId,
-                    Produto = p.Produto.Nome,
+                    Produto = new ProdutoListagemModel()
+                    {
+                        Nome = p.Produto.Nome,
+                        Valor = p.Produto.Valor,
+                        TipoProduto = p.Produto.TipoProduto.Descricao
+                    },
                     Quantidade = p.Quantidade,
                     Valor = p.Quantidade * p.Produto.Valor,  // Verificar se há outra maneira de implementar
                     Status = p.Status.Descricao
-                }).ToList();
+                })
+                .ToList();
 
             return model;
         }

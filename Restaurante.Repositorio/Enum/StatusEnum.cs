@@ -1,6 +1,6 @@
 ﻿namespace Restaurante.Repositorio.Enum
 {
-    enum StatusEnum
+    public enum StatusEnum : int
     {
         EmAndamento = 1,
         Entregue = 2,
