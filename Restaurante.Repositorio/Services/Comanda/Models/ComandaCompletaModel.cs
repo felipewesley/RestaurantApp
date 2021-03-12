@@ -1,6 +1,6 @@
-﻿using Restaurante.Repositorio.Services.Pedido.NewFolder;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Restaurante.Repositorio.Services.Pedido.Models;
 
 namespace Restaurante.Repositorio.Services.Comanda.Models
 {
@@ -11,5 +11,6 @@ namespace Restaurante.Repositorio.Services.Comanda.Models
         public int QuantidadeClientes { get; set; }
         public ICollection<PedidoModel> Pedidos { get; set; }
         public double Valor { get; set; }
+        public bool Paga { get; set; }
     }
 }

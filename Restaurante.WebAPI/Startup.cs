@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Restaurante.Repositorio.Contexto;
+using Restaurante.Repositorio.Services;
 using Restaurante.Repositorio.Services.Comanda;
 
 namespace Restaurante.WebAPI
@@ -29,6 +30,7 @@ namespace Restaurante.WebAPI
             });
 
             // Adicionando referência para classe de repositório onde haja implementação da interface I(NomeDaInterface)
+            services.AddScoped<RestauranteService, RestauranteService>();
             services.AddScoped<IComandaService, ComandaService>();
 
             services.AddControllers();

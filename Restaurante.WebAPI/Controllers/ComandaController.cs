@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Restaurante.Repositorio.Services.Comanda;
 using Restaurante.Repositorio.Services.Comanda.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,9 +21,9 @@ namespace Restaurante.WebAPI.Controllers
 
         // GET api/<ComandaController>/5
         [HttpGet("ObterComandaResumida/{id}")]
-        public ComandaResumidaModel ObterComandaResumida(int id)
+        public async Task<ComandaResumidaModel> ObterComandaResumida(int id)
         {
-            return _service.ObterComandaResumida(id);
+            return await _service.ObterComandaResumida(id);
         }
 
         // GET api/<ComandaController>/5
@@ -38,21 +35,16 @@ namespace Restaurante.WebAPI.Controllers
 
         // POST api/<ComandaController>
         [HttpPost("NovaComanda")]
-        public void Post(ComandaFormularioModel comanda)
+        public async Task RegistrarNovaComanda(ComandaFormularioModel comanda)
         {
-            _service.RegistrarComanda(comanda);
+            await _service.RegistrarComanda(comanda);
         }
 
         // PUT api/<ComandaController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("EncerrarComanda/{id}/{porcentagemGarcom?}")]
+        public async Task EncerrarComanda(int id, bool porcentagemGarcom = false)
         {
-        }
-
-        // DELETE api/<ComandaController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            await _service.EncerrarComanda(id, porcentagemGarcom);
         }
     }
 }
