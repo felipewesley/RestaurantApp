@@ -27,25 +27,29 @@ namespace Restaurante.Repositorio.Services.Pedido
                         .Where(c => c.ComandaId == pedidoModel.ComandaId)
                         .FirstOrDefaultAsync();
 
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe");
+
             // Se a comanda já foi paga, o pedido não será registrado
             if (comanda.Paga)
                 throw new Exception("Não é possível cadastrar um pedido em uma comanda que já foi paga");
-
-            _context.Pedido.Add(new Dominio.Pedido()
-            {
-                ComandaId = pedidoModel.ComandaId,
-                ProdutoId = pedidoModel.ProdutoId,
-                StatusId = (int) StatusEnum.EmAndamento,
-                Quantidade = pedidoModel.Quantidade,
-            });
 
             var produto = await _context.Produto
                         .Where(p => p.ProdutoId == pedidoModel.ProdutoId)
                         .FirstOrDefaultAsync();
 
+            _ = produto ?? throw new Exception("O produto solicitado não existe");
+
             // Se o produto não estiver incluso no rodizio, este pedido será somado ao valor total da comanda
             if (produto.Valor > 0)
                 comanda.Valor += pedidoModel.Quantidade * produto.Valor;
+
+            _context.Pedido.Add(new Dominio.Pedido()
+            {
+                ComandaId = pedidoModel.ComandaId,
+                ProdutoId = pedidoModel.ProdutoId,
+                StatusId = (int)StatusEnum.EmAndamento,
+                Quantidade = pedidoModel.Quantidade,
+            });
 
             await SaveChangesAsync("Não foi possivel salvar o pedido");
         }

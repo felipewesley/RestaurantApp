@@ -9,5 +9,6 @@ namespace Restaurante.Repositorio.Services.Comanda
         Task EncerrarComanda(int comandaId, bool porcentagemGarcom = false);
         Task<ComandaResumidaModel> ObterComandaResumida(int comandaId);
         Task<ComandaCompletaModel> ObterComandaCompleta(int comandaId);
+        double CalcularValorFinal(int comandaId);
     }
 }

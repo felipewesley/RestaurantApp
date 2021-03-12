@@ -7,6 +7,7 @@ using Restaurante.Repositorio.Services.Mesa;
 using Restaurante.Repositorio.Services.Comanda.Models;
 using Restaurante.Repositorio.Services.Pedido.Models;
 using Restaurante.Repositorio.Services.Produto.Models;
+using Restaurante.Repositorio.Enum;
 
 namespace Restaurante.Repositorio.Services.Comanda
 {
@@ -57,10 +58,8 @@ namespace Restaurante.Repositorio.Services.Comanda
             if (comanda.Paga)
                 throw new Exception("A comanda solicitada já foi encerrada em: " + comanda.DataHoraSaida.ToString());
 
-            /*
             if (comanda.Valor != CalcularValorFinal(comandaId))
-                throw new Exception("O cálculo completo retornou um valor diferente!");
-            */
+                throw new Exception("O cálculo completo retornou um valor diferente");
 
             if (porcentagemGarcom)
                 comanda.Valor *= 1.1;
@@ -75,10 +74,22 @@ namespace Restaurante.Repositorio.Services.Comanda
         {
             ValidarComanda(comandaId);
 
-            /* Implementar validação de re-cálculo do valor total da comanda, 
-            para garantir que os valores obtidos realmente estão corretos */
+            var comanda = _context.Comanda
+                        .Where(c => c.ComandaId == comandaId)
+                        .FirstOrDefault();
 
-            return 0.0;
+            _ = comanda ?? throw new Exception("A comanda não foi encontrada");
+
+            var valorTotal = MesaService.ValorRodizio * comanda.QuantidadeClientes;
+
+            var pedidos = _context.Pedido
+                        .Where(p => p.ComandaId == comandaId && p.StatusId != (int)StatusEnum.Cancelado)
+                        .Include(p => p.Produto)
+                        .ToList();
+
+            valorTotal += pedidos.Sum(p => p.Produto.Valor * p.Quantidade);
+
+            return valorTotal;
         }
 
         public async Task<ComandaResumidaModel> ObterComandaResumida(int comandaId)
