@@ -8,7 +8,7 @@ namespace Restaurante.Repositorio.Services
 {
     public class RestauranteService
     {
-        public RestauranteContexto _context;
+        protected RestauranteContexto _context;
 
         public RestauranteService(RestauranteContexto context)
         {

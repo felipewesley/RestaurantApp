@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Services;
 using Restaurante.Repositorio.Services.Comanda;
+using Restaurante.Repositorio.Services.Mesa;
 
 namespace Restaurante.WebAPI
 {
@@ -32,6 +33,7 @@ namespace Restaurante.WebAPI
             // Adicionando referência para classe de repositório onde haja implementação da interface I(NomeDaInterface)
             services.AddScoped<RestauranteService, RestauranteService>();
             services.AddScoped<IComandaService, ComandaService>();
+            services.AddScoped<IMesaService, MesaService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
