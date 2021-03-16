@@ -108,8 +108,7 @@ namespace Restaurante.Repositorio.Services.Pedido
                                 Nome = p.Produto.Nome,
                                 Valor = p.Produto.Valor,
                                 TipoProduto = p.Produto.TipoProduto.Descricao
-                            },
-                            Valor = p.Produto.Valor * p.Quantidade // Verificar maneira melhor de implementar
+                            }
                         }).FirstOrDefaultAsync();
 
             _ = pedido ?? throw new Exception("Não foi possível obter o pedido solicitado");

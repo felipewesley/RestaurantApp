@@ -8,11 +8,18 @@ using Restaurante.Repositorio.Services.Mesa.Models;
 
 namespace Restaurante.Repositorio.Services.Mesa
 {
-    public class MesaService : RestauranteService, IMesaService
+    public class MesaService : IMesaService
     {
-        public static double ValorRodizio = 45.0;
+        public double ValorRodizio { get; private set; }
+        private readonly RestauranteContexto _context;
 
-        public MesaService(RestauranteContexto context) : base(context) { }
+        public MesaService(RestauranteContexto context)
+        {
+            _context = context;
+
+            // Definindo valor do rodizio na construcao da service
+            ValorRodizio = 45.0;
+        }
 
         public void ValidarMesa(int mesaId)
         {
@@ -30,17 +37,14 @@ namespace Restaurante.Repositorio.Services.Mesa
             ValidarMesa(mesaId);
 
             var mesa = await _context.Mesa
-                        .Where(m => m.MesaId == mesaId)
+                        .Where(m => m.MesaId == mesaId && m.Ocupada != ocupada)
                         .FirstOrDefaultAsync();
 
-            _ = mesa ?? throw new Exception("Não foi possível obter a mesa solicitada");
-
-            if (mesa.Ocupada == ocupada)
-                throw new Exception("Não foi possível atualizar o status desta mesa pois ela já está " + (ocupada ? "ocupada" : "desocupada"));
+            _ = mesa ?? throw new Exception("A mesa solicitada nao existe ou ja esta com o status desejado");
 
             mesa.Ocupada = ocupada;
 
-            await SaveChangesAsync("Não foi possível atualizar o status da mesa");
+            await _context.SaveChangesAsync();
         }
 
         public async Task<ICollection<MesaModel>> BuscarMesas()

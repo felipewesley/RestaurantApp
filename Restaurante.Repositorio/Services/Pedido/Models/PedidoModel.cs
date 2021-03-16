@@ -8,7 +8,6 @@ namespace Restaurante.Repositorio.Services.Pedido.Models
         public int PedidoId { get; set; }
         public ProdutoListagemModel Produto { get; set; }
         public int Quantidade { get; set; }
-        public double Valor { get; set; }
         public string Status { get; set; }
     }
 }

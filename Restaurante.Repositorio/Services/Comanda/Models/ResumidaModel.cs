@@ -2,7 +2,7 @@
 
 namespace Restaurante.Repositorio.Services.Comanda.Models
 {
-    public class ComandaResumidaModel
+    public class ResumidaModel
     {
         public int MesaId { get; set; }
         public DateTime DataHoraEntrada { get; set; }

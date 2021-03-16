@@ -14,10 +14,5 @@ namespace Restaurante.Repositorio.Contexto
 
         public RestauranteContexto() { }
         public RestauranteContexto(DbContextOptions<RestauranteContexto> options) : base(options) { }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //  optionsBuilder.UseSqlServer("connection_string");
-        }
     }
 }

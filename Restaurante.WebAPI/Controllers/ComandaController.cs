@@ -14,32 +14,28 @@ namespace Restaurante.WebAPI.Controllers
 
         public ComandaController(IComandaService service) => _service = service;
 
-        // GET api/<ComandaController>/ObterComandaResumida/5
-        [HttpGet("ObterComandaResumida/{id}")]
-        public async Task<ComandaResumidaModel> ObterComandaResumida(int id)
+        [HttpGet("obter/resumida/{comandaId}")]
+        public async Task<ResumidaModel> ObterResumida(int comandaId)
         {
-            return await _service.ObterComandaResumida(id);
+            return await _service.ObterResumida(comandaId);
         }
 
-        // GET api/<ComandaController>/ObterComandaCompleta/5
-        [HttpGet("ObterComandaCompleta/{id}")]
-        public async Task<ComandaCompletaModel> ObterComandaCompleta(int id)
+        [HttpGet("obter/completa/{comandaId}")]
+        public async Task<CompletaModel> ObterCompleta(int comandaId)
         {
-            return await _service.ObterComandaCompleta(id);
+            return await _service.ObterCompleta(comandaId);
         }
 
-        // POST api/<ComandaController>/Registrar
-        [HttpPost("Registrar")]
-        public async Task Registrar(ComandaFormularioModel comanda)
+        [HttpPost]
+        public async Task Registrar(FormularioModel model)
         {
-            await _service.RegistrarComanda(comanda);
+            await _service.Registrar(model);
         }
 
-        // PUT api/<ComandaController>/Encerrar/5/true?
-        [HttpPut("Encerrar/{id}/{porcentagemGarcom?}")]
-        public async Task Encerrar(int id, bool porcentagemGarcom = false)
+        [HttpPut("{comandaId}/{porcentagemGarcom?}")]
+        public async Task Encerrar(int comandaId, bool porcentagemGarcom = false)
         {
-            await _service.EncerrarComanda(id, porcentagemGarcom);
+            await _service.Encerrar(comandaId, porcentagemGarcom);
         }
     }
 }

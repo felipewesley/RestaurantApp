@@ -8,57 +8,46 @@ using Restaurante.Repositorio.Services.Comanda.Models;
 using Restaurante.Repositorio.Services.Pedido.Models;
 using Restaurante.Repositorio.Services.Produto.Models;
 using Restaurante.Repositorio.Enum;
+using System.Collections.Generic;
 
 namespace Restaurante.Repositorio.Services.Comanda
 {
-    public class ComandaService : RestauranteService, IComandaService
+    public class ComandaService : IComandaService
     {
-        public ComandaService(RestauranteContexto context) : base(context) { }
+        private readonly RestauranteContexto _context;
+        private readonly MesaService _mesaService;
+        public ComandaService(RestauranteContexto context) => _context = context;
+        public ComandaService(MesaService mesaService) => _mesaService = mesaService;
 
-        public void ValidarComanda(int comandaId)
+        public async Task Registrar(FormularioModel model)
         {
-            // Comanda maior que zero e não existir no banco de dados
-
-            if (comandaId < 0)
-                throw new Exception("O código da comanda solicitada é inválido");
-
-            /*
-            if (!_context.Comanda.Any(c => c.ComandaId == comandaId))
-                throw new Exception("A comanda solicitada não existe");
-            */
-        }
-
-        public async Task RegistrarComanda(ComandaFormularioModel comandaModel)
-        {
-            comandaModel.Validar();
+            if (!_context.Mesa.Any(m => m.MesaId == model.MesaId && !m.Ocupada && m.Capacidade >= model.QuantidadeCliente))
+                throw new Exception("A mesa solicitada nao existe, ja esta ocupada ou nao suporta esta quantidade de pessoas");
 
             _context.Comanda.Add(new Dominio.Comanda
             {
-                MesaId = comandaModel.MesaId,
+                MesaId = model.MesaId,
                 DataHoraEntrada = DateTime.Now,
                 DataHoraSaida = null,
-                Valor = comandaModel.QuantidadeCliente * MesaService.ValorRodizio, // Verificar se há outra maneira de implementar
+                Valor = model.QuantidadeCliente * _mesaService.ValorRodizio,
                 Paga = false,
-                QuantidadeClientes = comandaModel.QuantidadeCliente
+                QuantidadeClientes = model.QuantidadeCliente
             });
 
-            await SaveChangesAsync("Não foi possível salvar a comanda");
+            await _context.SaveChangesAsync();
         }
 
-        public async Task EncerrarComanda(int comandaId, bool porcentagemGarcom = false)
+        public async Task Encerrar(int comandaId, bool porcentagemGarcom = false)
         {
-            ValidarComanda(comandaId);
-
             var comanda = _context.Comanda
-                            .Where(c => c.ComandaId == comandaId)
+                            .Where(c => c.ComandaId == comandaId && !c.Paga)
+                            .Include(c => c.Pedidos)
+                            .ThenInclude(c => c.Produto)
                             .FirstOrDefault();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada");
+            _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada ou ja foi encerrada");
 
-            if (comanda.Paga)
-                throw new Exception("A comanda solicitada já foi encerrada em: " + comanda.DataHoraSaida.ToString());
-
-            if (comanda.Valor != CalcularValorFinal(comandaId))
+            if (RecalcularValorTotal(comanda.Valor, comanda.QuantidadeClientes, comanda.Pedidos))
                 throw new Exception("O cálculo completo retornou um valor diferente");
 
             if (porcentagemGarcom)
@@ -67,38 +56,23 @@ namespace Restaurante.Repositorio.Services.Comanda
             comanda.Paga = true;
             comanda.DataHoraSaida = DateTime.Now;
 
-            await SaveChangesAsync("Não foi possível registrar o encerramento da comanda");
+            await _context.SaveChangesAsync();
         }
 
-        public double CalcularValorFinal(int comandaId)
+        public bool RecalcularValorTotal(double valorInicial, int quantidadeClientes, ICollection<Dominio.Pedido> pedidos)
         {
-            ValidarComanda(comandaId);
+            var valorFinal = _mesaService.ValorRodizio * quantidadeClientes;
 
-            var comanda = _context.Comanda
-                        .Where(c => c.ComandaId == comandaId)
-                        .FirstOrDefault();
+            valorFinal += pedidos.Sum(p => p.Produto.Valor * p.Quantidade);
 
-            _ = comanda ?? throw new Exception("A comanda não foi encontrada");
-
-            var valorTotal = MesaService.ValorRodizio * comanda.QuantidadeClientes;
-
-            var pedidos = _context.Pedido
-                        .Where(p => p.ComandaId == comandaId && p.StatusId != (int)StatusEnum.Cancelado)
-                        .Include(p => p.Produto)
-                        .ToList();
-
-            valorTotal += pedidos.Sum(p => p.Produto.Valor * p.Quantidade);
-
-            return valorTotal;
+            return valorInicial == valorFinal;
         }
 
-        public async Task<ComandaResumidaModel> ObterComandaResumida(int comandaId)
+        public async Task<ResumidaModel> ObterResumida(int comandaId)
         {
-            ValidarComanda(comandaId);
-
             var comanda = await _context.Comanda
                         .Where(c => c.ComandaId == comandaId)
-                        .Select(c => new ComandaResumidaModel()
+                        .Select(c => new ResumidaModel()
                         {
                             MesaId = c.MesaId,
                             DataHoraEntrada = c.DataHoraEntrada,
@@ -107,20 +81,18 @@ namespace Restaurante.Repositorio.Services.Comanda
                         })
                         .FirstOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("Não foi possível obter a comanda solicitada");
+            _ = comanda ?? throw new Exception("A comanda solicitada nao existe");
 
             return comanda;
         }
 
-        public async Task<ComandaCompletaModel> ObterComandaCompleta(int comandaId)
+        public async Task<CompletaModel> ObterCompleta(int comandaId)
         {
-            ValidarComanda(comandaId);
-
             var comanda = await _context.Comanda
                         .Where(c => c.ComandaId == comandaId)
                         .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Status)
-                        .Include(c => c.Pedidos) // Verificar se há uma maneira melhor de realizar esta inclusão
+                        .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Produto)
                         .ThenInclude(c => c.TipoProduto)
                         .Select(c => new
@@ -134,10 +106,10 @@ namespace Restaurante.Repositorio.Services.Comanda
                         })
                         .FirstOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada");
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe");
 
             // Cria uma model de Comanda sem a listagem de pedidos
-            var model = new ComandaCompletaModel()
+            var model = new CompletaModel()
             {
                 MesaId = comanda.MesaId,
                 DataHoraEntrada = comanda.DataHoraEntrada,
@@ -158,7 +130,6 @@ namespace Restaurante.Repositorio.Services.Comanda
                         TipoProduto = p.Produto.TipoProduto.Descricao
                     },
                     Quantidade = p.Quantidade,
-                    Valor = p.Quantidade * p.Produto.Valor,  // Verificar se há outra maneira de implementar
                     Status = p.Status.Descricao
                 })
                 .ToList();

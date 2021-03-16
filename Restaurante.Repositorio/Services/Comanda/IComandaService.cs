@@ -5,10 +5,9 @@ namespace Restaurante.Repositorio.Services.Comanda
 {
     public interface IComandaService
     {
-        Task RegistrarComanda(ComandaFormularioModel comandaModel);
-        Task EncerrarComanda(int comandaId, bool porcentagemGarcom = false);
-        Task<ComandaResumidaModel> ObterComandaResumida(int comandaId);
-        Task<ComandaCompletaModel> ObterComandaCompleta(int comandaId);
-        double CalcularValorFinal(int comandaId);
+        Task Registrar(FormularioModel model);
+        Task Encerrar(int comandaId, bool porcentagemGarcom = false);
+        Task<ResumidaModel> ObterResumida(int comandaId);
+        Task<CompletaModel> ObterCompleta(int comandaId);
     }
 }

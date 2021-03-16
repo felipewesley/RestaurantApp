@@ -4,7 +4,7 @@ using Restaurante.Repositorio.Services.Pedido.Models;
 
 namespace Restaurante.Repositorio.Services.Comanda.Models
 {
-    public class ComandaCompletaModel
+    public class CompletaModel
     {
         public int MesaId { get; set; }
         public DateTime DataHoraEntrada { get; set; }
