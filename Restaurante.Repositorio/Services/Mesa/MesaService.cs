@@ -21,21 +21,8 @@ namespace Restaurante.Repositorio.Services.Mesa
             ValorRodizio = 45.0;
         }
 
-        public void ValidarMesa(int mesaId)
+        public async Task AtualizarStatus(int mesaId, bool ocupada)
         {
-            if (mesaId <= 0)
-                throw new Exception("A mesa solicitada não existe");
-
-            /*
-            if (!_context.Mesa.Any(m => m.MesaId == mesaId))
-                throw new Exception("Não existe uma mesa correspondente à solicitada");
-            */
-        }
-
-        public async Task AtualizarStatusMesa(int mesaId, bool ocupada)
-        {
-            ValidarMesa(mesaId);
-
             var mesa = await _context.Mesa
                         .Where(m => m.MesaId == mesaId && m.Ocupada != ocupada)
                         .FirstOrDefaultAsync();
@@ -47,9 +34,9 @@ namespace Restaurante.Repositorio.Services.Mesa
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<MesaModel>> BuscarMesas()
+        public async Task<ICollection<MesaModel>> Listar()
         {
-            var colecaoMesas = await _context.Mesa
+            var mesas = await _context.Mesa
                             .Where(m => m.Ocupada == false) // Apenas desocupadas
                             .Select(m => new MesaModel()
                             {
@@ -60,13 +47,11 @@ namespace Restaurante.Repositorio.Services.Mesa
                             .OrderBy(m => m.MesaId)
                             .ToListAsync();
 
-            return colecaoMesas;
+            return mesas;
         }
 
-        public async Task<MesaModel> ObterMesa(int mesaId)
+        public async Task<MesaModel> Obter(int mesaId)
         {
-            ValidarMesa(mesaId);
-
             var mesa = await _context.Mesa
                         .Where(m => m.MesaId == mesaId)
                         .Select(m => new MesaModel()
@@ -81,6 +66,5 @@ namespace Restaurante.Repositorio.Services.Mesa
 
             return mesa;
         }
-
     }
 }

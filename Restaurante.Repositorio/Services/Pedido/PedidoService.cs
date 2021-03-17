@@ -1,97 +1,49 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Enum;
 using Restaurante.Repositorio.Services.Pedido.Models;
 using Restaurante.Repositorio.Services.Produto.Models;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Restaurante.Repositorio.Services.Pedido
 {
-    public class PedidoService : RestauranteService, IPedidoService
+    public class PedidoService : IPedidoService
     {
-        public PedidoService(RestauranteContexto context) : base(context) { }
+        private readonly RestauranteContexto _context;
+        public PedidoService(RestauranteContexto context) => _context = context;
 
-        public void ValidarPedido(int pedidoId)
+        public async Task Registrar(FormularioModel model)
         {
-            if (pedidoId < 0)
-                throw new Exception("O número do pedido informado é inválido");
-        }
-
-        public async Task RegistrarPedido(PedidoFormularioModel pedidoModel)
-        {
-            pedidoModel.Validar();
+            model.Validar();
 
             var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == pedidoModel.ComandaId)
+                        .Where(c => c.ComandaId == model.ComandaId && !c.Paga)
                         .FirstOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada não existe");
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou ja foi encerrada");
 
-            // Se a comanda já foi paga, o pedido não será registrado
-            if (comanda.Paga)
-                throw new Exception("Não é possível cadastrar um pedido em uma comanda que já foi paga");
-
-            var produto = await _context.Produto
-                        .Where(p => p.ProdutoId == pedidoModel.ProdutoId)
-                        .FirstOrDefaultAsync();
-
-            _ = produto ?? throw new Exception("O produto solicitado não existe");
+            if (!_context.Produto.Any(p => p.ProdutoId == model.ProdutoId && p.QuantidadePermitida <= model.Quantidade))
+                throw new Exception("O produto solicitado nao existe ou a quantidade solicitada nao e permitida");
 
             // Se o produto não estiver incluso no rodizio, este pedido será somado ao valor total da comanda
-            if (produto.Valor > 0)
-                comanda.Valor += pedidoModel.Quantidade * produto.Valor;
+            if (model.ProdutoValor > 0)
+                comanda.Valor += model.Quantidade * model.ProdutoValor;
 
             _context.Pedido.Add(new Dominio.Pedido()
             {
-                ComandaId = pedidoModel.ComandaId,
-                ProdutoId = pedidoModel.ProdutoId,
+                ComandaId = model.ComandaId,
+                ProdutoId = model.ProdutoId,
                 StatusId = (int)StatusEnum.EmAndamento,
-                Quantidade = pedidoModel.Quantidade,
+                Quantidade = model.Quantidade,
             });
 
-            await SaveChangesAsync("Não foi possivel salvar o pedido");
+            await _context.SaveChangesAsync();
         }
 
-        public async Task CancelarPedido(int pedidoId, bool ignorarEntregue = false)
+        public async Task<PedidoModel> Obter(int pedidoId)
         {
-            ValidarPedido(pedidoId);
-
-            var pedido = await _context.Pedido
-                        .Where(p => p.PedidoId == pedidoId)
-                        .Include(p => p.Status)
-                        .Include(p => p.Produto)
-                        .FirstOrDefaultAsync();
-
-            var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == pedido.ComandaId)
-                        .FirstOrDefaultAsync();
-
-            // Se a comanda já estiver paga, o pedido não poderá ser cancelado
-            if (comanda.Paga)
-                throw new Exception("Não é possível cancelar um pedido de uma comanda que já foi paga");
-
-            if (pedido.Status.StatusId == (int)StatusEnum.Entregue)
-                if (!ignorarEntregue)
-                    throw new Exception("O pedido não pode ser cancelado pois já foi entregue");
-
-            if (pedido.Status.StatusId == (int)StatusEnum.Cancelado)
-                throw new Exception("O pedido solicitado já foi cancelado");
-
-            // Se o produto não estiver incluso no rodizio, o valor do pedido será subtraido do valor total da comanda
-            if (pedido.Produto.Valor > 0)
-                comanda.Valor -= pedido.Quantidade * pedido.Produto.Valor;
-
-            pedido.StatusId = (int)StatusEnum.Cancelado;
-
-            await SaveChangesAsync("Não foi possível cancelar o pedido");
-        }
-
-        public async Task<PedidoModel> ObterPedido(int pedidoId)
-        {
-            ValidarPedido(pedidoId);
-
             var pedido = await _context.Pedido
                         .Where(p => p.PedidoId == pedidoId)
                         .Include(p => p.Status)
@@ -111,9 +63,37 @@ namespace Restaurante.Repositorio.Services.Pedido
                             }
                         }).FirstOrDefaultAsync();
 
-            _ = pedido ?? throw new Exception("Não foi possível obter o pedido solicitado");
+            _ = pedido ?? throw new Exception("O pedido solicitado nao existe");
 
             return pedido;
+        }
+
+        public async Task Cancelar(int pedidoId)
+        {
+            var pedido = await _context.Pedido
+                        .Where(p =>
+                            p.PedidoId == pedidoId &&
+                            p.StatusId == (int)StatusEnum.EmAndamento // Somente pedidos em andamento podem ser cancelados
+                        )
+                        .Include(p => p.Produto)
+                        .FirstOrDefaultAsync();
+
+            _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou seu status nao permite que seja cancelado");
+
+            // Obtendo comanda nao paga para atualizar o valor de acordo com o cancelamento
+            var comanda = await _context.Comanda
+                        .Where(c => c.ComandaId == pedido.ComandaId && !c.Paga)
+                        .FirstOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A comanda referente ao pedido nao existe ou ja foi encerrada");
+
+            // Se o produto não estiver incluso no rodizio, o valor do pedido será subtraido do valor total da comanda
+            if (pedido.Produto.Valor > 0)
+                comanda.Valor -= pedido.Quantidade * pedido.Produto.Valor;
+
+            pedido.StatusId = (int)StatusEnum.Cancelado;
+
+            await _context.SaveChangesAsync();
         }
 
     }

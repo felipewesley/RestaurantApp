@@ -2,10 +2,11 @@
 
 namespace Restaurante.Repositorio.Services.Pedido.Models
 {
-    public class PedidoFormularioModel
+    public class FormularioModel
     {
         public int ComandaId { get; set; }
         public int ProdutoId { get; set; }
+        public double ProdutoValor { get; set; }
         public int Quantidade { get; set; }
 
         public void Validar()

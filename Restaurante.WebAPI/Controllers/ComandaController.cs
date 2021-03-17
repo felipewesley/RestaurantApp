@@ -9,10 +9,9 @@ namespace Restaurante.WebAPI.Controllers
     [ApiController]
     public class ComandaController : ControllerBase
     {
+        private readonly ComandaService _service;
 
-        private readonly IComandaService _service;
-
-        public ComandaController(IComandaService service) => _service = service;
+        public ComandaController(ComandaService service) => _service = service;
 
         [HttpGet("obter/resumida/{comandaId}")]
         public async Task<ResumidaModel> ObterResumida(int comandaId)
@@ -32,7 +31,7 @@ namespace Restaurante.WebAPI.Controllers
             await _service.Registrar(model);
         }
 
-        [HttpPut("{comandaId}/{porcentagemGarcom?}")]
+        [HttpDelete("{comandaId}/{porcentagemGarcom?}")]
         public async Task Encerrar(int comandaId, bool porcentagemGarcom = false)
         {
             await _service.Encerrar(comandaId, porcentagemGarcom);

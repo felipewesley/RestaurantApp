@@ -11,9 +11,9 @@ namespace Restaurante.WebAPI.Controllers
     public class TipoProdutoController : ControllerBase
     {
 
-        private readonly ITipoProdutoService _service;
+        private readonly TipoProdutoService _service;
 
-        public TipoProdutoController(ITipoProdutoService service) => _service = service;
+        public TipoProdutoController(TipoProdutoService service) => _service = service;
 
         // GET api/<TipoProdutoController>/5
         [HttpGet("{id}")]

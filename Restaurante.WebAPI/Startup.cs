@@ -34,12 +34,16 @@ namespace Restaurante.WebAPI
             });
 
             // Adicionando referência para classe de repositório onde haja implementação da interface I(NomeDaInterface)
-            services.AddScoped<RestauranteService, RestauranteService>();
-            services.AddScoped<IComandaService, ComandaService>();
-            services.AddScoped<IMesaService, MesaService>();
-            services.AddScoped<IPedidoService, PedidoService>();
-            services.AddScoped<IProdutoService, ProdutoService>();
-            services.AddScoped<ITipoProdutoService, TipoProdutoService>();
+            services.AddScoped<ComandaService>();
+            services.AddScoped<MesaService>();
+            services.AddScoped<PedidoService>();
+            services.AddScoped<ProdutoService>();
+            services.AddScoped<TipoProdutoService>();
+
+            RestauranteContexto contexto = new RestauranteContexto();
+
+            MesaService mesaService = new MesaService(contexto);
+            ComandaService comandaService = new ComandaService(contexto, mesaService);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

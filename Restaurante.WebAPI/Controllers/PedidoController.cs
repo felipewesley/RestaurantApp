@@ -9,30 +9,26 @@ namespace Restaurante.WebAPI.Controllers
     [ApiController]
     public class PedidoController : ControllerBase
     {
+        private readonly PedidoService _service;
 
-        private readonly IPedidoService _service;
+        public PedidoController(PedidoService service) => _service = service;
 
-        public PedidoController(IPedidoService service) => _service = service;
-
-        // GET: api/<PedidoController>/Obter/5
-        [HttpGet("Obter/{id}")]
-        public async Task<PedidoModel> Obter(int id)
+        [HttpGet("{pedidoId}")]
+        public async Task<PedidoModel> Obter(int pedidoId)
         {
-            return await _service.ObterPedido(id);
+            return await _service.Obter(pedidoId);
         }
 
-        // POST api/<PedidoController>
         [HttpPost]
-        public async Task Novo(PedidoFormularioModel pedido)
+        public async Task Registrar(FormularioModel model)
         {
-            await _service.RegistrarPedido(pedido);
+            await _service.Registrar(model);
         }
 
-        // DELETE api/<PedidoController>/5
-        [HttpDelete("{id}")]
-        public async Task Cancelar(int id)
+        [HttpDelete("{pedidoId}")]
+        public async Task Cancelar(int pedidoId)
         {
-            await _service.CancelarPedido(id);
+            await _service.Cancelar(pedidoId);
         }
     }
 }

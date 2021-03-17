@@ -16,10 +16,14 @@ namespace Restaurante.Repositorio.Services.Comanda
     {
         private readonly RestauranteContexto _context;
         private readonly MesaService _mesaService;
-        public ComandaService(RestauranteContexto context) => _context = context;
-        public ComandaService(MesaService mesaService) => _mesaService = mesaService;
+        
+        public ComandaService(RestauranteContexto context, MesaService mesaService)
+        {
+            _context = context;
+            _mesaService = mesaService;
+        }
 
-        public async Task Registrar(FormularioModel model)
+        public async Task Registrar(Models.FormularioModel model)
         {
             if (!_context.Mesa.Any(m => m.MesaId == model.MesaId && !m.Ocupada && m.Capacidade >= model.QuantidadeCliente))
                 throw new Exception("A mesa solicitada nao existe, ja esta ocupada ou nao suporta esta quantidade de pessoas");

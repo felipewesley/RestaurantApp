@@ -11,36 +11,32 @@ namespace Restaurante.WebAPI.Controllers
     public class MesaController : ControllerBase
     {
 
-        private readonly IMesaService _service;
+        private readonly MesaService _service;
 
-        public MesaController(IMesaService service) => _service = service;
+        public MesaController(MesaService service) => _service = service;
 
-        // GET api/<MesaController>/Obter/5
-        [HttpGet("Obter/{id}")]
-        public async Task<MesaModel> Obter(int id)
+        [HttpGet("{mesaId}")]
+        public async Task<MesaModel> Obter(int mesaId)
         {
-            return await _service.ObterMesa(id);
+            return await _service.Obter(mesaId);
         }
 
-        // GET api/<MesaController>/Listar
-        [HttpGet("Buscar")]
-        public async Task<ICollection<MesaModel>> Buscar()
+        [HttpGet("listar")]
+        public async Task<ICollection<MesaModel>> Listar()
         {
-            return await _service.BuscarMesas();
+            return await _service.Listar();
         }
 
-        // PUT api/<MesaController>/Ocupar/5
-        [HttpPut("Ocupar/{id}")]
-        public async Task Ocupar(int id)
+        [HttpPut("ocupar/{mesaId}")]
+        public async Task Ocupar(int mesaId)
         {
-            await _service.AtualizarStatusMesa(id, true);
+            await _service.AtualizarStatus(mesaId, true);
         }
 
-        // PUT api/<MesaController>/Desocupar/5
-        [HttpPut("Desocupar/{id}")]
-        public async Task Desocupar(int id)
+        [HttpPut("desocupar/{mesaId}")]
+        public async Task Desocupar(int mesaId)
         {
-            await _service.AtualizarStatusMesa(id, false);
+            await _service.AtualizarStatus(mesaId, false);
         }
     }
 }
