@@ -14,7 +14,7 @@ namespace Restaurante.WebAPI.Controllers
 
         public TipoProdutoController(TipoProdutoService service) => _service = service;
 
-        [HttpGet("listar")]
+        [HttpGet("buscar")]
         public async Task<ICollection<BuscaModel>> Buscar()
         {
             return await _service.Listar();
