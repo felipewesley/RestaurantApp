@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace Restaurante.Repositorio.Services.Comanda
 {
-    public class ComandaService : IComandaService
+    public class ComandaService
     {
         private readonly RestauranteContexto _context;
         private readonly MesaService _mesaService;
@@ -25,8 +25,13 @@ namespace Restaurante.Repositorio.Services.Comanda
 
         public async Task Registrar(Models.FormularioModel model)
         {
+            model.Validar();
+
             if (!_context.Mesa.Any(m => m.MesaId == model.MesaId && !m.Ocupada && m.Capacidade >= model.QuantidadeCliente))
                 throw new Exception("A mesa solicitada nao existe, ja esta ocupada ou nao suporta esta quantidade de pessoas");
+
+            // Ocupando mesa
+            await _mesaService.AtualizarStatus(model.MesaId, MesaEnum.Ocupar);
 
             _context.Comanda.Add(new Dominio.Comanda
             {
@@ -51,14 +56,23 @@ namespace Restaurante.Repositorio.Services.Comanda
 
             _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada ou ja foi encerrada");
 
-            if (RecalcularValorTotal(comanda.Valor, comanda.QuantidadeClientes, comanda.Pedidos))
+            if (!RecalcularValorTotal(comanda.Valor, comanda.QuantidadeClientes, comanda.Pedidos))
                 throw new Exception("O cálculo completo retornou um valor diferente");
 
             if (porcentagemGarcom)
                 comanda.Valor *= 1.1;
 
+            // Atualizando: 'Em andamento' para 'Entregue'
+            comanda.Pedidos
+                .Where(p => p.StatusId == (int)StatusEnum.EmAndamento)
+                .ToList()
+                .ForEach(p => p.StatusId = (int)StatusEnum.Entregue);
+
             comanda.Paga = true;
             comanda.DataHoraSaida = DateTime.Now;
+
+            // Desocupando mesa
+            await _mesaService.AtualizarStatus(comanda.MesaId, MesaEnum.Desocupar);
 
             await _context.SaveChangesAsync();
         }
@@ -67,7 +81,9 @@ namespace Restaurante.Repositorio.Services.Comanda
         {
             var valorFinal = _mesaService.ValorRodizio * quantidadeClientes;
 
-            valorFinal += pedidos.Sum(p => p.Produto.Valor * p.Quantidade);
+            valorFinal += pedidos
+                .Where(p => p.StatusId != (int)StatusEnum.Cancelado && p.Produto.Valor > 0)
+                .Sum(p => p.Produto.Valor * p.Quantidade);
 
             return valorInicial == valorFinal;
         }
@@ -124,14 +140,17 @@ namespace Restaurante.Repositorio.Services.Comanda
 
             // Cria uma listagem de PedidoModel dentro da model de Comanda
             model.Pedidos = comanda.Pedidos
-                .Select(p => new PedidoModel()
+                .Select(p => new ListarModel()
                 {
+                    ComandaId = p.ComandaId,
                     PedidoId = p.PedidoId,
-                    Produto = new ProdutoListagemModel()
+                    Produto = new BuscaModel()
                     {
+                        ProdutoId = p.ProdutoId,
                         Nome = p.Produto.Nome,
                         Valor = p.Produto.Valor,
-                        TipoProduto = p.Produto.TipoProduto.Descricao
+                        TipoProduto = p.Produto.TipoProduto.Descricao,
+                        QuantidadePermitida = p.Produto.QuantidadePermitida
                     },
                     Quantidade = p.Quantidade,
                     Status = p.Status.Descricao

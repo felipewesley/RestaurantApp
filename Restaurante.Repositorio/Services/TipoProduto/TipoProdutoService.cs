@@ -8,39 +8,22 @@ using Restaurante.Repositorio.Services.TipoProduto.Models;
 
 namespace Restaurante.Repositorio.Services.TipoProduto
 {
-    public class TipoProdutoService : RestauranteService, ITipoProdutoService
+    public class TipoProdutoService
     {
-        public TipoProdutoService(RestauranteContexto context) : base(context) { }
+        private readonly RestauranteContexto _context;
+        public TipoProdutoService(RestauranteContexto context) => _context = context;
 
-        public void ValidarTipoProduto(int tipoProduto)
+        public async Task<ICollection<BuscaModel>> Listar()
         {
-            if (tipoProduto <= 0)
-                throw new Exception("Tipo de produto solicitado inválido");
-        }
-
-        public async Task<ICollection<TipoProdutoModel>> BuscarTiposProduto()
-        {
-            var tiposColecao = await _context.TipoProduto
-                            .Select(t => new TipoProdutoModel()
+            var tiposProduto = await _context.TipoProduto
+                            .Select(t => new BuscaModel()
                             {
                                 TipoProdutoId = t.TipoProdutoId,
                                 Descricao = t.Descricao
                             })
                             .ToListAsync();
 
-            return tiposColecao;
-        }
-
-        public async Task<string> ObterTipoProduto(int tipoProdutoId)
-        {
-            var tipoProduto = await _context.TipoProduto
-                            .Where(t => t.TipoProdutoId == tipoProdutoId)
-                            .Select(t => t.Descricao)
-                            .FirstOrDefaultAsync();
-
-            _ = tipoProduto ?? throw new Exception("O tipo de produto solicitado não existe");
-
-            return tipoProduto;
+            return tiposProduto;
         }
     }
 }

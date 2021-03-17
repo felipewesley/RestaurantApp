@@ -9,7 +9,7 @@ namespace Restaurante.Repositorio.Services.Comanda.Models
         public int MesaId { get; set; }
         public DateTime DataHoraEntrada { get; set; }
         public int QuantidadeClientes { get; set; }
-        public ICollection<PedidoModel> Pedidos { get; set; }
+        public ICollection<ListarModel> Pedidos { get; set; }
         public double Valor { get; set; }
         public bool Paga { get; set; }
     }

@@ -2,11 +2,11 @@
 
 namespace Restaurante.Repositorio.Services.Pedido.Models
 {
-    public class PedidoModel
+    public class ListarModel
     {
         public int ComandaId { get; set; }
         public int PedidoId { get; set; }
-        public ProdutoListagemModel Produto { get; set; }
+        public BuscaModel Produto { get; set; }
         public int Quantidade { get; set; }
         public string Status { get; set; }
     }

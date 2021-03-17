@@ -9,7 +9,7 @@ using Restaurante.Repositorio.Services.Produto.Models;
 
 namespace Restaurante.Repositorio.Services.Pedido
 {
-    public class PedidoService : IPedidoService
+    public class PedidoService
     {
         private readonly RestauranteContexto _context;
         public PedidoService(RestauranteContexto context) => _context = context;
@@ -24,7 +24,12 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             _ = comanda ?? throw new Exception("A comanda solicitada não existe ou ja foi encerrada");
 
-            if (!_context.Produto.Any(p => p.ProdutoId == model.ProdutoId && p.QuantidadePermitida <= model.Quantidade))
+            if (!_context.Produto.Any(p => 
+                    p.ProdutoId == model.ProdutoId && 
+                    (p.QuantidadePermitida == 0 || // Quantidade ilimititada
+                    p.QuantidadePermitida >= model.Quantidade) // Quantidade solicitada menor/igual quantidade permitida
+                )
+            )
                 throw new Exception("O produto solicitado nao existe ou a quantidade solicitada nao e permitida");
 
             // Se o produto não estiver incluso no rodizio, este pedido será somado ao valor total da comanda
@@ -42,24 +47,26 @@ namespace Restaurante.Repositorio.Services.Pedido
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PedidoModel> Obter(int pedidoId)
+        public async Task<ListarModel> Obter(int pedidoId)
         {
             var pedido = await _context.Pedido
                         .Where(p => p.PedidoId == pedidoId)
                         .Include(p => p.Status)
                         .Include(p => p.Produto)
                         .ThenInclude(p => p.TipoProduto)
-                        .Select(p => new PedidoModel()
+                        .Select(p => new ListarModel()
                         {
                             ComandaId = p.ComandaId,
                             PedidoId = p.PedidoId,
                             Quantidade = p.Quantidade,
                             Status = p.Status.Descricao,
-                            Produto = new ProdutoListagemModel()
+                            Produto = new BuscaModel()
                             {
+                                ProdutoId = p.ProdutoId,
                                 Nome = p.Produto.Nome,
                                 Valor = p.Produto.Valor,
-                                TipoProduto = p.Produto.TipoProduto.Descricao
+                                TipoProduto = p.Produto.TipoProduto.Descricao,
+                                QuantidadePermitida = p.Produto.QuantidadePermitida
                             }
                         }).FirstOrDefaultAsync();
 
@@ -95,6 +102,5 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             await _context.SaveChangesAsync();
         }
-
     }
 }

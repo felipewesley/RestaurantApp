@@ -15,25 +15,22 @@ namespace Restaurante.WebAPI.Controllers
 
         public ProdutoController(ProdutoService service) => _service = service;
 
-        // GET api/<ProdutoController>/5
-        [HttpGet("{id}")]
-        public async Task<ProdutoModel> Obter(int id)
+        [HttpGet("{produtoId}")]
+        public async Task<BuscaModel> Obter(int produtoId)
         {
-            return await _service.ObterProduto(id);
+            return await _service.Obter(produtoId);
         }
 
-        // GET api/<ProdutoController>/Buscar
-        [HttpGet("Buscar")]
-        public async Task<ICollection<ProdutoListagemModel>> Buscar()
+        [HttpGet("buscar")]
+        public async Task<ICollection<BuscaModel>> Buscar()
         {
-            return await _service.BuscarProdutos();
+            return await _service.Buscar();
         }
 
-        // GET api/<ProdutoController>/Buscar/5
-        [HttpGet("Buscar/{tipoId}")]
-        public async Task<ICollection<ProdutoListagemModel>> Buscar(int tipoId)
+        [HttpGet("buscar/{tipoProdutoId}")]
+        public async Task<ICollection<BuscaModel>> BuscarPorTipo(int tipoProdutoId)
         {
-            return await _service.BuscarProdutos(tipoId);
+            return await _service.BuscarPorTipo(tipoProdutoId);
         }
     }
 }

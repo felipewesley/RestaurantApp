@@ -1,6 +1,6 @@
 ﻿namespace Restaurante.Repositorio.Services.Mesa.Models
 {
-    public class MesaModel
+    public class BuscarModel
     {
         public int MesaId { get; set; }
         public int Capacidade { get; set; }

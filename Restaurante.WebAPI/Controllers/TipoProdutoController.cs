@@ -10,23 +10,14 @@ namespace Restaurante.WebAPI.Controllers
     [ApiController]
     public class TipoProdutoController : ControllerBase
     {
-
         private readonly TipoProdutoService _service;
 
         public TipoProdutoController(TipoProdutoService service) => _service = service;
 
-        // GET api/<TipoProdutoController>/5
-        [HttpGet("{id}")]
-        public async Task<string> Obter(int id)
+        [HttpGet("listar")]
+        public async Task<ICollection<BuscaModel>> Buscar()
         {
-            return await _service.ObterTipoProduto(id);
-        }
-
-        // GET api/<TipoProdutoController>/Buscar
-        [HttpGet("Buscar")]
-        public async Task<ICollection<TipoProdutoModel>> Buscar()
-        {
-            return await _service.BuscarTiposProduto();
+            return await _service.Listar();
         }
     }
 }

@@ -33,23 +33,27 @@ namespace Restaurante.WebAPI
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            // Adicionando referência para classe de repositório onde haja implementação da interface I(NomeDaInterface)
+            // Adicionando referência para classe de repositório
             services.AddScoped<ComandaService>();
             services.AddScoped<MesaService>();
             services.AddScoped<PedidoService>();
             services.AddScoped<ProdutoService>();
             services.AddScoped<TipoProdutoService>();
 
+            // Instancia do contexto para referenciar nas services necessarias
             RestauranteContexto contexto = new RestauranteContexto();
 
+            // Referenciando MesaService dentro de ComandaService
             MesaService mesaService = new MesaService(contexto);
             ComandaService comandaService = new ComandaService(contexto, mesaService);
 
             services.AddControllers();
+            /*
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Restaurante.WebAPI", Version = "v1" });
             });
+            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,8 +62,8 @@ namespace Restaurante.WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurante.WebAPI v1"));
+                // app.UseSwagger();
+                // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurante.WebAPI v1"));
             }
 
             app.UseHttpsRedirection();

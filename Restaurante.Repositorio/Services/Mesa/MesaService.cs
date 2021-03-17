@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Services.Mesa.Models;
+using Restaurante.Repositorio.Enum;
 
 namespace Restaurante.Repositorio.Services.Mesa
 {
-    public class MesaService : IMesaService
+    public class MesaService
     {
         public double ValorRodizio { get; private set; }
         private readonly RestauranteContexto _context;
@@ -21,24 +22,26 @@ namespace Restaurante.Repositorio.Services.Mesa
             ValorRodizio = 45.0;
         }
 
-        public async Task AtualizarStatus(int mesaId, bool ocupada)
+        public async Task AtualizarStatus(int mesaId, MesaEnum ocupada)
         {
+            bool ocupadaBool = (int)ocupada != 0;
+
             var mesa = await _context.Mesa
-                        .Where(m => m.MesaId == mesaId && m.Ocupada != ocupada)
+                        .Where(m => m.MesaId == mesaId && m.Ocupada != ocupadaBool)
                         .FirstOrDefaultAsync();
 
             _ = mesa ?? throw new Exception("A mesa solicitada nao existe ou ja esta com o status desejado");
 
-            mesa.Ocupada = ocupada;
+            mesa.Ocupada = ocupadaBool;
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<MesaModel>> Listar()
+        public async Task<ICollection<BuscarModel>> Buscar()
         {
             var mesas = await _context.Mesa
                             .Where(m => m.Ocupada == false) // Apenas desocupadas
-                            .Select(m => new MesaModel()
+                            .Select(m => new BuscarModel()
                             {
                                 MesaId = m.MesaId,
                                 Capacidade = m.Capacidade,
@@ -50,11 +53,11 @@ namespace Restaurante.Repositorio.Services.Mesa
             return mesas;
         }
 
-        public async Task<MesaModel> Obter(int mesaId)
+        public async Task<BuscarModel> Obter(int mesaId)
         {
             var mesa = await _context.Mesa
                         .Where(m => m.MesaId == mesaId)
-                        .Select(m => new MesaModel()
+                        .Select(m => new BuscarModel()
                         {
                             MesaId = m.MesaId,
                             Capacidade = m.Capacidade,

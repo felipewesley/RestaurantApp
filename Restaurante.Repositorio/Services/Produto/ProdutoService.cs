@@ -1,73 +1,68 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Services.Produto.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Restaurante.Repositorio.Services.Produto
 {
-    public class ProdutoService : RestauranteService, IProdutoService
+    public class ProdutoService
     {
-        public ProdutoService(RestauranteContexto context) : base(context) { }
+        private readonly RestauranteContexto _context;
+        public ProdutoService(RestauranteContexto context) => _context = context;
 
-        public void ValidarProduto(int produtoId)
+        public async Task<ICollection<BuscaModel>> Buscar()
         {
-            if (produtoId <= 0)
-                throw new Exception("O produto solicitado é inválido");
+            var produtos = await _context.Produto
+                        .Where(p => p.Disponivel == true) // Apenas disponiveis
+                        .Include(p => p.TipoProduto)
+                        .Select(p => new BuscaModel()
+                        {
+                            ProdutoId = p.ProdutoId,
+                            Nome = p.Nome,
+                            Valor = p.Valor,
+                            TipoProduto = p.TipoProduto.Descricao,
+                            QuantidadePermitida = p.QuantidadePermitida
+                        }).ToListAsync();
+
+            return produtos;
         }
 
-        public async Task<ICollection<ProdutoListagemModel>> BuscarProdutos()
+        public async Task<ICollection<BuscaModel>> BuscarPorTipo(int tipoId)
         {
-            var produtosCollection = await _context.Produto
-                                    .Where(p => p.Disponivel == true)
-                                    .Include(p => p.TipoProduto)
-                                    .Select(p => new ProdutoListagemModel()
-                                    {
-                                        ProdutoId = p.ProdutoId,
-                                        Nome = p.Nome,
-                                        Valor = p.Valor,
-                                        TipoProduto = p.TipoProduto.Descricao
-                                    }).ToListAsync();
+            var produtos = await _context.Produto
+                        .Where(p => p.Disponivel == true && p.TipoProdutoId == tipoId) // Disponiveis do tipo solicitado
+                        .Include(p => p.TipoProduto)
+                        .Select(p => new BuscaModel()
+                        {
+                            ProdutoId = p.ProdutoId,
+                            Nome = p.Nome,
+                            Valor = p.Valor,
+                            TipoProduto = p.TipoProduto.Descricao,
+                            QuantidadePermitida = p.QuantidadePermitida
+                        }).ToListAsync();
 
-            return produtosCollection;
+            return produtos;
         }
 
-        public async Task<ICollection<ProdutoListagemModel>> BuscarProdutos(int tipoId)
+        public async Task<BuscaModel> Obter(int produtoId)
         {
-            var produtosCollection = await _context.Produto
-                                    .Include(p => p.TipoProduto)
-                                    .Where(p => p.Disponivel == true && p.TipoProduto.TipoProdutoId == tipoId)
-                                    .Select(p => new ProdutoListagemModel()
-                                    {
-                                        ProdutoId = p.ProdutoId,
-                                        Nome = p.Nome,
-                                        Valor = p.Valor,
-                                        TipoProduto = p.TipoProduto.Descricao
-                                    }).ToListAsync();
-
-            return produtosCollection;
-        }
-
-        public async Task<ProdutoModel> ObterProduto(int produtoId)
-        {
-            ValidarProduto(produtoId);
-
             var produto = await _context.Produto
                         .Where(p => p.ProdutoId == produtoId)
                         .Include(p => p.TipoProduto)
-                        .Select(p => new ProdutoModel()
+                        .Select(p => new BuscaModel()
                         {
+                            ProdutoId = p.ProdutoId,
                             Nome = p.Nome,
+                            Valor = p.Valor,
                             TipoProduto = p.TipoProduto.Descricao,
-                            QuantidadePermitida = p.QuantidadePermitida,
-                            Valor = p.Valor
+                            QuantidadePermitida = p.QuantidadePermitida
                         })
                         .FirstOrDefaultAsync();
 
-            _ = produto ?? throw new Exception("Não foi possível obter o produto solicitado");
+            _ = produto ?? throw new Exception("O produto solicitado nao existe");
 
             return produto;
         }

@@ -14,7 +14,7 @@ namespace Restaurante.WebAPI.Controllers
         public PedidoController(PedidoService service) => _service = service;
 
         [HttpGet("{pedidoId}")]
-        public async Task<PedidoModel> Obter(int pedidoId)
+        public async Task<ListarModel> Obter(int pedidoId)
         {
             return await _service.Obter(pedidoId);
         }
