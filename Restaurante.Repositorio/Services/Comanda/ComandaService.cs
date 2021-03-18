@@ -46,7 +46,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(AlterarModel model)
+        public async Task Alterar(Models.AlterarModel model)
         {
             var mesa = await _mesaService.Obter(model.MesaId);
 

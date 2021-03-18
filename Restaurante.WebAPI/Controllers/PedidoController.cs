@@ -25,6 +25,12 @@ namespace Restaurante.WebAPI.Controllers
             await _service.Registrar(model);
         }
 
+        [HttpPut]
+        public async Task Alterar(AlterarModel model)
+        {
+            await _service.Alterar(model);
+        }
+
         [HttpDelete("{pedidoId}")]
         public async Task Cancelar(int pedidoId)
         {

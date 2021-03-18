@@ -47,6 +47,32 @@ namespace Restaurante.Repositorio.Services.Pedido
             await _context.SaveChangesAsync();
         }
 
+        public async Task Alterar(Models.AlterarModel model)
+        {
+            if (model.NovaQuantidade <= 0 || (model.NovaQuantidade > model.QuantidadePermitida && model.QuantidadePermitida != 0))
+                throw new Exception("A nova quantidade solicitada nao e permitida");
+
+            var comanda = await _context.Comanda
+                        .Include(c => c.Pedidos)
+                        .Where(c => c.ComandaId == model.ComandaId && !c.Paga && c.Pedidos.Count() > 0)
+                        .FirstOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A comanda solicitada nao existe ou nao e possivel alterar seus pedidos");
+
+            var pedido = comanda.Pedidos
+                        .Where(p => p.PedidoId == model.PedidoId && p.StatusId == (int)StatusEnum.EmAndamento)
+                        .FirstOrDefault();
+
+            _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou nao pode mais ser alterado");
+
+            if (model.ProdutoValor > 0)
+                comanda.Valor += (model.NovaQuantidade - pedido.Quantidade) * model.ProdutoValor;
+
+            pedido.Quantidade = model.NovaQuantidade;
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ListarModel> Obter(int pedidoId)
         {
             var pedido = await _context.Pedido
