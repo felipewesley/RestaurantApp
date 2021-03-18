@@ -46,13 +46,33 @@ namespace Restaurante.Repositorio.Services.Comanda
             await _context.SaveChangesAsync();
         }
 
+        public async Task Alterar(AlterarModel model)
+        {
+            var mesa = await _mesaService.Obter(model.MesaId);
+
+            if (model.QuantidadeClientes <= 0 || model.QuantidadeClientes > mesa.Capacidade)
+                throw new Exception("Esta mesa nao suporta a quantidade de pessoas informada");
+            
+            var comanda = await _context.Comanda
+                        .Where(c => c.ComandaId == model.ComandaId && !c.Paga)
+                        .FirstOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A comanda solicitada nao existe ou ja foi finalizada");
+
+            comanda.Valor += (model.QuantidadeClientes - comanda.QuantidadeClientes) * _mesaService.ValorRodizio;
+
+            comanda.QuantidadeClientes = model.QuantidadeClientes;
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task Encerrar(int comandaId, bool porcentagemGarcom = false)
         {
-            var comanda = _context.Comanda
+            var comanda = await _context.Comanda
                             .Where(c => c.ComandaId == comandaId && !c.Paga)
                             .Include(c => c.Pedidos)
                             .ThenInclude(c => c.Produto)
-                            .FirstOrDefault();
+                            .FirstOrDefaultAsync();
 
             _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada ou ja foi encerrada");
 
@@ -88,28 +108,30 @@ namespace Restaurante.Repositorio.Services.Comanda
             return valorInicial == valorFinal;
         }
 
-        public async Task<ResumidaModel> ObterResumida(int comandaId)
+        public async Task<ResumidaModel> ObterResumida(int mesaId)
         {
             var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == comandaId)
+                        .Where(c => c.MesaId == mesaId && !c.Paga)
                         .Select(c => new ResumidaModel()
                         {
+                            ComandaId = c.ComandaId,
                             MesaId = c.MesaId,
                             DataHoraEntrada = c.DataHoraEntrada,
                             QuantidadeClientes = c.QuantidadeClientes,
                             Valor = c.Valor
                         })
-                        .FirstOrDefaultAsync();
+                        .OrderBy(c => c.ComandaId)
+                        .LastOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada nao existe");
+            _ = comanda ?? throw new Exception("A mesa informada nao tem nenhuma comanda ativa");
 
             return comanda;
         }
 
-        public async Task<CompletaModel> ObterCompleta(int comandaId)
+        public async Task<CompletaModel> ObterCompleta(int mesaId)
         {
             var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == comandaId)
+                        .Where(c => c.MesaId == mesaId && !c.Paga)
                         .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Status)
                         .Include(c => c.Pedidos)
@@ -117,6 +139,7 @@ namespace Restaurante.Repositorio.Services.Comanda
                         .ThenInclude(c => c.TipoProduto)
                         .Select(c => new
                         {
+                            c.ComandaId,
                             c.MesaId,
                             c.DataHoraEntrada,
                             c.QuantidadeClientes,
@@ -124,13 +147,15 @@ namespace Restaurante.Repositorio.Services.Comanda
                             c.Valor,
                             c.Paga
                         })
-                        .FirstOrDefaultAsync();
+                        .OrderBy(c => c.ComandaId)
+                        .LastOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada não existe");
+            _ = comanda ?? throw new Exception("A mesa informada nao tem nenhuma comanda ativa");
 
             // Cria uma model de Comanda sem a listagem de pedidos
             var model = new CompletaModel()
             {
+                ComandaId = comanda.ComandaId,
                 MesaId = comanda.MesaId,
                 DataHoraEntrada = comanda.DataHoraEntrada,
                 QuantidadeClientes = comanda.QuantidadeClientes,
