@@ -48,6 +48,8 @@ namespace Restaurante.Repositorio.Services.Comanda
 
         public async Task Alterar(Models.AlterarModel model)
         {
+            model.Validar();
+
             var mesa = await _mesaService.Obter(model.MesaId);
 
             if (model.QuantidadeClientes <= 0 || model.QuantidadeClientes > mesa.Capacidade)

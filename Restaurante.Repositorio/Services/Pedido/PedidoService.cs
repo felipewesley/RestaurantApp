@@ -47,8 +47,10 @@ namespace Restaurante.Repositorio.Services.Pedido
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(Models.AlterarModel model)
+        public async Task Alterar(AlterarModel model)
         {
+            model.Validar();
+
             if (model.NovaQuantidade <= 0 || (model.NovaQuantidade > model.QuantidadePermitida && model.QuantidadePermitida != 0))
                 throw new Exception("A nova quantidade solicitada nao e permitida");
 
