@@ -16,7 +16,7 @@ CREATE TABLE Mesa (
 
 /* Criando a tabela Comanda */
 CREATE TABLE Comanda (
-    ComandaId INT NOT NULL, /* verificar melhor tipo de dado (guid/nanoid) */
+    ComandaId INT NOT NULL IDENTITY(1,1), /* verificar melhor tipo de dado (guid/nanoid) */
     MesaId INT NOT NULL,
     DataHoraEntrada DATETIME NOT NULL,
     DataHoraSaida DATETIME NULL,
@@ -69,7 +69,7 @@ ALTER TABLE Produto ADD CONSTRAINT FK_TipoProdutoId_Produto FOREIGN KEY (TipoPro
 
 /* Criando a tabela Pedido */
 CREATE TABLE Pedido (
-    PedidoId INT NOT NULL,
+    PedidoId INT NOT NULL IDENTITY(1,1),
     ComandaId INT NOT NULL, /* depende do tipo de dado da PK Comanda */
     ProdutoId INT NOT NULL,
     StatusId INT NOT NULL,
