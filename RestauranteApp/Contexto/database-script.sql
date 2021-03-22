@@ -43,9 +43,9 @@ CREATE TABLE Status (
 
 /* Criando a tabela TipoProduto */
 CREATE TABLE TipoProduto (
-    Tipo INT NOT NULL,
+    TipoProdutoId INT NOT NULL,
     Descricao VARCHAR(50) NOT NULL,
-	PRIMARY KEY (Tipo)
+	PRIMARY KEY (TipoProdutoId)
 )
 
 /* Criando a tabela Produto */
@@ -56,7 +56,7 @@ CREATE TABLE Produto (
     Valor FLOAT NOT NULL, /* analisar nullable */
     Disponivel BIT NOT NULL,
     QuantidadePermitida INT NOT NULl, /* analisar nullable */
-    TipoId INT NOT NULL,
+    TipoProdutoId INT NOT NULL,
     PRIMARY KEY (ProdutoId)
 )
 
@@ -65,7 +65,7 @@ CREATE TABLE Produto (
 --ALTER TABLE Produto ALTER COLUMN Valor FLOAT
 
 /* Adicionando FK à tabela Produto */
-ALTER TABLE Produto ADD CONSTRAINT FK_Tipo_Produto_Produto FOREIGN KEY (TipoId) REFERENCES TipoProduto(Tipo)
+ALTER TABLE Produto ADD CONSTRAINT FK_TipoProdutoId_Produto FOREIGN KEY (TipoProdutoId) REFERENCES TipoProduto(TipoProdutoId)
 
 /* Criando a tabela Pedido */
 CREATE TABLE Pedido (
@@ -125,12 +125,12 @@ INSERT INTO Status (StatusId, Descricao) VALUES (3, 'Cancelado')
     Inserindo dados na tabela TipoProduto
     * Esta tabela, a princípio, não deverá sofrer alterações
 */
-INSERT INTO TipoProduto (Tipo, Descricao) VALUES (1, 'Bebidas')
-INSERT INTO TipoProduto (Tipo, Descricao) VALUES (2, 'Agenomo - Frituras')
-INSERT INTO TipoProduto (Tipo, Descricao) VALUES (3, 'Yakimono - Grelhados')
-INSERT INTO TipoProduto (Tipo, Descricao) VALUES (4, 'Nabemono - Cozidos')
-INSERT INTO TipoProduto (Tipo, Descricao) VALUES (5, 'Sashimi - Carne/Peixe cru')
-INSERT INTO TipoProduto (Tipo, Descricao) VALUES (6, 'Sushi - Bolinhos de arroz temperado')
+INSERT INTO TipoProduto (TipoProdutoId, Descricao) VALUES (1, 'Bebidas')
+INSERT INTO TipoProduto (TipoProdutoId, Descricao) VALUES (2, 'Agenomo - Frituras')
+INSERT INTO TipoProduto (TipoProdutoId, Descricao) VALUES (3, 'Yakimono - Grelhados')
+INSERT INTO TipoProduto (TipoProdutoId, Descricao) VALUES (4, 'Nabemono - Cozidos')
+INSERT INTO TipoProduto (TipoProdutoId, Descricao) VALUES (5, 'Sashimi - Carne/Peixe cru')
+INSERT INTO TipoProduto (TipoProdutoId, Descricao) VALUES (6, 'Sushi - Bolinhos de arroz temperado')
 
 
 
@@ -141,83 +141,83 @@ INSERT INTO TipoProduto (Tipo, Descricao) VALUES (6, 'Sushi - Bolinhos de arroz 
 */
 
 /* PRODUTOS TIPO: Bebidas */
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (1, 'Suco natural laranja', '...', 7.0, 1, 0, 1)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (2, 'Limonada', '...', 9.0, 1, 0, 1)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (3, 'Água mineral', '...', 4.0, 1, 0, 1)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (4, 'Mate', '...', 4.5, 1, 0, 1)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (5, 'Coca-Cola', '...', 5.99, 1, 0, 1)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (6, 'Guaraná', '...', 5.59, 1, 0, 1)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (7, 'H20', '...', 6.79, 1, 0, 1)
 /*------------------------------------------------------------------------------------------------------------*/
 
 /* PRODUTOS TIPO: Agenomo */
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (8, 'Karaage', '...', 0, 1, 0, 2)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (9, 'Korokke', '...', 0, 1, 0, 2)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (10, 'Kushiage', '...', 0, 1, 0, 2)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (11, 'Tonkatsu', '...', 0, 1, 0, 2)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (12, 'Oyakodon', '...', 0, 1, 0, 2)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (13, 'Gyudon', '...', 0, 1, 0, 2)
 /*------------------------------------------------------------------------------------------------------------*/
 
 /* PRODUTOS TIPO: Yakimono */
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (14, 'Gyoza', '...', 0, 1, 0, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (15, 'Kushiyaki', '...', 0, 1, 0, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (16, 'Okonomiyaki', '...', 0, 1, 0, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (17, 'Omu-raisu', '...', 0, 1, 0, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (18, 'Omu-soba', '...', 0, 1, 0, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (19, 'Takoyaki', '...', 0, 1, 0, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (20, 'Yakisoba', '...', 0, 1, 4, 3)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (21, 'Yakitori', '...', 0, 1, 0, 3)
 /*------------------------------------------------------------------------------------------------------------*/
 
 /* PRODUTOS TIPO: Nabemono */
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (22, 'Motsunabe', '...', 0, 1, 0, 4)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (23, 'Sukiyak', '...', 0, 1, 0, 4)
 /*------------------------------------------------------------------------------------------------------------*/
 
 /* PRODUTOS TIPO: Sashimi */
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (24, 'Tataki', '...', 0, 1, 0, 5)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (25, 'Fugu', '...', 0, 1, 0, 5)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (26, 'Basashi', '...', 0, 1, 0, 5)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (27, 'Rebasashi', '...', 0, 1, 0, 5)
 /*------------------------------------------------------------------------------------------------------------*/
 
 /* PRODUTOS TIPO: Sushi */
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (28, 'Chirashizushi', '...', 0, 1, 0, 6)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (29, 'Makizushi', '...', 0, 1, 0, 6)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (30, 'Nigirizushi', '...', 0, 1, 0, 6)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (31, 'Oshizushi', '...', 0, 1, 0, 6)
-INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoId)
+INSERT INTO Produto (ProdutoId, Nome, Imagem, Valor, Disponivel, QuantidadePermitida, TipoProdutoId)
 VALUES (32, 'Temakizushi', '...', 0, 1, 0, 6)
 /*------------------------------------------------------------------------------------------------------------*/
