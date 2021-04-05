@@ -26,8 +26,18 @@ import {
   ProjectStatChartComponent
 } from './components';
 import { SharedModule } from '../../shared/shared.module';
+import { LayoutComponent } from '../../shared/layout/layout.component';
 import { DashboardService } from './services';
+import { CardInfoComponent } from './components/card-info/card-info.component';
+import { PedidosPendentesListComponent } from './components/pedidos-pendentes-list/pedidos-pendentes-list.component';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+const routes: Routes = [
+  {
+    path: '',
+    component: DashboardPageComponent
+  }
+]
 
 @NgModule({
   declarations: [
@@ -38,7 +48,9 @@ import { DashboardService } from './services';
     RevenueChartComponent,
     DailyLineChartComponent,
     SupportRequestsComponent,
-    ProjectStatChartComponent
+    ProjectStatChartComponent,
+    CardInfoComponent,
+    PedidosPendentesListComponent, 
   ],
   imports: [
     CommonModule,
@@ -56,10 +68,12 @@ import { DashboardService } from './services';
     MatInputModule,
     NgApexchartsModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    RouterModule.forChild(routes)
   ],
   exports: [
-    DailyLineChartComponent
+    DailyLineChartComponent, 
+    RouterModule
   ],
   providers: [
     DashboardService

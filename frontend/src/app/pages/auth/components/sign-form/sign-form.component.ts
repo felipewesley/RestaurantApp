@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -7,20 +7,19 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./sign-form.component.scss']
 })
 export class SignFormComponent implements OnInit {
-  @Output() sendSignForm = new EventEmitter<void>();
-  public form: FormGroup;
 
-  public ngOnInit(): void {
-    this.form = new FormGroup({
-      name: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required])
+  retomarForm: FormGroup;
+
+  ngOnInit() {
+
+    this.retomarForm = new FormGroup({
+      "comandaId": new FormControl(null)
     });
   }
 
-  public sign(): void {
-    if (this.form.valid) {
-      this.sendSignForm.emit();
-    }
+  retomarComanda(): void {
+
+    console.warn('Comanda retomada!');
+    console.log(this.retomarForm);
   }
 }

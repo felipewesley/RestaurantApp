@@ -5,3 +5,4 @@ export * from './server-chart-data';
 export * from './support-request-data';
 export * from './visits-chart-data';
 export * from './project-stat-data';
+export * from './card-info.model';

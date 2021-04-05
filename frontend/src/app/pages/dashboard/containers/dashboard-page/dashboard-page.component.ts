@@ -1,38 +1,55 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 
 import { DashboardService } from '../../services';
-import {
-  DailyLineChartData,
-  PerformanceChartData,
-  ProjectStatData,
-  RevenueChartData,
-  ServerChartData,
-  SupportRequestData,
-  VisitsChartData
-} from '../../models';
+import { CardInfo } from '../../models';
+
+import { PedidoPendente } from '../../models/pedido-pendente.model';
+
+import { Router } from '@angular/router';
+import { routes } from 'src/app/consts';
 
 @Component({
   selector: 'app-dashboard-page',
   templateUrl: './dashboard-page.component.html',
   styleUrls: ['./dashboard-page.component.scss']
 })
-export class DashboardPageComponent {
-  public dailyLineChartData$: Observable<DailyLineChartData>;
-  public performanceChartData$: Observable<PerformanceChartData>;
-  public revenueChartData$: Observable<RevenueChartData>;
-  public serverChartData$: Observable<ServerChartData>;
-  public supportRequestData$: Observable<SupportRequestData[]>;
-  public visitsChartData$: Observable<VisitsChartData>;
-  public projectsStatsData$: Observable<ProjectStatData>;
+export class DashboardPageComponent implements OnInit {
 
-  constructor(private service: DashboardService) {
-    this.dailyLineChartData$ = this.service.loadDailyLineChartData();
-    this.performanceChartData$ = this.service.loadPerformanceChartData();
-    this.revenueChartData$ = this.service.loadRevenueChartData();
-    this.serverChartData$ = this.service.loadServerChartData();
-    this.supportRequestData$ = this.service.loadSupportRequestData();
-    this.visitsChartData$ = this.service.loadVisitsChartData();
-    this.projectsStatsData$ = this.service.loadProjectsStatsData();
+  public cards: CardInfo[] = [];
+
+  ngOnInit() {
+
+    this.cards = [
+      {
+        title: 'Mesa',
+        icon: 'dashboard',
+        content: [
+          { label: 'Número da mesa', value: 12 },
+          { label: 'Rodízios', value: '3 pessoas' }
+        ],
+        disabled: false
+      }, {
+        title: 'Comanda',
+        icon: 'fact_check',
+        content: [
+          { label: 'Código', value: '024512' },
+          { label: 'Valor atual', value: 'R$ 94.65' }
+        ],
+      }
+    ].filter(m => m.disabled !== true);
+  }
+
+  public pedidosData: PedidoPendente[];
+
+  constructor(
+    private service: DashboardService,
+    private router: Router
+    ) {
+
+    this.pedidosData = this.service.loadPedidosPendentes();
+  }
+
+  backToLogin(): void {
+    this.router.navigate([routes.LOGIN]);
   }
 }

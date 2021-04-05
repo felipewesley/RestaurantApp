@@ -3,7 +3,8 @@
 @import 'src/app/styles/variables';
 
 .header {
-  background-color: $header-background-color;
+  background-color: $sr-bg-red;
+  color: $sr-text-color;
   display: flex;
   justify-content: space-between;
   position: fixed;
@@ -28,7 +29,7 @@
     }
   }
 
-  &__title-button-icon {
+  &__title-icon {
     color: $header-button-font-color;
   }
 

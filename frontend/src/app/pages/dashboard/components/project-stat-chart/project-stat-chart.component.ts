@@ -2,6 +2,19 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { ProjectStatData, ProjectTimeData } from '../../models';
 import { colors } from '../../../../consts';
+import {
+  ApexAxisChartSeries, 
+  ApexChart, 
+  ApexDataLabels, 
+  ApexFill, 
+  ApexGrid, 
+  ApexLegend, 
+  ApexPlotOptions, 
+  ApexStroke, 
+  ApexTooltip, 
+  ApexXAxis, 
+  ApexYAxis 
+} from 'ng-apexcharts';
 
 type ChartOptions = {
   series: ApexAxisChartSeries;

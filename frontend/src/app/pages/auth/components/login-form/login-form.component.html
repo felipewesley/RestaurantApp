@@ -1,14 +1,15 @@
-<form class="form" [formGroup]="form" (ngSubmit)="login()">
-  <mat-form-field class="form__input">
-    <input matInput placeholder="Email Address" type="email" formControlName="email">
+<form class="form" [formGroup]="comandaForm" (ngSubmit)="criarComanda()">
+  <mat-form-field class="form__input" form>
+    <input matInput placeholder="Número da mesa" type="number" min="1" max="16" formControlName="mesaId">
   </mat-form-field>
 
   <mat-form-field class="form__input">
-    <input matInput placeholder="Password" type="password" formControlName="password">
+    <input matInput placeholder="Quantidade de clientes" min="1" type="number" formControlName="qtdeClientes">
   </mat-form-field>
 
   <div class="form-actions">
-    <button class="form-actions__login" mat-raised-button color="primary" type="submit">Login</button>
-    <button class="form-actions__forget" mat-button>Forget password</button>
+    <button class="form-actions__iniciar-comanda" mat-raised-button color="primary" type="submit">
+      Iniciar atendimento
+    </button>
   </div>
 </form>

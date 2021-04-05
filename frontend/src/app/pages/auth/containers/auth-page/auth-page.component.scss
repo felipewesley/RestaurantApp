@@ -11,6 +11,11 @@
     flex-direction: column;
   }
 
+  &__form-description {
+    line-height: 1.75;
+    margin-bottom: 15px;
+  }
+
   &__content-block {
     width: 37%;
     height: 100%;
@@ -25,9 +30,9 @@
   }
 
   &__content-wrapper {
-    width: 45%;
+    width: 55%;
     height: 100%;
-    padding: 16px;
+    padding: 15px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -63,47 +68,6 @@
     text-align: center;
     line-height: 24px;
     color: $dark-grey;
-  }
-
-  &__google-button-wrapper {
-    margin-top: 32px;
-    margin-bottom: 10px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  &__google-button {
-    width: 95%;
-    padding: 0;
-    box-shadow: 0 0 11px 0 $shadow-white, 0 0 0 -2px $shadow-grey, 0 1px 8px 0 $shadow-dark-grey;
-  }
-
-  &__google-button-icon {
-    width: 20px;
-    margin-right: 16px;
-  }
-
-  &__border-wrapper {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin: 32px 0;
-  }
-
-  &__border-line {
-    height: 1px;
-    width: 100%;
-    background-color: $light-grey;
-    opacity: 0.3;
-  }
-
-  &__border-title {
-    font-size: $fs-xs;
-    padding: 0 16px;
-    margin: 0;
-    color: $dark-grey
   }
 
   &__logo {

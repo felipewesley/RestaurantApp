@@ -1,5 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { routes } from 'src/app/consts';
 
 @Component({
   selector: 'app-login-form',
@@ -7,21 +9,29 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent implements OnInit {
-  @Output() sendLoginForm = new EventEmitter<void>();
-  public form: FormGroup;
-  public flatlogicEmail = 'admin@flatlogic.com';
-  public flatlogicPassword = 'admin';
 
-  public ngOnInit(): void {
-    this.form = new FormGroup({
-      email: new FormControl(this.flatlogicEmail, [Validators.required, Validators.email]),
-      password: new FormControl(this.flatlogicPassword, [Validators.required])
+  comandaForm: FormGroup;
+
+  constructor(private router: Router) { }
+
+  ngOnInit() {
+
+    this.comandaForm = new FormGroup({
+      mesaId: new FormControl(null),
+      qtdeClientes: new FormControl(null)
     });
   }
 
-  public login(): void {
-    if (this.form.valid) {
-      this.sendLoginForm.emit();
-    }
+  criarComanda(): void {
+
+    console.warn('Comanda criada!');
+    console.log(this.comandaForm);
+
+    setTimeout(() => {
+
+      this.router.navigate([routes.DASHBOARD]);
+      // http://localhost:4200/#/dashboard
+
+    }, 5000)
   }
 }

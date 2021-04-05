@@ -106,5 +106,8 @@
       }
     }
   },
-  "defaultProject": "angular-material-admin"
+  "defaultProject": "angular-material-admin",
+  "cli": {
+    "analytics": false
+  }
 }
