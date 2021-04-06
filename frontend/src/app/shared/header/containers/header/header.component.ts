@@ -23,8 +23,8 @@ export class HeaderComponent {
     private emailService: EmailService,
     private router: Router
   ) {
-    this.user$ = this.userService.getUser();
-    this.emails$ = this.emailService.loadEmails();
+    // this.user$ = this.userService.getUser();
+    // this.emails$ = this.emailService.loadEmails();
   }
 
   public openMenu(): void {
@@ -34,7 +34,7 @@ export class HeaderComponent {
   }
 
   public signOut(): void {
-    this.userService.signOut();
+    // this.userService.signOut();
 
     this.router.navigate([this.routers.LOGIN]);
   }

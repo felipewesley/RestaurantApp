@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../services';
 
 @Component({
   selector: 'app-auth-page',
@@ -9,6 +10,12 @@ export class AuthPageComponent {
 
   public todayDate: Date = new Date();
 
-  constructor() { }
+  constructor(
+    // private service: AuthService
+    ) { }
+
+  criarComanda() {
+    // this.service
+  }
 
 }

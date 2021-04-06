@@ -29,9 +29,9 @@ export class LoginFormComponent implements OnInit {
 
     setTimeout(() => {
 
-      this.router.navigate([routes.DASHBOARD]);
       // http://localhost:4200/#/dashboard
+      this.router.navigate([routes.DASHBOARD]);
 
-    }, 5000)
+    }, 3000)
   }
 }

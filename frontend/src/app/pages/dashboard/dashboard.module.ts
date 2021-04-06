@@ -50,7 +50,7 @@ const routes: Routes = [
     SupportRequestsComponent,
     ProjectStatChartComponent,
     CardInfoComponent,
-    PedidosPendentesListComponent, 
+    PedidosPendentesListComponent,
   ],
   imports: [
     CommonModule,

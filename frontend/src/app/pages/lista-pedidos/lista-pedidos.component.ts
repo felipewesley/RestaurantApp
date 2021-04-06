@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { PedidoCompleto } from './models/pedido-completo.model';
+import { StatusPedido } from '../dashboard/consts';
 
 @Component({
   selector: 'app-lista-pedidos',
@@ -15,9 +17,12 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 })
 export class ListaPedidosComponent implements OnInit {
 
-  dataSource = ELEMENT_DATA;
-  columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
-  expandedElement: PeriodicElement | null;
+  // dataSource = ELEMENT_DATA;
+  dataSource = SOURCE;
+  // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
+  columnsToDisplay = ['codigo', 'produto', 'quantidade', 'status'];
+  // expandedElement: PeriodicElement | null;
+  expandedElement: PedidoCompleto | null;
 
   constructor() { }
 
@@ -25,6 +30,24 @@ export class ListaPedidosComponent implements OnInit {
   }
 
 }
+
+const SOURCE: PedidoCompleto[] = [
+  {
+    pedidoId: 123,
+    produto: 'Sashimi',
+    quantidade: 3,
+    dataHora: new Date(),
+    valor: 0.0,
+    status: StatusPedido.EmAndamento
+  }, {
+    pedidoId: 456,
+    produto: 'Yakisoba',
+    quantidade: 2,
+    dataHora: new Date(),
+    valor: 7.5,
+    status: StatusPedido.Cancelado
+  }
+]
 
 export interface PeriodicElement {
   name: string;

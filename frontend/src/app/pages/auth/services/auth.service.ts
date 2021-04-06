@@ -1,28 +1,30 @@
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
-import { User } from '../models';
+import { ComandaCriada } from '../models/comanda-criada.model';
+import { NovaComandaModel } from '../models/nova-comanda.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public login(): void {
-    localStorage.setItem('token', 'token');
+  
+  API_URL: "http://localhost:5270/";
+
+  constructor (
+    // private http: HttpClient
+  ) { }
+
+  /*
+  criarComanda(model: NovaComandaModel): Observable<ComandaCriada> {
+
+    return this.http.post<ComandaCriada>(this.API_URL, model);
   }
 
-  public sign(): void {
-    localStorage.setItem('token', 'token');
-  }
+  retomarComanda(comandaId: number): Observable<number> {
 
-  public signOut(): void {
-    localStorage.removeItem('token');
+    return this.http.get<number>(this.API_URL + comandaId);
   }
-
-  public getUser(): Observable<User> {
-    return of({
-      name: 'John',
-      lastName: 'Smith'
-    });
-  }
+  */
 }
