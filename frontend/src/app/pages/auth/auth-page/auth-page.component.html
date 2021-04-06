@@ -1,0 +1,38 @@
+<div class="auth-page">
+  <div class="auth-page__content-block">
+    <div class="auth-page__content-wrapper">
+      <mat-tab-group class="auth-page__group">
+        <mat-tab label="Novo">
+          <h4 class="auth-page__group-title">Bem-vindo!</h4>
+          
+          <p class="auth-page__form-description">
+            Para <span class="text-green">iniciar</span> seu atendimento, preencha os campos abaixo.
+          </p>
+
+          <app-nova-comanda-form></app-nova-comanda-form>
+
+        </mat-tab>
+        <mat-tab label="Retomar">
+          <h4 class="auth-page__group-title">Olá!</h4>
+          
+          <p class="auth-page__form-description">
+            Para <span class="text-green">retomar</span> um atendimento, informe o número da mesa.
+          </p>
+
+          <app-retomar-comanda-form></app-retomar-comanda-form>
+
+        </mat-tab>
+      </mat-tab-group>
+
+      <p class="auth-page__footer-title">
+        &copy; 2021. Treinamento Techer.
+      </p>
+    </div>
+  </div>
+  <div class="auth-page__logo">
+    <div class="auth-page__logo-wrapper">
+      <img class="auth-page__logo-img" src="./assets/sutekina-ranchi-logo-1.gif" alt="logo">
+      <h6 class="auth-page__logo-title">Sutekina Ranchi</h6>
+    </div>
+  </div>
+</div>

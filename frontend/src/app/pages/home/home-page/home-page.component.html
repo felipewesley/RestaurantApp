@@ -1,0 +1,20 @@
+<mat-toolbar class="page-header" role="heading">
+  
+  <h1>
+    <mat-icon>home</mat-icon>
+    Home
+  </h1>
+  <button mat-flat-button class="btn-encerrar-atendimento">
+    Encerrar atendimento
+  </button>
+</mat-toolbar>
+
+<div class="container-comanda-dados">
+  <div class="card-comanda-dados" *ngFor="let card of cards">
+    <app-card-info [cardElement]="card"></app-card-info>
+  </div>
+</div>
+
+<app-pedidos-pendentes-lista></app-pedidos-pendentes-lista>
+
+<!-- <app-footer></app-footer> -->

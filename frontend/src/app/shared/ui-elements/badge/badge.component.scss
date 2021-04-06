@@ -1,0 +1,26 @@
+@import 'src/app/styles/colors';
+@import 'src/app/styles/font';
+@import 'src/app/styles/variables';
+
+.badge {
+  display: inline-block;
+  border: none;
+  border-radius: 15px;
+  margin: 5px 7.5px;
+  padding: 5px 12.5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: $fw-bold;
+  letter-spacing: 1.25px;
+  transition: ease-in-out 0.1s;
+}
+.badge:hover {
+  cursor: pointer;
+  filter: brightness(1.15);
+}
+.badge.default { background: #3e3e3e; color: $white; }
+.badge.primary { background: #0051ff; color: $white; }
+.badge.success { background: #57c565; color: $white; }
+.badge.warning { background: $sr-bg-yellow; color: #3e3e3e; }
+.badge.danger { background: $sr-bg-red; color: $white; }

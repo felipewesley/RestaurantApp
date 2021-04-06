@@ -1,0 +1,52 @@
+@import 'src/app/styles/colors';
+@import 'src/app/styles/font';
+@import 'src/app/styles/variables';
+
+table {
+    width: 100%;
+  }
+  .table-content {
+    height: 400px;
+    overflow: auto;
+  }
+  
+  .mat-column-actions {
+    width: 75px;
+    text-align: center;
+  }
+  
+  .btn-meus-pedidos {
+    background: $sr-bg-red;
+    color: $sr-text-color;
+  }
+  
+  .pedidos-pendentes {
+    margin: 0 24px;
+    padding: 0;
+    box-shadow: 0 3px 11px 0 $shadow-white, 0 3px 3px -2px $shadow-grey, 0 1px 8px 0 $shadow-dark-grey;
+  
+    &__header {
+      color: $grey;
+      display: flex;
+      justify-content: space-between;
+      padding: 24px 24px 8px;
+      margin-bottom: 0;
+    }
+  
+    &__title {
+      font-size: $fs-medium;
+      font-weight: $fw-lighter;
+      margin: 0;
+      line-height: 40px;
+    }
+  
+    &__content {
+      height: calc((fit-content) + 250px);
+      overflow-y: hidden;
+      overflow-x: scroll;
+  
+      @media (max-width: $small) {
+        height: auto;
+      }
+    }
+  }

@@ -1,0 +1,27 @@
+@import 'src/app/styles/variables';
+
+.btn-encerrar-atendimento {
+  background: $sr-bg-red;
+  color: $sr-text-color;
+}
+
+.container-comanda-dados {
+  display: flex;
+  margin: 0 8px;
+
+  @media (max-width: $normal) {
+    flex-wrap: wrap;
+  }
+}
+
+.card-comanda-dados {
+  width: 100%;
+
+  @media (max-width: $normal) {
+    width: 50%;
+  }
+
+  @media (max-width: $small) {
+    width: 100%;
+  }
+}
