@@ -56,7 +56,7 @@ export class NovaComandaFormComponent implements OnInit {
     const model: ComandaModel = {
 
       mesaId: this.comandaForm.get('mesaId').value,
-      quantidadePessoas: this.comandaForm.get('qtdeClientes').value
+      quantidadeCliente: this.comandaForm.get('qtdeClientes').value
     };
 
     this.service.criarComanda(model);

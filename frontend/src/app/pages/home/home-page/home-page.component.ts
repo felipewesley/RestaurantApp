@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { routes } from 'src/app/consts/routes';
+import { AuthService } from '../../auth/auth.service';
 import { CardInfo } from '../models/card-info.model';
+import { HomeService } from './home.service';
 
 @Component({
   selector: 'app-home-page',
@@ -10,29 +12,47 @@ import { CardInfo } from '../models/card-info.model';
 })
 export class HomePageComponent implements OnInit {
 
+  private comandaId: number;
+
   cards: CardInfo[];
 
   constructor (
-    private router: Router
+    private router: Router,
+    private activeRoute: ActivatedRoute,
+    private homeService: HomeService
   ) { }
 
   ngOnInit() {
+
+    /*this.activeRoute.params
+      .subscribe(
+        (params: Params) => {
+          console.warn('params:', params);
+          this.comandaId = +params['id']
+        }
+      );
+      */
+
+    // Buscando comanda pelo id
+    this.homeService.setGlobalComanda();
+
+    const comanda = this.homeService.comandaAtiva;
 
     this.cards = [
       {
         title: 'Mesa',
         icon: 'dashboard',
         content: [
-          { label: 'Número da mesa', value: 12 },
-          { label: 'Rodízios', value: '3 pessoas' }
+          { label: 'Número da mesa', value: comanda.mesaId },
+          { label: 'Rodízios', value: comanda.quantidadeClientes + ' pessoa(s)' }
         ],
         disabled: false
       }, {
         title: 'Comanda',
         icon: 'fact_check',
         content: [
-          { label: 'Código', value: '024512' },
-          { label: 'Valor atual', value: 'R$ 94.65' }
+          { label: 'Código', value: comanda.comandaId },
+          { label: 'Valor atual', value: 'R$' + comanda.valor }
         ],
       }
     ].filter(m => m.disabled !== true);

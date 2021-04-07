@@ -8,15 +8,13 @@ import { Router } from '@angular/router';
 import { ComandaModel } from './models/comanda.model';
 import { routes } from 'src/app/consts/routes';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AuthService {
 
   private api_url_mesa = environment.API_URL + '/mesa';
   private api_url_comanda = environment.API_URL + '/comanda'
 
-  comandaAtiva: number = 1234;
+  public comandaAtiva: number;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -34,7 +32,7 @@ export class AuthService {
 
   criarComanda(model: ComandaModel): void {
 
-    /*
+    // /*
     this.http.post<number>(this.api_url_comanda, model)
     .pipe(
       take(1)
@@ -46,8 +44,9 @@ export class AuthService {
         this.router.navigate([ comandaId, routes.HOME ]);
       }
     )
-    */
+    // */
 
+    /*
     this.http.post(this.api_url_comanda, model)
     .subscribe(
       () => {
@@ -56,6 +55,7 @@ export class AuthService {
         this.router.navigate([ this.comandaAtiva, routes.HOME ]);
       }
     )
+    */
 
   }
 
