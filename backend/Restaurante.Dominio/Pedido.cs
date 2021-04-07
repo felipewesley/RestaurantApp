@@ -18,8 +18,11 @@ namespace Restaurante.Dominio
         [ForeignKey(nameof(ProdutoId))]
         public Produto Produto { get; set; }
 
+        /*
         public int StatusId { get; set; } // FK
         [ForeignKey(nameof(StatusId))]
+        */
+        [Column("StatusId")]
         public StatusEnum StatusEnum { get; set; }
 
         public DateTime DataHoraRealizacao { get; set; }

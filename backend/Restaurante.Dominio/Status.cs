@@ -8,7 +8,7 @@ namespace Restaurante.Dominio
     {
         [Key]
         [Column("StatusId")]
-        public StatusEnum StatusId { get; set; } // PK
+        public StatusEnum StatusEnum { get; set; } // PK
 
         public string Descricao { get; set; }
     }

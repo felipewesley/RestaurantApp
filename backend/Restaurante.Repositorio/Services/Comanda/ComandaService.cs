@@ -24,7 +24,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             _mesaService = mesaService;
         }
 
-        public async Task Registrar(Models.FormularioModel model)
+        public async Task<int> Registrar(Models.FormularioModel model)
         {
             model.Validar();
 
@@ -34,7 +34,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             // Ocupando mesa
             await _mesaService.AtualizarStatus(model.MesaId, MesaEnum.Ocupar);
 
-            _context.Comanda.Add(new Dominio.Comanda
+            var comanda = new Dominio.Comanda
             {
                 MesaId = model.MesaId,
                 DataHoraEntrada = DateTime.Now,
@@ -42,9 +42,13 @@ namespace Restaurante.Repositorio.Services.Comanda
                 Valor = model.QuantidadeCliente * _mesaService.ValorRodizio,
                 Paga = false,
                 QuantidadeClientes = model.QuantidadeCliente
-            });
+            };
+
+            _context.Comanda.Add(comanda);
 
             await _context.SaveChangesAsync();
+
+            return comanda.ComandaId;
         }
 
         public async Task Alterar(Models.AlterarModel model)
@@ -131,12 +135,12 @@ namespace Restaurante.Repositorio.Services.Comanda
             return comanda;
         }
 
-        public async Task<CompletaModel> ObterCompleta(int mesaId)
+        public async Task<CompletaModel> ObterCompleta(int comandaId)
         {
             var comanda = await _context.Comanda
-                        .Where(c => c.MesaId == mesaId && !c.Paga)
+                        .Where(c => c.ComandaId == comandaId && !c.Paga)
                         .Include(c => c.Pedidos)
-                        .ThenInclude(c => c.StatusEnum)
+                        // .ThenInclude(c => c.StatusEnum)
                         .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Produto)
                         .ThenInclude(c => c.TipoProduto)

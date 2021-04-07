@@ -26,9 +26,9 @@ namespace Restaurante.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task Registrar(FormularioModel model)
+        public async Task<int> Registrar(FormularioModel model)
         {
-            await _service.Registrar(model);
+            return await _service.Registrar(model);
         }
 
         [HttpPut]
