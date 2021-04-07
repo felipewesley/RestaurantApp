@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { routes } from 'src/app/consts/routes';
 import { CardInfo } from '../models/card-info.model';
 
 @Component({
@@ -10,7 +12,9 @@ export class HomePageComponent implements OnInit {
 
   cards: CardInfo[];
 
-  constructor() { }
+  constructor (
+    private router: Router
+  ) { }
 
   ngOnInit() {
 
@@ -34,4 +38,8 @@ export class HomePageComponent implements OnInit {
     ].filter(m => m.disabled !== true);
   }
 
+  encerrarAtendimento(): void {
+
+    this.router.navigate([routes.AUTH]);
+  }
 }

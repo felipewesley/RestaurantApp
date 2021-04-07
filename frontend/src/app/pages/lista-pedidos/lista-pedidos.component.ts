@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusPedido } from 'src/app/consts/status-pedido.enum';
 import { PedidoModel } from 'src/app/shared/models/pedido.model';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
 
 const ELEMENT_DATA: PedidoModel[] = [
   {
@@ -30,7 +32,14 @@ const ELEMENT_DATA: PedidoModel[] = [
 @Component({
   selector: 'app-lista-pedidos',
   templateUrl: './lista-pedidos.component.html',
-  styleUrls: ['./lista-pedidos.component.scss']
+  styleUrls: ['./lista-pedidos.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ])
+  ]
 })
 export class ListaPedidosComponent implements OnInit {
 
