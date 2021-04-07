@@ -1,4 +1,5 @@
-﻿using Restaurante.Repositorio.Services.Produto.Models;
+﻿using Restaurante.Dominio.Enum;
+using Restaurante.Repositorio.Services.Produto.Models;
 
 namespace Restaurante.Repositorio.Services.Pedido.Models
 {
@@ -8,6 +9,6 @@ namespace Restaurante.Repositorio.Services.Pedido.Models
         public int PedidoId { get; set; }
         public BuscaModel Produto { get; set; }
         public int Quantidade { get; set; }
-        public string Status { get; set; }
+        public StatusEnum StatusEnum { get; set; }
     }
 }

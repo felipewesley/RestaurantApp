@@ -1,4 +1,4 @@
-﻿namespace Restaurante.Repositorio.Enum
+﻿namespace Restaurante.Dominio.Enum
 {
     public enum StatusEnum
     {

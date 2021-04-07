@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Restaurante.Dominio.Enum;
 using Restaurante.Repositorio.Contexto;
 using Restaurante.Repositorio.Enum;
 using Restaurante.Repositorio.Services.Pedido.Models;
@@ -40,7 +41,7 @@ namespace Restaurante.Repositorio.Services.Pedido
             {
                 ComandaId = model.ComandaId,
                 ProdutoId = model.ProdutoId,
-                StatusId = (int)StatusEnum.EmAndamento,
+                StatusEnum = StatusEnum.EmAndamento,
                 Quantidade = model.Quantidade,
             });
 
@@ -62,7 +63,7 @@ namespace Restaurante.Repositorio.Services.Pedido
             _ = comanda ?? throw new Exception("A comanda solicitada nao existe ou nao e possivel alterar seus pedidos");
 
             var pedido = comanda.Pedidos
-                        .Where(p => p.PedidoId == model.PedidoId && p.StatusId == (int)StatusEnum.EmAndamento)
+                        .Where(p => p.PedidoId == model.PedidoId && p.StatusEnum == StatusEnum.EmAndamento)
                         .FirstOrDefault();
 
             _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou nao pode mais ser alterado");
@@ -79,7 +80,7 @@ namespace Restaurante.Repositorio.Services.Pedido
         {
             var pedido = await _context.Pedido
                         .Where(p => p.PedidoId == pedidoId)
-                        .Include(p => p.Status)
+                        .Include(p => p.StatusEnum)
                         .Include(p => p.Produto)
                         .ThenInclude(p => p.TipoProduto)
                         .Select(p => new ListarModel()
@@ -87,7 +88,7 @@ namespace Restaurante.Repositorio.Services.Pedido
                             ComandaId = p.ComandaId,
                             PedidoId = p.PedidoId,
                             Quantidade = p.Quantidade,
-                            Status = p.Status.Descricao,
+                            StatusEnum = p.StatusEnum,
                             Produto = new BuscaModel()
                             {
                                 ProdutoId = p.ProdutoId,
@@ -108,7 +109,7 @@ namespace Restaurante.Repositorio.Services.Pedido
             var pedido = await _context.Pedido
                         .Where(p =>
                             p.PedidoId == pedidoId &&
-                            p.StatusId == (int)StatusEnum.EmAndamento // Somente pedidos em andamento podem ser cancelados
+                            p.StatusEnum == StatusEnum.EmAndamento // Somente pedidos em andamento podem ser cancelados
                         )
                         .Include(p => p.Produto)
                         .FirstOrDefaultAsync();
@@ -126,7 +127,7 @@ namespace Restaurante.Repositorio.Services.Pedido
             if (pedido.Produto.Valor > 0)
                 comanda.Valor -= pedido.Quantidade * pedido.Produto.Valor;
 
-            pedido.StatusId = (int)StatusEnum.Cancelado;
+            pedido.StatusEnum = StatusEnum.Cancelado;
 
             await _context.SaveChangesAsync();
         }

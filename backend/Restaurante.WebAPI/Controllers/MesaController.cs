@@ -22,7 +22,7 @@ namespace Restaurante.WebAPI.Controllers
             return await _service.Obter(mesaId);
         }
 
-        [HttpGet("listar")]
+        [HttpGet]
         public async Task<ICollection<BuscarModel>> Listar()
         {
             return await _service.Buscar();

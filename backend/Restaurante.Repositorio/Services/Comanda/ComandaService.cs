@@ -9,6 +9,7 @@ using Restaurante.Repositorio.Services.Pedido.Models;
 using Restaurante.Repositorio.Services.Produto.Models;
 using Restaurante.Repositorio.Enum;
 using System.Collections.Generic;
+using Restaurante.Dominio.Enum;
 
 namespace Restaurante.Repositorio.Services.Comanda
 {
@@ -86,9 +87,9 @@ namespace Restaurante.Repositorio.Services.Comanda
 
             // Atualizando: 'Em andamento' para 'Entregue'
             comanda.Pedidos
-                .Where(p => p.StatusId == (int)StatusEnum.EmAndamento)
+                .Where(p => p.StatusEnum == StatusEnum.EmAndamento)
                 .ToList()
-                .ForEach(p => p.StatusId = (int)StatusEnum.Entregue);
+                .ForEach(p => p.StatusEnum = StatusEnum.Entregue);
 
             comanda.Paga = true;
             comanda.DataHoraSaida = DateTime.Now;
@@ -104,7 +105,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             var valorFinal = _mesaService.ValorRodizio * quantidadeClientes;
 
             valorFinal += pedidos
-                .Where(p => p.StatusId != (int)StatusEnum.Cancelado && p.Produto.Valor > 0)
+                .Where(p => p.StatusEnum != StatusEnum.Cancelado && p.Produto.Valor > 0)
                 .Sum(p => p.Produto.Valor * p.Quantidade);
 
             return valorInicial == valorFinal;
@@ -135,7 +136,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             var comanda = await _context.Comanda
                         .Where(c => c.MesaId == mesaId && !c.Paga)
                         .Include(c => c.Pedidos)
-                        .ThenInclude(c => c.Status)
+                        .ThenInclude(c => c.StatusEnum)
                         .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Produto)
                         .ThenInclude(c => c.TipoProduto)
@@ -180,7 +181,7 @@ namespace Restaurante.Repositorio.Services.Comanda
                         QuantidadePermitida = p.Produto.QuantidadePermitida
                     },
                     Quantidade = p.Quantidade,
-                    Status = p.Status.Descricao
+                    StatusEnum = p.StatusEnum
                 })
                 .ToList();
 

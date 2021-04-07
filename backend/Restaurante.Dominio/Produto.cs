@@ -6,13 +6,15 @@ namespace Restaurante.Dominio
     public class Produto
     {
         [Key]
-        public int ProdutoId { get; set; }
+        public int ProdutoId { get; set; } // PK
+
         public string Nome { get; set; }
         public string Imagem { get; set; }
         public double Valor { get; set; }
         public bool Disponivel { get; set; }
         public int QuantidadePermitida { get; set; }
-        public int TipoProdutoId { get; set; }
+
+        public int TipoProdutoId { get; set; } // FK
         [ForeignKey(nameof(TipoProdutoId))]
         public TipoProduto TipoProduto { get; set; }
     }

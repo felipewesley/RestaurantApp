@@ -9,12 +9,15 @@ namespace Restaurante.Dominio
     public class Comanda
     {
         [Key]
-        public int ComandaId { get; set; }
-        public int MesaId { get; set; }
+        public int ComandaId { get; set; } // PK
+        
+        public int MesaId { get; set; } // FK
         [ForeignKey(nameof(MesaId))]
         public Mesa Mesa { get; set; }
+
         public DateTime DataHoraEntrada { get; set; }
         public DateTime? DataHoraSaida { get; set; }
+
         public double Valor { get; set; }
         public bool Paga { get; set; }
         public int QuantidadeClientes { get; set; }

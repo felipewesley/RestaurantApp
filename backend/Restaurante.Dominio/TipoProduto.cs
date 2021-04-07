@@ -5,7 +5,8 @@ namespace Restaurante.Dominio
     public class TipoProduto
     {
         [Key]
-        public int TipoProdutoId { get; set; }
+        public int TipoProdutoId { get; set; } // PK
+
         public string Descricao { get; set; }
     }
 }
