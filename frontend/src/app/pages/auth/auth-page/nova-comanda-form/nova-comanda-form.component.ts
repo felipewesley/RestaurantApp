@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { routes } from 'src/app/consts/routes';
 import { AuthService } from '../../auth.service';
+import { ComandaModel } from '../../models/comanda.model';
 import { MesaModel } from '../../models/mesa.model';
 
 @Component({
@@ -52,13 +53,13 @@ export class NovaComandaFormComponent implements OnInit {
     console.warn('Comanda criada!');
     console.log(this.comandaForm);
 
-    // /*
-    setTimeout(() => {
+    const model: ComandaModel = {
 
-      this.router.navigate([404])
+      mesaId: this.comandaForm.get('mesaId').value,
+      quantidadePessoas: this.comandaForm.get('qtdeClientes').value
+    };
 
-    }, 3000);
-    // */
+    this.service.criarComanda(model);
   }
 
   setFieldMesa(mesa: MesaModel): void {

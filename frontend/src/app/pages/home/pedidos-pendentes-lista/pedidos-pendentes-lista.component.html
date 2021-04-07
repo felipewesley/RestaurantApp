@@ -3,9 +3,15 @@
   <mat-card-title class="pedidos-pendentes__header">
       
       <h5 class="pedidos-pendentes__title">Pedidos pendentes</h5>
-      <button mat-flat-button class="btn-meus-pedidos" (click)="navigateToPedidos()">
-          Meus pedidos
-      </button>
+
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <button mat-flat-button (click)="navigateToPedidos()">
+            Meus pedidos
+        </button>
+        <button mat-raised-button class="btn-meus-pedidos" (click)="navigateToNovoPedido()">
+            Novo pedido
+        </button>
+      </div>
 
   </mat-card-title>
 

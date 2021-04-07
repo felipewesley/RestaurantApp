@@ -1,6 +1,17 @@
-<mat-card class="pedidos-pendentes">
+<mat-toolbar class="page-header" role="heading">
+  
+  <h1>
+    <mat-icon>list</mat-icon>
+    Meus pedidos
+  </h1>
+  
+  <button mat-mini-fab aria-label="Novo pedido" class="btn-novo-pedido" (click)="navigateToNovoPedido()">
+    <mat-icon>add</mat-icon>
+  </button>
 
-  <h4>Meus pedidos</h4>
+</mat-toolbar>
+
+<mat-card class="pedidos-pendentes">
 
   <div class="table-content">
 

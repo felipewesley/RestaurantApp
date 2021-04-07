@@ -1,5 +1,6 @@
 export enum routes {
     AUTH = 'auth',
     HOME = 'home',
-    PEDIDOS = 'pedidos'
+    PEDIDOS = 'pedidos',
+    NOVO_PEDIDO = 'novo'
 }

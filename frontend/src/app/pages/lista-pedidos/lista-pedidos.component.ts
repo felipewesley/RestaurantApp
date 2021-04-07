@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { StatusPedido } from 'src/app/consts/status-pedido.enum';
 import { PedidoModel } from 'src/app/shared/models/pedido.model';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { routes } from 'src/app/consts/routes';
 
 
 const ELEMENT_DATA: PedidoModel[] = [
@@ -47,7 +50,15 @@ export class ListaPedidosComponent implements OnInit {
   columnsToDisplay = ['pedidoId', 'produto', 'quantidade', 'status'];
   expandedElement: PedidoModel | null;
 
-  constructor() { }
+  constructor (
+    private router: Router,
+    private authService: AuthService
+  ) { }
+
+  navigateToNovoPedido(): void {
+
+    this.router.navigate([ this.authService.comandaAtiva, routes.NOVO_PEDIDO ]);
+  }
 
   ngOnInit() { }
 

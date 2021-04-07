@@ -1,3 +1,9 @@
+@import 'src/app/styles/colors';
+
+.btn-novo-pedido {
+    background: $sr-bg-red;
+}
+
 table {
     width: 100%;
 }

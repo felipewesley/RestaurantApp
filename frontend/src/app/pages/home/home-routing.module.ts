@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LayoutComponent } from 'src/app/template/layout/layout.component';
 import { ListaPedidosComponent } from '../lista-pedidos/lista-pedidos.component';
+import { NovoPedidoComponent } from '../novo-pedido/novo-pedido.component';
 
 const routes: Routes = [
     {
@@ -24,6 +25,9 @@ const routes: Routes = [
             }, {
                 path: 'pedidos',
                 component: ListaPedidosComponent
+            }, {
+                path: 'novo',
+                component: NovoPedidoComponent
             }
         ]
     }

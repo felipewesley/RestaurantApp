@@ -11,6 +11,7 @@ import { HomeModule } from './pages/home/home.module';
 import { ListaPedidosModule } from './pages/lista-pedidos/lista-pedidos.module';
 import { SharedModule } from './shared/shared.module';
 import { TemplateModule } from './template/template.module';
+import { NovoPedidoModule } from './pages/novo-pedido/novo-pedido.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { TemplateModule } from './template/template.module';
     TemplateModule,
     AuthModule,
     HomeModule,
-    ListaPedidosModule
+    ListaPedidosModule,
+    NovoPedidoModule
   ],
   exports: [
     
