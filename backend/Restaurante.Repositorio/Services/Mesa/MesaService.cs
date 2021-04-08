@@ -22,17 +22,17 @@ namespace Restaurante.Repositorio.Services.Mesa
             ValorRodizio = 45.0;
         }
 
-        public async Task AtualizarStatus(int mesaId, MesaEnum ocupada)
+        public async Task AtualizarStatus(int mesaId, MesaEnum novoStatus)
         {
-            bool ocupadaBool = (int)ocupada != 0;
+            bool atualStatus = novoStatus == MesaEnum.Ocupar;
 
             var mesa = await _context.Mesa
-                        .Where(m => m.MesaId == mesaId && m.Ocupada != ocupadaBool)
+                        .Where(m => m.MesaId == mesaId && m.Ocupada != atualStatus)
                         .FirstOrDefaultAsync();
 
             _ = mesa ?? throw new Exception("A mesa solicitada nao existe ou ja esta com o status desejado");
 
-            mesa.Ocupada = ocupadaBool;
+            mesa.Ocupada = atualStatus;
 
             await _context.SaveChangesAsync();
         }

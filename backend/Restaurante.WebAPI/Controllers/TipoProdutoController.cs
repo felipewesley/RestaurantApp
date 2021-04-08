@@ -6,7 +6,7 @@ using Restaurante.Repositorio.Services.TipoProduto.Models;
 
 namespace Restaurante.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class TipoProdutoController : ControllerBase
     {
@@ -14,7 +14,7 @@ namespace Restaurante.WebAPI.Controllers
 
         public TipoProdutoController(TipoProdutoService service) => _service = service;
 
-        [HttpGet("buscar")]
+        [HttpGet]
         public async Task<ICollection<BuscaModel>> Buscar()
         {
             return await _service.Listar();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -23,24 +24,27 @@ namespace Restaurante.Repositorio.Services.Pedido
                         .Where(c => c.ComandaId == model.ComandaId && !c.Paga)
                         .FirstOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou ja foi encerrada");
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
 
-            if (!_context.Produto.Any(p => 
-                    p.ProdutoId == model.ProdutoId && 
-                    (p.QuantidadePermitida == 0 || // Quantidade ilimititada
-                    p.QuantidadePermitida >= model.Quantidade) // Quantidade solicitada menor/igual quantidade permitida
-                )
-            )
-                throw new Exception("O produto solicitado nao existe ou a quantidade solicitada nao e permitida");
+            var produto = await _context.Produto
+                        .Where(p => p.ProdutoId == model.ProdutoId)
+                        .FirstOrDefaultAsync();
+
+            _ = produto ?? throw new Exception("O produto solicitado não existe");
+
+            // Quantidade solicitada maior que quantidade permitida)
+            if (model.Quantidade > produto.QuantidadePermitida && produto.QuantidadePermitida != 0)
+                throw new Exception("Quantidade solicitada não é permitida");
 
             // Se o produto não estiver incluso no rodizio, este pedido será somado ao valor total da comanda
-            if (model.ProdutoValor > 0)
-                comanda.Valor += model.Quantidade * model.ProdutoValor;
+            if (produto.Valor > 0)
+                comanda.Valor += model.Quantidade * produto.Valor;
 
             _context.Pedido.Add(new Dominio.Pedido()
             {
                 ComandaId = model.ComandaId,
                 ProdutoId = model.ProdutoId,
+                DataHoraRealizacao = DateTime.Now,
                 StatusEnum = StatusEnum.EmAndamento,
                 Quantidade = model.Quantidade,
             });
@@ -48,28 +52,24 @@ namespace Restaurante.Repositorio.Services.Pedido
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(AlterarModel model)
+        public async Task Alterar(int pedidoId, AlterarModel model)
         {
             model.Validar();
 
-            if (model.NovaQuantidade <= 0 || (model.NovaQuantidade > model.QuantidadePermitida && model.QuantidadePermitida != 0))
-                throw new Exception("A nova quantidade solicitada nao e permitida");
-
-            var comanda = await _context.Comanda
-                        .Include(c => c.Pedidos)
-                        .Where(c => c.ComandaId == model.ComandaId && !c.Paga && c.Pedidos.Count() > 0)
+            var pedido = await _context.Pedido
+                        .Include(p => p.Comanda)
+                        .Include(p => p.Produto)
+                        .Where(p => p.ComandaId == model.ComandaId && !p.Comanda.Paga && p.PedidoId == pedidoId && p.StatusEnum == StatusEnum.EmAndamento)
                         .FirstOrDefaultAsync();
-
-            _ = comanda ?? throw new Exception("A comanda solicitada nao existe ou nao e possivel alterar seus pedidos");
-
-            var pedido = comanda.Pedidos
-                        .Where(p => p.PedidoId == model.PedidoId && p.StatusEnum == StatusEnum.EmAndamento)
-                        .FirstOrDefault();
 
             _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou nao pode mais ser alterado");
 
-            if (model.ProdutoValor > 0)
-                comanda.Valor += (model.NovaQuantidade - pedido.Quantidade) * model.ProdutoValor;
+            if (model.NovaQuantidade > pedido.Produto.QuantidadePermitida && pedido.Produto.QuantidadePermitida != 0)
+                throw new Exception("A nova quantidade solicitada nao e permitida");
+
+            // Atualizar valor da comanda se o produto tiver valor
+            if (pedido.Produto.Valor > 0)
+                pedido.Comanda.Valor += (model.NovaQuantidade - pedido.Quantidade) * pedido.Produto.Valor;
 
             pedido.Quantidade = model.NovaQuantidade;
 
@@ -80,7 +80,6 @@ namespace Restaurante.Repositorio.Services.Pedido
         {
             var pedido = await _context.Pedido
                         .Where(p => p.PedidoId == pedidoId)
-                        .Include(p => p.StatusEnum)
                         .Include(p => p.Produto)
                         .ThenInclude(p => p.TipoProduto)
                         .Select(p => new ListarModel()
@@ -89,7 +88,7 @@ namespace Restaurante.Repositorio.Services.Pedido
                             PedidoId = p.PedidoId,
                             Quantidade = p.Quantidade,
                             StatusEnum = p.StatusEnum,
-                            Produto = new BuscaModel()
+                            Produto = new ProdutoModel()
                             {
                                 ProdutoId = p.ProdutoId,
                                 Nome = p.Produto.Nome,
@@ -130,6 +129,38 @@ namespace Restaurante.Repositorio.Services.Pedido
             pedido.StatusEnum = StatusEnum.Cancelado;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<ListarModel>> BuscarPorComanda(int comandaId)
+        {
+            var comanda = await _context.Comanda
+                        .Where(c => c.ComandaId == comandaId && !c.Paga)
+                        .Include(c => c.Pedidos)
+                        .ThenInclude(c => c.Produto)
+                        .ThenInclude(c => c.TipoProduto)
+                        .FirstOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
+
+            var pedidos = comanda.Pedidos
+                        .Select(p => new ListarModel
+                        {
+                            ComandaId = p.ComandaId,
+                            PedidoId = p.PedidoId,
+                            Quantidade = p.Quantidade,
+                            StatusEnum = p.StatusEnum,
+                            Produto = new ProdutoModel()
+                            {
+                                ProdutoId = p.ProdutoId,
+                                Nome = p.Produto.Nome,
+                                Valor = p.Produto.Valor,
+                                TipoProduto = p.Produto.TipoProduto.Descricao,
+                                QuantidadePermitida = p.Produto.QuantidadePermitida
+                            },
+                        })
+                        .ToList();
+
+            return pedidos;
         }
     }
 }

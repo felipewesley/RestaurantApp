@@ -7,7 +7,7 @@ namespace Restaurante.Repositorio.Services.Pedido.Models
     {
         public int ComandaId { get; set; }
         public int PedidoId { get; set; }
-        public BuscaModel Produto { get; set; }
+        public ProdutoModel Produto { get; set; }
         public int Quantidade { get; set; }
         public StatusEnum StatusEnum { get; set; }
     }

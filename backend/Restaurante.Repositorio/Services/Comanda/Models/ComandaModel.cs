@@ -4,7 +4,7 @@ using Restaurante.Repositorio.Services.Pedido.Models;
 
 namespace Restaurante.Repositorio.Services.Comanda.Models
 {
-    public class CompletaModel
+    public class ComandaModel
     {
         public int ComandaId { get; set; }
         public int MesaId { get; set; }

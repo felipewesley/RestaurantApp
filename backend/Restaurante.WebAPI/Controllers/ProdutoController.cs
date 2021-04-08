@@ -6,7 +6,7 @@ using Restaurante.Repositorio.Services.Produto.Models;
 
 namespace Restaurante.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ProdutoController : ControllerBase
     {
@@ -15,20 +15,20 @@ namespace Restaurante.WebAPI.Controllers
 
         public ProdutoController(ProdutoService service) => _service = service;
 
-        [HttpGet("{produtoId}")]
-        public async Task<BuscaModel> Obter(int produtoId)
-        {
-            return await _service.Obter(produtoId);
-        }
-
-        [HttpGet("buscar")]
-        public async Task<ICollection<BuscaModel>> Buscar()
+        [HttpGet]
+        public async Task<ICollection<ProdutoModel>> Buscar()
         {
             return await _service.Buscar();
         }
 
-        [HttpGet("buscar/{tipoProdutoId}")]
-        public async Task<ICollection<BuscaModel>> BuscarPorTipo(int tipoProdutoId)
+        [HttpGet("{produtoId}")]
+        public async Task<ProdutoModel> Obter(int produtoId)
+        {
+            return await _service.Obter(produtoId);
+        }
+
+        [HttpGet("tipo/{tipoProdutoId}")]
+        public async Task<ICollection<ProdutoModel>> BuscarPorTipo(int tipoProdutoId)
         {
             return await _service.BuscarPorTipo(tipoProdutoId);
         }

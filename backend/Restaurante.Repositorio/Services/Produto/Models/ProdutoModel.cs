@@ -1,6 +1,6 @@
 ﻿namespace Restaurante.Repositorio.Services.Produto.Models
 {
-    public class BuscaModel
+    public class ProdutoModel
     {
         public int ProdutoId { get; set; }
         public string Nome { get; set; }

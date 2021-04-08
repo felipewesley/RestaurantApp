@@ -7,7 +7,7 @@ using Restaurante.Repositorio.Enum;
 
 namespace Restaurante.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class MesaController : ControllerBase
     {
@@ -16,25 +16,25 @@ namespace Restaurante.WebAPI.Controllers
 
         public MesaController(MesaService service) => _service = service;
 
-        [HttpGet("{mesaId}")]
-        public async Task<BuscarModel> Obter(int mesaId)
-        {
-            return await _service.Obter(mesaId);
-        }
-
         [HttpGet]
         public async Task<ICollection<BuscarModel>> Listar()
         {
             return await _service.Buscar();
         }
 
-        [HttpPut("ocupar/{mesaId}")]
+        [HttpGet("{mesaId}")]
+        public async Task<BuscarModel> Obter(int mesaId)
+        {
+            return await _service.Obter(mesaId);
+        }
+
+        [HttpPut("{mesaId}/ocupar")]
         public async Task Ocupar(int mesaId)
         {
             await _service.AtualizarStatus(mesaId, MesaEnum.Ocupar);
         }
 
-        [HttpPut("desocupar/{mesaId}")]
+        [HttpPut("{mesaId}/desocupar")]
         public async Task Desocupar(int mesaId)
         {
             await _service.AtualizarStatus(mesaId, MesaEnum.Desocupar);

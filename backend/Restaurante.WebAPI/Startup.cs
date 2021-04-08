@@ -38,13 +38,6 @@ namespace Restaurante.WebAPI
             services.AddScoped<ProdutoService>();
             services.AddScoped<TipoProdutoService>();
 
-            // Instancia do contexto para referenciar nas services necessarias
-            RestauranteContexto contexto = new RestauranteContexto();
-
-            // Referenciando MesaService dentro de ComandaService
-            MesaService mesaService = new MesaService(contexto);
-            ComandaService comandaService = new ComandaService(contexto, mesaService);
-
             services.AddControllers();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

@@ -51,29 +51,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             return comanda.ComandaId;
         }
 
-        public async Task Alterar(Models.AlterarModel model)
-        {
-            model.Validar();
-
-            var mesa = await _mesaService.Obter(model.MesaId);
-
-            if (model.QuantidadeClientes <= 0 || model.QuantidadeClientes > mesa.Capacidade)
-                throw new Exception("Esta mesa nao suporta a quantidade de pessoas informada");
-            
-            var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == model.ComandaId && !c.Paga)
-                        .FirstOrDefaultAsync();
-
-            _ = comanda ?? throw new Exception("A comanda solicitada nao existe ou ja foi finalizada");
-
-            comanda.Valor += (model.QuantidadeClientes - comanda.QuantidadeClientes) * _mesaService.ValorRodizio;
-
-            comanda.QuantidadeClientes = model.QuantidadeClientes;
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task Encerrar(int comandaId, bool porcentagemGarcom = false)
+        public async Task Encerrar(int comandaId, EncerrarModel model)
         {
             var comanda = await _context.Comanda
                             .Where(c => c.ComandaId == comandaId && !c.Paga)
@@ -83,10 +61,18 @@ namespace Restaurante.Repositorio.Services.Comanda
 
             _ = comanda ?? throw new Exception("A comanda solicitada não foi encontrada ou ja foi encerrada");
 
-            if (!RecalcularValorTotal(comanda.Valor, comanda.QuantidadeClientes, comanda.Pedidos))
-                throw new Exception("O cálculo completo retornou um valor diferente");
+            // Colocar funcionalidade dentro de uma transaction
+            try
+            {
+                // Desocupando mesa
+                await _mesaService.AtualizarStatus(comanda.MesaId, MesaEnum.Desocupar);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("A comanda está em aberto mas a mesa relacionada já foi desocupada");
+            }
 
-            if (porcentagemGarcom)
+            if (model.PorcentagemGarcom)
                 comanda.Valor *= 1.1;
 
             // Atualizando: 'Em andamento' para 'Entregue'
@@ -98,69 +84,33 @@ namespace Restaurante.Repositorio.Services.Comanda
             comanda.Paga = true;
             comanda.DataHoraSaida = DateTime.Now;
 
-            // Desocupando mesa
-            await _mesaService.AtualizarStatus(comanda.MesaId, MesaEnum.Desocupar);
-
             await _context.SaveChangesAsync();
         }
 
-        public bool RecalcularValorTotal(double valorInicial, int quantidadeClientes, ICollection<Dominio.Pedido> pedidos)
-        {
-            var valorFinal = _mesaService.ValorRodizio * quantidadeClientes;
-
-            valorFinal += pedidos
-                .Where(p => p.StatusEnum != StatusEnum.Cancelado && p.Produto.Valor > 0)
-                .Sum(p => p.Produto.Valor * p.Quantidade);
-
-            return valorInicial == valorFinal;
-        }
-
-        public async Task<ResumidaModel> ObterResumida(int mesaId)
-        {
-            var comanda = await _context.Comanda
-                        .Where(c => c.MesaId == mesaId && !c.Paga)
-                        .Select(c => new ResumidaModel()
-                        {
-                            ComandaId = c.ComandaId,
-                            MesaId = c.MesaId,
-                            DataHoraEntrada = c.DataHoraEntrada,
-                            QuantidadeClientes = c.QuantidadeClientes,
-                            Valor = c.Valor
-                        })
-                        .OrderBy(c => c.ComandaId)
-                        .LastOrDefaultAsync();
-
-            _ = comanda ?? throw new Exception("A mesa informada nao tem nenhuma comanda ativa");
-
-            return comanda;
-        }
-
-        public async Task<CompletaModel> ObterCompleta(int comandaId)
+        public async Task<ComandaModel> Obter(int comandaId)
         {
             var comanda = await _context.Comanda
                         .Where(c => c.ComandaId == comandaId && !c.Paga)
-                        .Include(c => c.Pedidos)
-                        // .ThenInclude(c => c.StatusEnum)
                         .Include(c => c.Pedidos)
                         .ThenInclude(c => c.Produto)
                         .ThenInclude(c => c.TipoProduto)
                         .Select(c => new
                         {
-                            c.ComandaId,
-                            c.MesaId,
-                            c.DataHoraEntrada,
-                            c.QuantidadeClientes,
-                            c.Pedidos,
-                            c.Valor,
-                            c.Paga
+                            ComandaId = c.ComandaId,
+                            MesaId = c.MesaId,
+                            DataHoraEntrada = c.DataHoraEntrada,
+                            QuantidadeClientes = c.QuantidadeClientes,
+                            Pedidos = c.Pedidos,
+                            Valor = c.Valor,
+                            Paga = c.Paga
                         })
                         .OrderBy(c => c.ComandaId)
                         .LastOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A mesa informada nao tem nenhuma comanda ativa");
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
 
             // Cria uma model de Comanda sem a listagem de pedidos
-            var model = new CompletaModel()
+            var model = new ComandaModel()
             {
                 ComandaId = comanda.ComandaId,
                 MesaId = comanda.MesaId,
@@ -176,7 +126,7 @@ namespace Restaurante.Repositorio.Services.Comanda
                 {
                     ComandaId = p.ComandaId,
                     PedidoId = p.PedidoId,
-                    Produto = new BuscaModel()
+                    Produto = new ProdutoModel()
                     {
                         ProdutoId = p.ProdutoId,
                         Nome = p.Produto.Nome,
@@ -190,6 +140,19 @@ namespace Restaurante.Repositorio.Services.Comanda
                 .ToList();
 
             return model;
+        }
+
+        public async Task<ComandaModel> ObterPorMesa(int mesaId)
+        {
+            var comanda = await _context.Comanda
+                            .Where(c => c.MesaId == mesaId)
+                            .OrderBy(c => c.ComandaId)
+                            .LastOrDefaultAsync();
+
+            if (comanda == null || comanda.Paga)
+                throw new Exception("A mesa solicitada não tem comanda em aberto");
+
+            return await Obter(comanda.ComandaId);
         }
     }
 }

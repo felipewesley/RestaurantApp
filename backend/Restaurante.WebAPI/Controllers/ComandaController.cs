@@ -5,7 +5,7 @@ using Restaurante.Repositorio.Services.Comanda.Models;
 
 namespace Restaurante.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ComandaController : ControllerBase
     {
@@ -13,16 +13,16 @@ namespace Restaurante.WebAPI.Controllers
 
         public ComandaController(ComandaService service) => _service = service;
 
-        [HttpGet("obter/resumida/{comandaId}")]
-        public async Task<ResumidaModel> ObterResumida(int comandaId)
+        [HttpGet("{comandaId}")]
+        public async Task<ComandaModel> Obter(int comandaId)
         {
-            return await _service.ObterResumida(comandaId);
+            return await _service.Obter(comandaId);
         }
 
-        [HttpGet("obter/completa/{comandaId}")]
-        public async Task<CompletaModel> ObterCompleta(int comandaId)
+        [HttpGet("{mesaId}/mesa")]
+        public async Task<ComandaModel> ObterPorMesa(int mesaId)
         {
-            return await _service.ObterCompleta(comandaId);
+            return await _service.ObterPorMesa(mesaId);
         }
 
         [HttpPost]
@@ -31,16 +31,10 @@ namespace Restaurante.WebAPI.Controllers
             return await _service.Registrar(model);
         }
 
-        [HttpPut]
-        public async Task Alterar(AlterarModel model)
+        [HttpPut("{comandaId}/encerrar")]
+        public async Task Encerrar(int comandaId, EncerrarModel model)
         {
-            await _service.Alterar(model);
-        }
-
-        [HttpDelete("{comandaId}/{porcentagemGarcom?}")]
-        public async Task Encerrar(int comandaId, bool porcentagemGarcom = false)
-        {
-            await _service.Encerrar(comandaId, porcentagemGarcom);
+            await _service.Encerrar(comandaId, model);
         }
     }
 }

@@ -13,12 +13,12 @@ namespace Restaurante.Repositorio.Services.Produto
         private readonly RestauranteContexto _context;
         public ProdutoService(RestauranteContexto context) => _context = context;
 
-        public async Task<ICollection<BuscaModel>> Buscar()
+        public async Task<ICollection<ProdutoModel>> Buscar()
         {
             var produtos = await _context.Produto
                         .Where(p => p.Disponivel == true) // Apenas disponiveis
                         .Include(p => p.TipoProduto)
-                        .Select(p => new BuscaModel()
+                        .Select(p => new ProdutoModel()
                         {
                             ProdutoId = p.ProdutoId,
                             Nome = p.Nome,
@@ -30,12 +30,12 @@ namespace Restaurante.Repositorio.Services.Produto
             return produtos;
         }
 
-        public async Task<ICollection<BuscaModel>> BuscarPorTipo(int tipoId)
+        public async Task<ICollection<ProdutoModel>> BuscarPorTipo(int tipoId)
         {
             var produtos = await _context.Produto
                         .Where(p => p.Disponivel == true && p.TipoProdutoId == tipoId) // Disponiveis do tipo solicitado
                         .Include(p => p.TipoProduto)
-                        .Select(p => new BuscaModel()
+                        .Select(p => new ProdutoModel()
                         {
                             ProdutoId = p.ProdutoId,
                             Nome = p.Nome,
@@ -47,12 +47,12 @@ namespace Restaurante.Repositorio.Services.Produto
             return produtos;
         }
 
-        public async Task<BuscaModel> Obter(int produtoId)
+        public async Task<ProdutoModel> Obter(int produtoId)
         {
             var produto = await _context.Produto
                         .Where(p => p.ProdutoId == produtoId)
                         .Include(p => p.TipoProduto)
-                        .Select(p => new BuscaModel()
+                        .Select(p => new ProdutoModel()
                         {
                             ProdutoId = p.ProdutoId,
                             Nome = p.Nome,
