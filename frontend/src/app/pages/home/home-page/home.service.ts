@@ -5,17 +5,16 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeService {
 
-  api_url = environment.API_URL + '/comanda/obter/completa';
+  private api_url = environment.API_URL + '/comanda/obter/completa';
 
   comandaAtual = new BehaviorSubject<ComandaCompletaModel>(null);
-
-  comandaAtual$ = this.comandaAtual.asObservable();
 
   private comandaId: number;
   comandaAtiva: ComandaCompletaModel;
@@ -32,6 +31,9 @@ export class HomeService {
     this.comandaId = this.authService.comandaAtiva;
     
     this.http.get<ComandaCompletaModel>(this.api_url + '/' + this.comandaId)
+    .pipe(
+      take(1)
+    )
     .subscribe(
       comandaModel => {
 

@@ -1,0 +1,44 @@
+<mat-card fxLayout="row" class="card-container">
+  <mat-card-content class="card-container__content">
+    <div fxLayout="row" class="card-container__content__img">
+      <img mat-card-image class="card-img" src="assets/produtos/product-default.png" fxFlex="25">
+          <span fxFlex="10"></span>
+    </div>
+    <mat-card-header class="card-container__content__header">
+      <mat-card-title class="card-container__content__header__title"> {{ produto.nome }} </mat-card-title>
+      <mat-card-subtitle class="card-container__content__header__subtitle">
+        <span *ngIf="produto.quantidadePermitida === 0; else quantidadePermitida" class="quantidade-permitida">
+          Peça o quanto desejar
+        </span>
+        <ng-template #quantidadePermitida>
+          Quantidade máxima por pedido: 
+          <span class="quantidade-permitida">
+            {{ produto.quantidadePermitida }}
+            <span *ngIf="produto.quantidadePermitida === 1">item</span>
+            <span *ngIf="produto.quantidadePermitida > 1">itens</span>
+          </span>
+        </ng-template>
+        <div class="valor-produto">
+          <app-badge color="success" *ngIf="produto.valor === 0; else valorProduto">
+            Incluso no rodízio
+          </app-badge>
+          <ng-template #valorProduto>
+            <app-badge color="success">
+              {{ produto.valor | currency: 'BRL' }}
+            </app-badge>
+          </ng-template>
+        </div>
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card-content>
+  <mat-card-actions class="card-container__actions">
+      <button mat-raised-button color="warn" class="card-container__actions__btn-fazer-pedido">
+        <mat-icon>
+          add
+        </mat-icon>
+        <span class="card-container__actions__btn-fazer-pedido__label-pedir">
+          PEDIR ESTE
+        </span>
+      </button>
+  </mat-card-actions>
+</mat-card>

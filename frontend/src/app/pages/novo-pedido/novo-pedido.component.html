@@ -9,29 +9,23 @@
 
 <mat-card>
 
-  <div fxLayout="row" fxLayoutAlign="space-evenly center">
+  <div fxLayout="row" fxLayoutAlign="center center">
 
-    <div fxLayout="row" fxLayoutAlign="space-evenly center">
-      <div>
-        felipe
-      </div>
-      <div>
-        wesley
-      </div>
-      <div>
-        felipe
-      </div>
+    <div class="container-categorias">
+      <mat-chip-list aria-label="Categorias de produtos">
+        <app-tipo-produto-container *ngFor="let tipoProduto of categorias" [categoriaId]="tipoProduto.tipoProdutoId">
+          {{ tipoProduto.descricao }}
+        </app-tipo-produto-container>
+      </mat-chip-list>
     </div>
-    <div>
-      <mat-grid-list cols="2" rowHeight="1:1">
-        <mat-grid-tile>Sashimi</mat-grid-tile>
-        <mat-grid-tile>Yakisoba</mat-grid-tile>
-        <mat-grid-tile>Coca-Cola</mat-grid-tile>
-        <mat-grid-tile>Suco de laranja</mat-grid-tile>
-      </mat-grid-list>
+
+    <h4>{{ categoriaAtual }}</h4>
+
+    <div class="container-lista-produtos">
+      <app-produto-container *ngFor="let produto of produtos" [produto]="produto">
+      </app-produto-container>
     </div>
 
   </div>
-
 
 </mat-card>

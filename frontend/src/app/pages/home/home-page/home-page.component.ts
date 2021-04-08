@@ -24,14 +24,15 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit() {
 
-    /*this.activeRoute.params
-      .subscribe(
-        (params: Params) => {
-          console.warn('params:', params);
-          this.comandaId = +params['id']
-        }
-      );
-      */
+    /*
+    this.activeRoute.params
+    .subscribe(
+      (params: Params) => {
+        console.warn('params:', params);
+        this.comandaId = +params['id']
+      }
+    );
+    */
 
     // Buscando comanda pelo id
     this.homeService.setGlobalComanda();
@@ -43,22 +44,24 @@ export class HomePageComponent implements OnInit {
         title: 'Mesa',
         icon: 'dashboard',
         content: [
-          { label: 'Número da mesa', value: comanda.mesaId },
-          { label: 'Rodízios', value: comanda.quantidadeClientes + ' pessoa(s)' }
+          { label: 'Número da mesa', value: 'xx' },
+          { label: 'Rodízios', value: 'xx pessoa(s)' }
         ],
         disabled: false
       }, {
         title: 'Comanda',
         icon: 'fact_check',
         content: [
-          { label: 'Código', value: comanda.comandaId },
-          { label: 'Valor atual', value: 'R$' + comanda.valor }
+          { label: 'Código', value: 'xxxxxx' },
+          { label: 'Valor atual', value: 'R$ xx.xx' }
         ],
       }
     ].filter(m => m.disabled !== true);
   }
 
   encerrarAtendimento(): void {
+
+    // Abrir dialog de confirmacao de encerramento
 
     this.router.navigate([routes.AUTH]);
   }

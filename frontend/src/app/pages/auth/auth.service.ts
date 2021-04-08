@@ -16,10 +16,6 @@ export class AuthService {
 
   public comandaAtiva: number;
 
-  private httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  }
-
   constructor (
     private http: HttpClient,
     private router: Router
@@ -32,7 +28,6 @@ export class AuthService {
 
   criarComanda(model: ComandaModel): void {
 
-    // /*
     this.http.post<number>(this.api_url_comanda, model)
     .pipe(
       take(1)
@@ -40,22 +35,13 @@ export class AuthService {
     .subscribe(
       comandaId => {
 
-        this.comandaAtiva = comandaId;
-        this.router.navigate([ comandaId, routes.HOME ]);
-      }
-    )
-    // */
-
-    /*
-    this.http.post(this.api_url_comanda, model)
-    .subscribe(
-      () => {
-
         this.comandaAtiva = 1234;
         this.router.navigate([ this.comandaAtiva, routes.HOME ]);
+
+        // this.comandaAtiva = comandaId;
+        // this.router.navigate([ comandaId, routes.HOME ]);
       }
-    )
-    */
+    );
 
   }
 

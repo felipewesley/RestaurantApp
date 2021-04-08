@@ -1,0 +1,50 @@
+@import '/src/app/styles/colors.scss';
+@import '/src/app/styles/font.scss';
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &__content {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+
+        &__img > .card-img {
+            width: 95px;
+            margin: 0;
+        }
+    
+        &__header {
+            line-height: 1.25;
+            margin-bottom: 15px;
+
+            &__title {
+                border-bottom: solid 1px #ccc;
+            }
+            &__subtitle {
+                line-height: 1.75;
+            }
+            &__subtitle .valor-produto {
+                font-size: 1.25em;
+            }
+        }
+        &__header .quantidade-permitida {
+            color: $sr-text-green;
+        }
+    }
+
+    &__actions {
+        display: flex;
+
+        &__btn-fazer-pedido {
+            background: $sr-bg-red;
+            font-size: $fs-xxxl;
+
+            &__label-pedir {
+                font-size: $fs-xs;
+            }
+        }
+    }
+}
