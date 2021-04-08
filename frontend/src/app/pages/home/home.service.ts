@@ -19,7 +19,7 @@ export class HomeService {
 
   comanda$ = this._comanda.asObservable();
 
-  comandaAtiva: ComandaCompletaModel;
+  comandaAtiva: ComandaCompletaModel = {} as ComandaCompletaModel;
 
   constructor (
     private http: HttpClient,

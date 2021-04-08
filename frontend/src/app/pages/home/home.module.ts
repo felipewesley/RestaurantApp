@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { TemplateModule } from 'src/app/template/template.module';
@@ -17,6 +18,7 @@ import { CardInfoComponent } from './card-info/card-info.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CardMesaComponent } from './home-page/card-mesa/card-mesa.component';
 import { CardComandaComponent } from './home-page/card-comanda/card-comanda.component';
+import { CancelarPedidoComponent } from './dialogs/cancelar-pedido/cancelar-pedido.component';
 
 @NgModule({
   imports: [
@@ -29,14 +31,16 @@ import { CardComandaComponent } from './home-page/card-comanda/card-comanda.comp
     MatCardModule,
     MatTableModule,
     MatMenuModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule
   ],
   declarations: [
     HomePageComponent,
     PedidosPendentesListaComponent,
     CardInfoComponent,
     CardMesaComponent,
-    CardComandaComponent
+    CardComandaComponent,
+    CancelarPedidoComponent
   ],
   exports: [
     RouterModule

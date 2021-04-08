@@ -29,11 +29,11 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu" yPosition="above">
-                        <button mat-menu-item>
+                        <button mat-menu-item (click)="editarPedido()">
                             <mat-icon>edit</mat-icon>
                             <span>Editar</span>
                         </button>
-                        <button mat-menu-item disabled>
+                        <button mat-menu-item (click)="cancelarPedido(element)">
                             <mat-icon>close</mat-icon>
                             <span>Cancelar</span>
                         </button>

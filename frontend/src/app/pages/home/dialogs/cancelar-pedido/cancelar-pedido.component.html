@@ -1,0 +1,17 @@
+<h4 mat-dialog-title>Cancelamento de pedido</h4>
+<div mat-dialog-content>
+  <div>
+    Deseja realmente cancelar este pedido?
+  </div>
+  <div>
+    <ul>
+      <li>Código: {{ pedido.pedidoId }}</li>
+      <li>Produto: {{ pedido.produto.nome }}</li>
+      <li>Quantidade: {{ pedido.quantidade }}</li>
+    </ul>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Fechar</button>
+  <button mat-raised-button>Confirmar</button>
+</div>
