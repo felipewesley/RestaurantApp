@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { routes } from 'src/app/consts/routes';
-import { AuthService } from '../../auth/auth.service';
 import { CardInfo } from '../models/card-info.model';
-import { HomeService } from './home.service';
+import { HomeService } from '../home.service';
+import { ComandaCompletaModel } from '../models/comanda-completa.model';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home-page',
@@ -12,11 +13,11 @@ import { HomeService } from './home.service';
 })
 export class HomePageComponent implements OnInit {
 
-  private comandaId: number;
+  comanda: ComandaCompletaModel = {} as ComandaCompletaModel;
 
   cards: CardInfo[];
 
-  constructor (
+  constructor(
     private router: Router,
     private activeRoute: ActivatedRoute,
     private homeService: HomeService
@@ -24,45 +25,35 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit() {
 
-    /*
     this.activeRoute.params
-    .subscribe(
-      (params: Params) => {
-        console.warn('params:', params);
-        this.comandaId = +params['id']
-      }
-    );
-    */
+      .pipe(
+        switchMap(
+          (params: Params) => {
+            const comandaId = +params['comandaId'];
+            return this.homeService.setGlobalComanda(comandaId)
+          })
+      )
+      .subscribe(model => {
 
-    // Buscando comanda pelo id
-    this.homeService.setGlobalComanda();
+        this.comanda = model;
+        this.homeService.comandaAtiva = model;
 
-    const comanda = this.homeService.comandaAtiva;
+      }, error => {
 
-    this.cards = [
-      {
-        title: 'Mesa',
-        icon: 'dashboard',
-        content: [
-          { label: 'Número da mesa', value: 'xx' },
-          { label: 'Rodízios', value: 'xx pessoa(s)' }
-        ],
-        disabled: false
-      }, {
-        title: 'Comanda',
-        icon: 'fact_check',
-        content: [
-          { label: 'Código', value: 'xxxxxx' },
-          { label: 'Valor atual', value: 'R$ xx.xx' }
-        ],
-      }
-    ].filter(m => m.disabled !== true);
+        console.error(error);
+        this.router.navigate([ routes.AUTH ]);
+      })
+      ;
   }
 
   encerrarAtendimento(): void {
-
+  
     // Abrir dialog de confirmacao de encerramento
-
-    this.router.navigate([routes.AUTH]);
+  
+    this.homeService.encerrarAtendimento();
   }
 }
+
+
+
+

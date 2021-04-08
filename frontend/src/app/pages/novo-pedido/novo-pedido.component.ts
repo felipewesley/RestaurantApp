@@ -10,7 +10,7 @@ import { NovoPedidoService } from './novo-pedido.service';
 })
 export class NovoPedidoComponent implements OnInit {
 
-  categoriaAtual: string = "Bebidas";
+  categoriaAtual: TipoProdutoModel = {} as TipoProdutoModel;
 
   categorias: TipoProdutoModel[];
   produtos: ProdutoModel[];
@@ -28,16 +28,33 @@ export class NovoPedidoComponent implements OnInit {
       }
     );
 
-    this.buscarProdutos(0);
+    const categoriaInicial: TipoProdutoModel = {
+      tipoProdutoId: 1,
+      descricao: 'Bebidas'
+    }
+
+    // Busca inicial sempre será por bebidas
+    this.buscarProdutos({
+      tipoProdutoId: 1,
+      descricao: 'Bebidas'
+    });
+
+    this.categoriaAtual = categoriaInicial;
   }
 
-  buscarProdutos(categoriaId: number): void {
+  buscarProdutos(tipoProduto: TipoProdutoModel): void {
 
-    this.service.buscarProdutos(categoriaId).subscribe(
-      produtos => {
-        this.produtos = produtos;
-      }
-    );
+    if (this.categoriaAtual.tipoProdutoId !== tipoProduto.tipoProdutoId) {
+
+      this.categoriaAtual = tipoProduto;
+
+      this.service.buscarProdutos(tipoProduto.tipoProdutoId)
+      .subscribe(
+        produtos => {
+          this.produtos = produtos;
+        }
+      );
+    }
   }
 
 }

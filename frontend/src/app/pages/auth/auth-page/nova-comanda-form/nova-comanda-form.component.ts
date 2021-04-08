@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
-import { routes } from 'src/app/consts/routes';
 import { AuthService } from '../../auth.service';
-import { ComandaModel } from '../../models/comanda.model';
+import { ComandaFormularioModel } from '../../models/comanda-formulario.model';
 import { MesaModel } from '../../models/mesa.model';
 
 @Component({
@@ -19,7 +17,6 @@ export class NovaComandaFormComponent implements OnInit {
   comandaForm: FormGroup;
 
   constructor (
-    private router: Router,
     private service: AuthService
   ) { }
 
@@ -50,10 +47,7 @@ export class NovaComandaFormComponent implements OnInit {
 
   onSubmit(): void {
 
-    console.warn('Comanda criada!');
-    console.log(this.comandaForm);
-
-    const model: ComandaModel = {
+    const model: ComandaFormularioModel = {
 
       mesaId: this.comandaForm.get('mesaId').value,
       quantidadeCliente: this.comandaForm.get('qtdeClientes').value

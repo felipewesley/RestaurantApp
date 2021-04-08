@@ -11,7 +11,7 @@ import { TipoProdutoModel } from './models/tipo-produto.model';
 export class NovoPedidoService {
 
   private api_url_categorias = environment.API_URL + '/tipoProduto';
-  private api_url_produtos = environment.API_URL + '/produtos';
+  private api_url_produtos = environment.API_URL + '/produto';
 
   constructor (
     private http: HttpClient
@@ -24,7 +24,7 @@ export class NovoPedidoService {
 
   buscarProdutos(categoriaId: number): Observable<ProdutoModel[]> {
 
-    return this.http.get<ProdutoModel[]>(this.api_url_produtos);
+    return this.http.get<ProdutoModel[]>(this.api_url_produtos + '/tipo/' + categoriaId);
   }
 
 }

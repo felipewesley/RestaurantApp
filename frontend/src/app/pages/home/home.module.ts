@@ -15,6 +15,8 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { PedidosPendentesListaComponent } from './pedidos-pendentes-lista/pedidos-pendentes-lista.component';
 import { CardInfoComponent } from './card-info/card-info.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { CardMesaComponent } from './home-page/card-mesa/card-mesa.component';
+import { CardComandaComponent } from './home-page/card-comanda/card-comanda.component';
 
 @NgModule({
   imports: [
@@ -32,7 +34,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
   declarations: [
     HomePageComponent,
     PedidosPendentesListaComponent,
-    CardInfoComponent
+    CardInfoComponent,
+    CardMesaComponent,
+    CardComandaComponent
   ],
   exports: [
     RouterModule

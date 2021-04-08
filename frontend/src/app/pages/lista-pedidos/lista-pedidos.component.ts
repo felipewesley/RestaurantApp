@@ -5,32 +5,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { routes } from 'src/app/consts/routes';
-
-
-const ELEMENT_DATA: PedidoModel[] = [
-  {
-    pedidoId: 123,
-    produto: 'Sashimi',
-    quantidade: 3,
-    dataHora: new Date(),
-    valor: 0.0,
-    status: StatusPedido.EmAndamento
-  }, {
-    pedidoId: 456,
-    produto: 'Yakisoba',
-    quantidade: 2,
-    dataHora: new Date(),
-    valor: 7.5,
-    status: StatusPedido.Cancelado
-  }, {
-    pedidoId: 789,
-    produto: 'Coca-Cola',
-    quantidade: 3,
-    dataHora: new Date(),
-    valor: 14.95,
-    status: StatusPedido.Entregue
-  }
-];
+import { HomeService } from '../home/home.service';
+import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 
 @Component({
   selector: 'app-lista-pedidos',
@@ -46,20 +22,35 @@ const ELEMENT_DATA: PedidoModel[] = [
 })
 export class ListaPedidosComponent implements OnInit {
 
-  dataSource = ELEMENT_DATA;
+  dataSource;
   columnsToDisplay = ['pedidoId', 'produto', 'quantidade', 'status'];
   expandedElement: PedidoModel | null;
 
+  private pedidos: PedidoListaModel[];
+
   constructor (
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private homeService: HomeService
   ) { }
 
   navigateToNovoPedido(): void {
 
-    this.router.navigate([ this.authService.comandaAtiva, routes.NOVO_PEDIDO ]);
+    this.router.navigate([ this.authService.comandaId, routes.NOVO_PEDIDO ]);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+
+    this.homeService.obterPedidosPendentes(this.authService.comandaId)
+    .subscribe(pedidoList => {
+
+      console.warn('Pedidos obtidos!');
+      console.log('Listagem pedidos:', pedidoList);
+
+      this.pedidos = pedidoList;
+      this.dataSource = pedidoList;
+    });
+    
+  }
 
 }

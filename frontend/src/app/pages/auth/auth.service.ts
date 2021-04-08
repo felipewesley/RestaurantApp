@@ -5,8 +5,9 @@ import { environment } from 'src/environments/environment';
 import { MesaModel } from './models/mesa.model';
 import { filter, map, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { ComandaModel } from './models/comanda.model';
+import { ComandaFormularioModel } from './models/comanda-formulario.model';
 import { routes } from 'src/app/consts/routes';
+import { ComandaCompletaModel } from '../home/models/comanda-completa.model';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
   private api_url_mesa = environment.API_URL + '/mesa';
   private api_url_comanda = environment.API_URL + '/comanda'
 
-  public comandaAtiva: number;
+  comandaId: number;
 
   constructor (
     private http: HttpClient,
@@ -26,7 +27,7 @@ export class AuthService {
     return this.http.get<MesaModel[]>(this.api_url_mesa);
   }
 
-  criarComanda(model: ComandaModel): void {
+  criarComanda(model: ComandaFormularioModel): void {
 
     this.http.post<number>(this.api_url_comanda, model)
     .pipe(
@@ -35,14 +36,35 @@ export class AuthService {
     .subscribe(
       comandaId => {
 
-        this.comandaAtiva = 1234;
-        this.router.navigate([ this.comandaAtiva, routes.HOME ]);
+        this.comandaId = comandaId;
+        this.router.navigate([ routes.HOME, comandaId ]);
 
-        // this.comandaAtiva = comandaId;
-        // this.router.navigate([ comandaId, routes.HOME ]);
+        console.warn('Comanda criada!');
+        console.log('Comanda ID:', comandaId);
       }
     );
+  }
 
+  retomarComanda(mesaId): void {
+
+    this.http.get<ComandaCompletaModel>(this.api_url_comanda + '/' + mesaId + '/mesa')
+    .pipe(
+      take(1)
+    )
+    .subscribe(
+      model => {
+
+        this.comandaId = model.comandaId;
+        this.router.navigate([ routes.HOME, model.comandaId ]);
+
+        console.warn('Comanda retomada!');
+        console.log(model);
+
+      }, error => {
+
+        console.error(error);
+      }
+    );
   }
 
 }

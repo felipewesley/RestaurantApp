@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { LayoutComponent } from './template/layout/layout.component';
 
 const routes: Routes = [
   {
@@ -11,10 +12,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule)
   }, {
     path: 'home',
+    component: LayoutComponent,
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
-  }, {
-    path: 'pedidos',
-    loadChildren: () => import('./pages/lista-pedidos/lista-pedidos.module').then(m => m.ListaPedidosModule)
   }
 ];
 

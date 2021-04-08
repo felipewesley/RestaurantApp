@@ -1,43 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { routes } from 'src/app/consts/routes';
+import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 
-import { StatusPedido } from 'src/app/consts/status-pedido.enum';
-import { PedidoModel } from '../../../shared/models/pedido.model';
-import { AuthService } from '../../auth/auth.service';
-
-const ELEMENT_DATA: PedidoModel[] = [
-  {
-    pedidoId: 12345,
-    produto: 'Sashimi',
-    quantidade: 3,
-    status: StatusPedido.EmAndamento,
-    valor: 0.0,
-    actions: null
-  }, {
-    pedidoId: 34567,
-    produto: 'Coca-Cola',
-    quantidade: 2,
-    status: StatusPedido.Entregue,
-    valor: 9.98,
-    actions: true
-  }, {
-    pedidoId: 12345,
-    produto: 'Sashimi',
-    quantidade: 3,
-    status: StatusPedido.Cancelado,
-    valor: 0.0,
-    actions: null
-  }, {
-    pedidoId: 34567,
-    produto: 'Coca-Cola',
-    quantidade: 2,
-    status: null,
-    valor: 9.98,
-    actions: true
-  }
-];
+import { HomeService } from '../home.service';
 
 @Component({
   selector: 'app-pedidos-pendentes-lista',
@@ -46,24 +13,41 @@ const ELEMENT_DATA: PedidoModel[] = [
 })
 export class PedidosPendentesListaComponent implements OnInit {
 
-  displayedColumns: string[] = ['pedidoId', 'produto', 'quantidade', 'valor', 'status', 'actions'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ['actions', 'pedidoId', 'produto', 'quantidade', 'valor', 'status'];
+  dataSource;
+
+  @Input() comandaId: number;
+
+  pedidos: PedidoListaModel[] = [];
 
   constructor (
     private router: Router,
-    private authService: AuthService
+    private activeRoute: ActivatedRoute,
+    private homeService: HomeService
   ) { }
-
+  
   navigateToPedidos(): void {
     
-    this.router.navigate([ this.authService.comandaAtiva, routes.PEDIDOS ]);
+    this.router.navigate([ routes.PEDIDOS ], { relativeTo: this.activeRoute });
   }
 
   navigateToNovoPedido(): void {
 
-    this.router.navigate([ this.authService.comandaAtiva, routes.NOVO_PEDIDO ]);
+    this.router.navigate([ routes.NOVO_PEDIDO ], { relativeTo: this.activeRoute });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+
+    this.homeService.obterPedidosPendentes(this.comandaId)
+    .subscribe(pedidoList => {
+
+      console.warn('Pedidos obtidos!');
+      console.log('Listagem pedidos:', pedidoList);
+
+      this.pedidos = pedidoList;
+      this.dataSource = pedidoList;
+    });
+    
+  }
 
 }

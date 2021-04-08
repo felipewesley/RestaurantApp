@@ -1,0 +1,50 @@
+<mat-card class="visits-chart">
+  <mat-card-title class="visits-chart__header">
+      <h5 class="visits-chart__title">
+          <mat-icon class="card-title-icon">fact_check</mat-icon>
+          Dados da comanda
+      </h5>
+  </mat-card-title>
+  <hr class="divisor">
+  <mat-card-content class="visits-chart__content">
+      <div class="visits-chart__content-info">
+          <h6 class="visits-chart__content-info-title">
+              <span class="info-title-label">
+                  Código: 
+              </span>
+              {{ comanda.comandaId }}
+          </h6>
+      </div>
+      <div class="visits-chart__content-info">
+        <h6 class="visits-chart__content-info-title">
+            <span class="info-title-label">
+                Quantidade de rodízios: 
+            </span>
+            {{ comanda.quantidadeClientes }}
+        </h6>
+      </div>
+      <div class="visits-chart__content-info">
+        <h6 class="visits-chart__content-info-title">
+            <span class="info-title-label">
+                Valor atual: 
+            </span>
+            {{ comanda.valor | currency: 'BRL' }}
+        </h6>
+      </div>
+      <div class="visits-chart__content-info">
+        <h6 class="visits-chart__content-info-title">
+            <span class="info-title-label">
+                Status: 
+            </span>
+            <app-badge color="success" *ngIf="comanda.paga; else comandaAberta">
+              Finalizada
+            </app-badge>
+            <ng-template #comandaAberta>
+              <app-badge color="success">
+                Em aberto
+              </app-badge>
+            </ng-template>
+        </h6>
+      </div>
+  </mat-card-content>
+</mat-card>

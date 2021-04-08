@@ -14,7 +14,9 @@ import { ListaPedidosModule } from './pages/lista-pedidos/lista-pedidos.module';
 import { SharedModule } from './shared/shared.module';
 import { TemplateModule } from './template/template.module';
 import { NovoPedidoModule } from './pages/novo-pedido/novo-pedido.module';
+
 import { AuthService } from './pages/auth/auth.service';
+import { HomeService } from './pages/home/home.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,10 @@ import { AuthService } from './pages/auth/auth.service';
     NovoPedidoModule
   ],
   exports: [],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    HomeService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

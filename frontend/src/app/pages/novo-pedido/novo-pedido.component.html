@@ -13,13 +13,15 @@
 
     <div class="container-categorias">
       <mat-chip-list aria-label="Categorias de produtos">
-        <app-tipo-produto-container *ngFor="let tipoProduto of categorias" [categoriaId]="tipoProduto.tipoProdutoId">
+        <mat-chip *ngFor="let tipoProduto of categorias" (click)="buscarProdutos(tipoProduto)">
           {{ tipoProduto.descricao }}
-        </app-tipo-produto-container>
+        </mat-chip>
       </mat-chip-list>
     </div>
 
-    <h4>{{ categoriaAtual }}</h4>
+    <hr>
+
+    <h4 class="lista-produtos-title">{{ categoriaAtual.descricao }}</h4>
 
     <div class="container-lista-produtos">
       <app-produto-container *ngFor="let produto of produtos" [produto]="produto">
