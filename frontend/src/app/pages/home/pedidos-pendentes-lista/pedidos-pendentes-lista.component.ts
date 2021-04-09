@@ -9,8 +9,6 @@ import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 import { CancelarPedidoDialogComponent } from '../dialogs/cancelar-pedido-dialog/cancelar-pedido-dialog.component';
 import { EditarPedidoDialogComponent } from '../dialogs/editar-pedido-dialog/editar-pedido-dialog.component';
 
-import { AuthService } from '../../auth/auth.service';
-import { HomeService } from '../home.service';
 import { PedidoService } from '../../novo-pedido/pedido.service';
 
 @Component({
@@ -30,23 +28,17 @@ export class PedidosPendentesListaComponent implements OnInit {
   constructor (
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private homeService: HomeService,
-    private authService: AuthService,
     private pedidoService: PedidoService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit() {
 
-    // Chamar service de pedidos onde existem os observables
-
     this.pedidoService.pedidos$
     .pipe(
       // map(p => p.statusEnum === StatusPedido.Cancelado)
     )
     .subscribe(pedidos => {
-
-      console.warn('Pedidos obtidos by pedidos$.subscribe()');
 
       this.pedidos = pedidos.filter(p => p.statusEnum == StatusPedido.EmAndamento);
       this.dataSource = this.pedidos;
@@ -55,14 +47,11 @@ export class PedidosPendentesListaComponent implements OnInit {
 
   editarPedido(pedido: PedidoListaModel): void {
 
-    // Implementar chamada de dialog
-    console.warn('Editar pedido called!');
     this.dialog.open(EditarPedidoDialogComponent, { data: pedido });
   }
 
   cancelarPedido(pedido: PedidoListaModel): void {
 
-    console.warn('Cancelar pedido called!');
     this.dialog.open(CancelarPedidoDialogComponent, { data: pedido });
   }
 

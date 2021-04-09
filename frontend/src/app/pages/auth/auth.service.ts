@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MesaModel } from './models/mesa.model';
-import { filter, map, take } from 'rxjs/operators';
+import { filter, map, take, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ComandaFormularioModel } from './models/comanda-formulario.model';
 import { routes } from 'src/app/consts/routes';
@@ -27,17 +27,13 @@ export class AuthService {
     return this.http.get<MesaModel[]>(this.api_url_mesa);
   }
 
-  criarComanda(model: ComandaFormularioModel): void {
+  criarComanda(model: ComandaFormularioModel): Observable<number> {
 
-    this.http.post<number>(this.api_url_comanda, model)
+    return this.http.post<number>(this.api_url_comanda, model)
     .pipe(
+      tap(x => this.comandaId = x),
       take(1)
-    )
-    .subscribe(comandaId => {
-
-      this.comandaId = comandaId;
-      this.router.navigate([ routes.HOME, comandaId ]);
-    });
+    );
   }
 
   retomarComanda(mesaId: number): void {
