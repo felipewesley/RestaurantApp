@@ -30,7 +30,7 @@ export class HomePageComponent implements OnInit {
         switchMap(
           (params: Params) => {
             const comandaId = +params['comandaId'];
-            return this.homeService.setGlobalComanda(comandaId)
+            return this.homeService.setGlobalComanda(comandaId);
           })
       )
       .subscribe(model => {
@@ -48,7 +48,7 @@ export class HomePageComponent implements OnInit {
 
   encerrarAtendimento(): void {
   
-    // Abrir dialog de confirmacao de encerramento
+    // Chamar dialog de confirmacao de encerramento
   
     this.homeService.encerrarAtendimento();
   }

@@ -1,26 +1,18 @@
 <mat-card class="card-mesas">
 
   <span class="card-mesas__title">Mesas disponíveis</span>
-  <mat-grid-list cols="5" rowHeight="1:1">
-    <mat-grid-tile *ngFor="let mesa of mesasDisponiveis">
-      <app-badge color="success" (click)="setFieldMesa(mesa)"> {{ mesa.mesaId }} </app-badge>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <mat-chip-list aria-label="Mesas disponíveis">
+    <mat-chip *ngFor="let mesa of mesasDisponiveis" (click)="setFieldMesa(mesa)" color="primary">{{ mesa.mesaId }}
+    </mat-chip>
+  </mat-chip-list>
 
 </mat-card>
 
-
 <form class="form" [formGroup]="comandaForm" (ngSubmit)="onSubmit()">
-  
+
   <mat-form-field class="form__input">
     <mat-label>Número da mesa</mat-label>
-    <input matInput 
-      type="number" 
-      placeholder="Mesa" 
-      min="1" 
-      max="16" 
-      formControlName="mesaId"
-    >
+    <input matInput type="number" placeholder="Mesa" min="1" max="16" formControlName="mesaId">
     <mat-error *ngIf="!comandaForm.get('mesaId').valid && comandaForm.get('mesaId').touched">
       Número da mesa inválido
     </mat-error>
@@ -28,20 +20,15 @@
 
   <mat-form-field class="form__input">
     <mat-label>Quantidade de clientes</mat-label>
-    <input matInput 
-      type="number"
-      placeholder="Quantidade"
-      min="1"
-      formControlName="qtdeClientes"
-    >
+    <input matInput type="number" placeholder="Quantidade" min="1" formControlName="qtdeClientes">
     <mat-error *ngIf="comandaForm.get('qtdeClientes').touched">
       Quantidade clientes inválida
     </mat-error>
   </mat-form-field>
 
   <div class="form-actions">
-    <!-- <button class="form-actions__iniciar-comanda" mat-raised-button color="primary" type="submit" [disabled]="!comandaForm.valid"> -->
-    <button class="form-actions__iniciar-comanda" mat-raised-button color="primary" type="submit">
+    <button class="form-actions__iniciar-comanda" mat-raised-button color="primary" type="submit"
+      [disabled]="!comandaForm.valid">
       Iniciar atendimento
     </button>
   </div>

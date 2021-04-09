@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Restaurante.Dominio.Enum;
 using Restaurante.Repositorio.Contexto;
-using Restaurante.Repositorio.Enum;
 using Restaurante.Repositorio.Services.Pedido.Models;
 using Restaurante.Repositorio.Services.Produto.Models;
 
@@ -16,7 +15,7 @@ namespace Restaurante.Repositorio.Services.Pedido
         private readonly RestauranteContexto _context;
         public PedidoService(RestauranteContexto context) => _context = context;
 
-        public async Task Registrar(FormularioModel model)
+        public async Task<ListarModel> Registrar(FormularioModel model)
         {
             model.Validar();
 
@@ -28,6 +27,7 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             var produto = await _context.Produto
                         .Where(p => p.ProdutoId == model.ProdutoId)
+                        .Include(p => p.TipoProduto)
                         .FirstOrDefaultAsync();
 
             _ = produto ?? throw new Exception("O produto solicitado não existe");
@@ -40,25 +40,46 @@ namespace Restaurante.Repositorio.Services.Pedido
             if (produto.Valor > 0)
                 comanda.Valor += model.Quantidade * produto.Valor;
 
-            _context.Pedido.Add(new Dominio.Pedido()
+            var pedido = new Dominio.Pedido()
             {
                 ComandaId = model.ComandaId,
                 ProdutoId = model.ProdutoId,
                 DataHoraRealizacao = DateTime.Now,
                 StatusEnum = StatusEnum.EmAndamento,
                 Quantidade = model.Quantidade,
-            });
+            };
+
+            _context.Pedido.Add(pedido);
 
             await _context.SaveChangesAsync();
+
+            var pedidoModel = new ListarModel()
+            {
+                ComandaId = pedido.ComandaId,
+                PedidoId = pedido.PedidoId,
+                Produto = new ProdutoModel()
+                {
+                    Nome = pedido.Produto.Nome,
+                    ProdutoId = pedido.Produto.ProdutoId,
+                    QuantidadePermitida = pedido.Produto.QuantidadePermitida,
+                    TipoProduto = pedido.Produto.TipoProduto.Descricao,
+                    Valor = pedido.Produto.Valor
+                },
+                Quantidade = pedido.Quantidade,
+                StatusEnum = pedido.StatusEnum
+            };
+
+            return pedidoModel;
         }
 
-        public async Task Alterar(int pedidoId, AlterarModel model)
+        public async Task<ListarModel> Alterar(int pedidoId, AlterarModel model)
         {
             model.Validar();
 
             var pedido = await _context.Pedido
                         .Include(p => p.Comanda)
                         .Include(p => p.Produto)
+                        .ThenInclude(p => p.TipoProduto)
                         .Where(p => p.ComandaId == model.ComandaId && !p.Comanda.Paga && p.PedidoId == pedidoId && p.StatusEnum == StatusEnum.EmAndamento)
                         .FirstOrDefaultAsync();
 
@@ -74,6 +95,24 @@ namespace Restaurante.Repositorio.Services.Pedido
             pedido.Quantidade = model.NovaQuantidade;
 
             await _context.SaveChangesAsync();
+
+            var pedidoAtualizado = new ListarModel()
+            {
+                ComandaId = pedido.ComandaId,
+                PedidoId = pedido.PedidoId,
+                Produto = new ProdutoModel
+                {
+                    ProdutoId = pedido.Produto.ProdutoId,
+                    Nome = pedido.Produto.Nome,
+                    QuantidadePermitida = pedido.Produto.QuantidadePermitida,
+                    TipoProduto = pedido.Produto.TipoProduto.Descricao,
+                    Valor = pedido.Produto.Valor
+                },
+                Quantidade = pedido.Quantidade,
+                StatusEnum = pedido.StatusEnum
+            };
+
+            return pedidoAtualizado;
         }
 
         public async Task<ListarModel> Obter(int pedidoId)

@@ -1,12 +1,13 @@
 <form class="form" [formGroup]="retomarForm" (ngSubmit)="onSubmit()">
-  
+
   <mat-form-field class="form__input">
     <mat-label>Número da mesa</mat-label>
     <input matInput formControlName="mesaId" type="number" min="1" max="16" placeholder="Mesa" appearance="fill">
   </mat-form-field>
 
   <div class="form-actions">
-    <button class="form-actions__retomar-comanda" mat-raised-button color="primary" type="submit" [disabled]="!retomarForm.valid">
+    <button class="form-actions__retomar-comanda" mat-raised-button color="primary" type="submit"
+      [disabled]="!retomarForm.valid">
       Retomar atendimento
     </button>
   </div>

@@ -1,5 +1,9 @@
 @import 'src/app/styles/colors';
 
+.detalhes-pedido {
+    display: flex;
+}
+
 .btn-novo-pedido {
     background: $sr-bg-red;
 }
@@ -27,6 +31,9 @@ tr.example-element-row:not(.example-expanded-row):active {
 .example-element-detail {
     overflow: hidden;
     display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    line-height: 1.5;
 }
 
 .example-element-diagram {

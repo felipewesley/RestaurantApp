@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { ProdutoModel } from 'src/app/shared/models/produto.model';
 import { TipoProdutoModel } from './models/tipo-produto.model';
 import { NovoPedidoService } from './novo-pedido.service';
@@ -15,25 +16,19 @@ export class NovoPedidoComponent implements OnInit {
   categorias: TipoProdutoModel[];
   produtos: ProdutoModel[];
 
-  constructor (
-    private service: NovoPedidoService
-  ) { }
+  constructor (private service: NovoPedidoService) { }
 
   ngOnInit() {
 
-    this.service.obterCategorias().subscribe(
-      categorias => {
+    this.service.obterCategorias()
+      .subscribe(categorias => this.categorias = categorias);
 
-        this.categorias = categorias;
-      }
-    );
-
+    // Busca inicial sempre será por bebidas
     const categoriaInicial: TipoProdutoModel = {
       tipoProdutoId: 1,
       descricao: 'Bebidas'
     }
 
-    // Busca inicial sempre será por bebidas
     this.buscarProdutos({
       tipoProdutoId: 1,
       descricao: 'Bebidas'
@@ -47,13 +42,9 @@ export class NovoPedidoComponent implements OnInit {
     if (this.categoriaAtual.tipoProdutoId !== tipoProduto.tipoProdutoId) {
 
       this.categoriaAtual = tipoProduto;
-
+      
       this.service.buscarProdutos(tipoProduto.tipoProdutoId)
-      .subscribe(
-        produtos => {
-          this.produtos = produtos;
-        }
-      );
+        .subscribe(produtos => this.produtos = produtos);
     }
   }
 

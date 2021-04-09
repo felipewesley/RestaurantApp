@@ -16,9 +16,7 @@ export class NovaComandaFormComponent implements OnInit {
 
   comandaForm: FormGroup;
 
-  constructor (
-    private service: AuthService
-  ) { }
+  constructor (private service: AuthService) { }
 
   ngOnInit() {
 
@@ -37,12 +35,7 @@ export class NovaComandaFormComponent implements OnInit {
 
     // Obtendo mesas disponiveis
     this.service.getMesas()
-      .subscribe(
-        mesas => {
-
-          this.mesasDisponiveis = mesas.filter(m => !m.ocupada);
-        }
-      )
+      .subscribe(mesas => this.mesasDisponiveis = mesas)
   }
 
   onSubmit(): void {

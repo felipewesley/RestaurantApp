@@ -2,28 +2,32 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { HomeRoutingModule } from './home-routing.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { TemplateModule } from 'src/app/template/template.module';
 import { HomePageComponent } from './home-page/home-page.component';
-import { PedidosPendentesListaComponent } from './pedidos-pendentes-lista/pedidos-pendentes-lista.component';
-import { CardInfoComponent } from './card-info/card-info.component';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { CardMesaComponent } from './home-page/card-mesa/card-mesa.component';
 import { CardComandaComponent } from './home-page/card-comanda/card-comanda.component';
-import { CancelarPedidoComponent } from './dialogs/cancelar-pedido/cancelar-pedido.component';
+import { EditarPedidoDialogComponent } from './dialogs/editar-pedido-dialog/editar-pedido-dialog.component';
+import { PedidosPendentesListaComponent } from './pedidos-pendentes-lista/pedidos-pendentes-lista.component';
+import { CancelarPedidoDialogComponent } from './dialogs/cancelar-pedido-dialog/cancelar-pedido-dialog.component';
 
 @NgModule({
   imports: [
     CommonModule,
     HomeRoutingModule,
+    ReactiveFormsModule,
     SharedModule,
     TemplateModule,
     MatToolbarModule,
@@ -32,15 +36,17 @@ import { CancelarPedidoComponent } from './dialogs/cancelar-pedido/cancelar-pedi
     MatTableModule,
     MatMenuModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatInputModule,
+    MatChipsModule
   ],
   declarations: [
     HomePageComponent,
     PedidosPendentesListaComponent,
-    CardInfoComponent,
     CardMesaComponent,
     CardComandaComponent,
-    CancelarPedidoComponent
+    CancelarPedidoDialogComponent,
+    EditarPedidoDialogComponent
   ],
   exports: [
     RouterModule

@@ -1,7 +1,4 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AuthService } from '../auth.service';
-
-import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth-page',
@@ -11,20 +8,7 @@ import { filter, map } from 'rxjs/operators';
 })
 export class AuthPageComponent implements OnInit {
 
-  public todayDate: Date = new Date();
+  constructor() { }
 
-  constructor(
-    private service: AuthService
-  ) { }
-
-  ngOnInit() {
-
-    this.service.getMesas()
-
-      .subscribe(mesas => {
-
-        console.log(mesas);
-      })
-  }
-
+  ngOnInit() { }
 }

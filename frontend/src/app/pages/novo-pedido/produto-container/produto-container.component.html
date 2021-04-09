@@ -2,7 +2,7 @@
   <mat-card-content class="card-container__content">
     <div fxLayout="row" class="card-container__content__img">
       <img mat-card-image class="card-img" src="assets/produtos/product-default.png" fxFlex="25">
-          <span fxFlex="10"></span>
+      <span fxFlex="10"></span>
     </div>
     <mat-card-header class="card-container__content__header">
       <mat-card-title class="card-container__content__header__title"> {{ produto.nome }} </mat-card-title>
@@ -11,7 +11,7 @@
           Peça o quanto desejar
         </span>
         <ng-template #quantidadePermitida>
-          Quantidade máxima por pedido: 
+          Quantidade máxima por pedido:
           <span class="quantidade-permitida">
             {{ produto.quantidadePermitida }}
             <span *ngIf="produto.quantidadePermitida === 1">item</span>
@@ -32,13 +32,14 @@
     </mat-card-header>
   </mat-card-content>
   <mat-card-actions class="card-container__actions">
-      <button mat-raised-button color="warn" class="card-container__actions__btn-fazer-pedido">
-        <mat-icon>
-          add
-        </mat-icon>
-        <span class="card-container__actions__btn-fazer-pedido__label-pedir">
-          PEDIR ESTE
-        </span>
-      </button>
+    <button mat-raised-button color="warn" class="card-container__actions__btn-fazer-pedido"
+      (click)="iniciarDialogPedido()">
+      <mat-icon>
+        add
+      </mat-icon>
+      <span class="card-container__actions__btn-fazer-pedido__label-pedir">
+        PEDIR ESTE
+      </span>
+    </button>
   </mat-card-actions>
 </mat-card>

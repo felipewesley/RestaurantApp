@@ -11,11 +11,8 @@ import { AuthService } from '../../auth.service';
 export class RetomarComandaFormComponent implements OnInit {
 
   retomarForm: FormGroup;
-  value: string = '';
 
-  constructor(
-    private service: AuthService
-  ) { }
+  constructor(private service: AuthService) { }
 
   ngOnInit() {
 
@@ -31,7 +28,6 @@ export class RetomarComandaFormComponent implements OnInit {
   onSubmit(): void {
 
     const mesaId = this.retomarForm.get('mesaId').value;
-
     this.service.retomarComanda(mesaId);
   }
 }

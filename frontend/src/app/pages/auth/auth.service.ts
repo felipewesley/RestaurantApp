@@ -33,38 +33,27 @@ export class AuthService {
     .pipe(
       take(1)
     )
-    .subscribe(
-      comandaId => {
+    .subscribe(comandaId => {
 
-        this.comandaId = comandaId;
-        this.router.navigate([ routes.HOME, comandaId ]);
-
-        console.warn('Comanda criada!');
-        console.log('Comanda ID:', comandaId);
-      }
-    );
+      this.comandaId = comandaId;
+      this.router.navigate([ routes.HOME, comandaId ]);
+    });
   }
 
-  retomarComanda(mesaId): void {
+  retomarComanda(mesaId: number): void {
 
     this.http.get<ComandaCompletaModel>(this.api_url_comanda + '/' + mesaId + '/mesa')
     .pipe(
       take(1)
     )
-    .subscribe(
-      model => {
+    .subscribe(model => {
 
-        this.comandaId = model.comandaId;
-        this.router.navigate([ routes.HOME, model.comandaId ]);
+      this.comandaId = model.comandaId;
+      this.router.navigate([ routes.HOME, model.comandaId ]);
+    }, error => {
 
-        console.warn('Comanda retomada!');
-        console.log(model);
-
-      }, error => {
-
-        console.error(error);
-      }
-    );
+      console.error(error);
+    });
   }
 
 }

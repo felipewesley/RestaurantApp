@@ -1,22 +1,24 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
-
 import { AuthModule } from './pages/auth/auth.module';
 import { HomeModule } from './pages/home/home.module';
-import { ListaPedidosModule } from './pages/lista-pedidos/lista-pedidos.module';
 import { SharedModule } from './shared/shared.module';
 import { TemplateModule } from './template/template.module';
 import { NovoPedidoModule } from './pages/novo-pedido/novo-pedido.module';
+import { ListaPedidosModule } from './pages/lista-pedidos/lista-pedidos.module';
 
 import { AuthService } from './pages/auth/auth.service';
 import { HomeService } from './pages/home/home.service';
+import { PedidoService } from './pages/novo-pedido/pedido.service';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { HomeService } from './pages/home/home.service';
     FlexLayoutModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    ReactiveFormsModule,
     SharedModule,
     TemplateModule,
     AuthModule,
@@ -38,7 +41,8 @@ import { HomeService } from './pages/home/home.service';
   exports: [],
   providers: [
     AuthService,
-    HomeService
+    HomeService,
+    PedidoService
   ],
   bootstrap: [AppComponent]
 })

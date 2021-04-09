@@ -1,0 +1,41 @@
+<h4 mat-dialog-title>Novo pedido</h4>
+<form [formGroup]="novoPedidoForm" (ngSubmit)="onSubmit()">
+  <div mat-dialog-content>
+    <div>
+      <img src="assets/produtos/product-default.png" [alt]="produto.nome" class="produto-img">
+    </div>
+
+    <div>
+      <h5>{{ produto.nome }}</h5>
+      <span *ngIf="produto.valor > 0">
+        {{ produto.valor | currency: 'BRL' }}
+      </span>
+      <hr>
+    </div>
+
+    <mat-chip *ngIf="produto.quantidadePermitida > 0">
+      Quantidade permitida: {{ produto.quantidadePermitida }}&nbsp;
+      <span *ngIf="produto.quantidadePermitida === 1; else spanUnidades">
+        unidade
+      </span>
+      <ng-template #spanUnidades>
+        <span>unidades</span>
+      </ng-template>
+    </mat-chip>
+
+    <div>
+        <mat-form-field>
+          <mat-label>Quantidade desejada</mat-label>
+          <input matInput type="number" formControlName="quantidade" placeholder="Quantidade desejada" min="1">
+          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="novoPedidoForm.get('quantidade').reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close (click)="onCancel()">Fechar</button>
+    <button mat-raised-button type="submit">Confirmar</button>
+  </div>
+</form>

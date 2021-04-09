@@ -27,15 +27,15 @@ namespace Restaurante.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task Registrar(FormularioModel model)
+        public async Task<ListarModel> Registrar(FormularioModel model)
         {
-            await _service.Registrar(model);
+            return await _service.Registrar(model);
         }
 
         [HttpPut("{pedidoId}")]
-        public async Task Alterar(int pedidoId, AlterarModel model)
+        public async Task<ListarModel> Alterar(int pedidoId, AlterarModel model)
         {
-            await _service.Alterar(pedidoId, model);
+            return await _service.Alterar(pedidoId, model);
         }
 
         [HttpPut("{pedidoId}/cancelar")]

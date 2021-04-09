@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+
+import { MatDialog } from '@angular/material/dialog';
+
 import { ProdutoModel } from 'src/app/shared/models/produto.model';
+import { NovoPedidoDialogComponent } from '../dialogs/novo-pedido-dialog/novo-pedido-dialog.component';
 
 @Component({
   selector: 'app-produto-container',
@@ -8,28 +12,18 @@ import { ProdutoModel } from 'src/app/shared/models/produto.model';
 })
 export class ProdutoContainerComponent implements OnInit {
 
-  /*
-  @Input() produto: ProdutoModel = {
+  @Input() produto: ProdutoModel = {} as ProdutoModel;
 
-    produtoId: 123,
-    nome: 'Sashimi',
-    tipoProduto: 'Carne/Peixe',
-    quantidadePermitida: 0,
-    valor: 7.9
-  };
-  */
-  @Input() produto: ProdutoModel = {
+  constructor(private dialog: MatDialog) { }
+
+  ngOnInit() { }
+
+  iniciarDialogPedido(): void {
     
-    produtoId: 123,
-    nome: 'Sashimi',
-    tipoProduto: 'Carne/Peixe',
-    quantidadePermitida: 0,
-    valor: 7.9
-  };
-
-  constructor() { }
-
-  ngOnInit() {
+    this.dialog.open(NovoPedidoDialogComponent, { data: {
+        produtoModel: this.produto
+      }
+    });
   }
 
 }
