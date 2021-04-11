@@ -1,4 +1,4 @@
-export enum routes {
+export enum appRoutes {
     AUTH = 'auth',
     HOME = 'home',
     PEDIDOS = 'pedidos',

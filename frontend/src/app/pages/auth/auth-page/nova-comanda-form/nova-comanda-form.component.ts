@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { routes } from 'src/app/consts/routes';
+import { Router } from '@angular/router';
 
+import { appRoutes } from 'src/app/consts/app-routes';
 import { AuthService } from '../../auth.service';
 import { ComandaFormularioModel } from '../../models/comanda-formulario.model';
 import { MesaModel } from '../../models/mesa.model';
@@ -20,7 +20,6 @@ export class NovaComandaFormComponent implements OnInit {
 
   constructor (
     private router: Router,
-    private route: ActivatedRoute,
     private service: AuthService
     ) { }
 
@@ -53,9 +52,7 @@ export class NovaComandaFormComponent implements OnInit {
     };
 
     this.service.criarComanda(model)
-    .subscribe(comandaId => {
-      this.router.navigate([ routes.HOME, comandaId ]);
-    });
+    .subscribe(comandaId => this.router.navigate([ appRoutes.HOME, comandaId ]));
   }
 
   setFieldMesa(mesa: MesaModel): void {

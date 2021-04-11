@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
-import { routes } from 'src/app/consts/routes';
+import { appRoutes } from 'src/app/consts/app-routes';
 import { PedidoModel } from 'src/app/shared/models/pedido.model';
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 import { AuthService } from '../auth/auth.service';
@@ -37,7 +37,7 @@ export class ListaPedidosComponent implements OnInit {
 
   navigateToNovoPedido(): void {
 
-    this.router.navigate([ routes.NOVO_PEDIDO ], { relativeTo: this.route.parent });
+    this.router.navigate([ appRoutes.NOVO_PEDIDO ], { relativeTo: this.route.parent });
   }
 
   ngOnInit() {

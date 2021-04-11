@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { routes } from 'src/app/consts/routes';
+import { appRoutes } from 'src/app/consts/app-routes';
 import { CardInfo } from '../models/card-info.model';
 import { HomeService } from '../home.service';
 import { ComandaCompletaModel } from '../models/comanda-completa.model';
@@ -41,7 +41,7 @@ export class HomePageComponent implements OnInit {
       }, error => {
 
         console.error(error);
-        this.router.navigate([ routes.AUTH ]);
+        this.router.navigate([ appRoutes.AUTH ]);
       })
       ;
   }

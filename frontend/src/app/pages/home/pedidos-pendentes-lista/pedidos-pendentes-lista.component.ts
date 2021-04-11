@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 
-import { routes } from 'src/app/consts/routes';
+import { appRoutes } from 'src/app/consts/app-routes';
 import { StatusPedido } from 'src/app/consts/status-pedido.enum';
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 import { CancelarPedidoDialogComponent } from '../dialogs/cancelar-pedido-dialog/cancelar-pedido-dialog.component';
@@ -57,11 +57,11 @@ export class PedidosPendentesListaComponent implements OnInit {
 
   navigateToPedidos(): void {
     
-    this.router.navigate([ routes.PEDIDOS ], { relativeTo: this.activeRoute });
+    this.router.navigate([ appRoutes.PEDIDOS ], { relativeTo: this.activeRoute });
   }
 
   navigateToNovoPedido(): void {
 
-    this.router.navigate([ routes.NOVO_PEDIDO ], { relativeTo: this.activeRoute });
+    this.router.navigate([ appRoutes.NOVO_PEDIDO ], { relativeTo: this.activeRoute });
   }
 }
