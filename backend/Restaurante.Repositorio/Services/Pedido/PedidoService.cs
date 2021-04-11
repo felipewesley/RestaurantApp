@@ -15,6 +15,66 @@ namespace Restaurante.Repositorio.Services.Pedido
         private readonly RestauranteContexto _context;
         public PedidoService(RestauranteContexto context) => _context = context;
 
+        public async Task<ListarModel> Obter(int pedidoId)
+        {
+            var pedido = await _context.Pedido
+                        .Where(p => p.PedidoId == pedidoId)
+                        .Include(p => p.Produto)
+                        .ThenInclude(p => p.TipoProduto)
+                        .Select(p => new ListarModel()
+                        {
+                            PedidoId = p.PedidoId,
+                            ComandaId = p.ComandaId,
+                            Quantidade = p.Quantidade,
+                            DataHoraRealizacao = p.DataHoraRealizacao,
+                            StatusEnum = p.StatusEnum,
+                            Produto = new ProdutoModel()
+                            {
+                                ProdutoId = p.ProdutoId,
+                                Nome = p.Produto.Nome,
+                                Valor = p.Produto.Valor,
+                                TipoProduto = p.Produto.TipoProduto.Descricao,
+                                QuantidadePermitida = p.Produto.QuantidadePermitida
+                            }
+                        }).FirstOrDefaultAsync();
+
+            _ = pedido ?? throw new Exception("O pedido solicitado nao existe");
+
+            return pedido;
+        }
+
+        public async Task<ICollection<ListarModel>> BuscarPorComanda(int comandaId)
+        {
+            var comanda = await _context.Comanda
+                        .Where(c => c.ComandaId == comandaId && !c.Paga)
+                        .Include(c => c.Pedidos)
+                        .ThenInclude(c => c.Produto)
+                        .ThenInclude(c => c.TipoProduto)
+                        .FirstOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
+
+            var pedidos = comanda.Pedidos
+                        .Select(p => new ListarModel
+                        {
+                            ComandaId = p.ComandaId,
+                            PedidoId = p.PedidoId,
+                            Quantidade = p.Quantidade,
+                            StatusEnum = p.StatusEnum,
+                            Produto = new ProdutoModel()
+                            {
+                                ProdutoId = p.ProdutoId,
+                                Nome = p.Produto.Nome,
+                                Valor = p.Produto.Valor,
+                                TipoProduto = p.Produto.TipoProduto.Descricao,
+                                QuantidadePermitida = p.Produto.QuantidadePermitida
+                            }
+                        })
+                        .ToList();
+
+            return pedidos;
+        }
+
         public async Task<ListarModel> Registrar(FormularioModel model)
         {
             model.Validar();
@@ -42,11 +102,11 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             var pedido = new Dominio.Pedido()
             {
-                ComandaId = model.ComandaId,
                 ProdutoId = model.ProdutoId,
-                DataHoraRealizacao = DateTime.Now,
-                StatusEnum = StatusEnum.EmAndamento,
+                ComandaId = model.ComandaId,
                 Quantidade = model.Quantidade,
+                DataHoraRealizacao = DateTime.Now,
+                StatusEnum = StatusEnum.EmAndamento
             };
 
             _context.Pedido.Add(pedido);
@@ -55,18 +115,19 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             var pedidoModel = new ListarModel()
             {
-                ComandaId = pedido.ComandaId,
                 PedidoId = pedido.PedidoId,
+                ComandaId = pedido.ComandaId,
+                Quantidade = pedido.Quantidade,
+                DataHoraRealizacao = pedido.DataHoraRealizacao,
+                StatusEnum = pedido.StatusEnum,
                 Produto = new ProdutoModel()
                 {
-                    Nome = pedido.Produto.Nome,
                     ProdutoId = pedido.Produto.ProdutoId,
+                    Nome = pedido.Produto.Nome,
+                    Valor = pedido.Produto.Valor,
                     QuantidadePermitida = pedido.Produto.QuantidadePermitida,
                     TipoProduto = pedido.Produto.TipoProduto.Descricao,
-                    Valor = pedido.Produto.Valor
-                },
-                Quantidade = pedido.Quantidade,
-                StatusEnum = pedido.StatusEnum
+                }
             };
 
             return pedidoModel;
@@ -98,108 +159,69 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             var pedidoAtualizado = new ListarModel()
             {
-                ComandaId = pedido.ComandaId,
                 PedidoId = pedido.PedidoId,
+                ComandaId = pedido.ComandaId,
+                Quantidade = pedido.Quantidade,
+                DataHoraRealizacao = pedido.DataHoraRealizacao,
+                StatusEnum = pedido.StatusEnum,
                 Produto = new ProdutoModel
                 {
                     ProdutoId = pedido.Produto.ProdutoId,
                     Nome = pedido.Produto.Nome,
                     QuantidadePermitida = pedido.Produto.QuantidadePermitida,
-                    TipoProduto = pedido.Produto.TipoProduto.Descricao,
-                    Valor = pedido.Produto.Valor
-                },
-                Quantidade = pedido.Quantidade,
-                StatusEnum = pedido.StatusEnum
+                    Valor = pedido.Produto.Valor,
+                    TipoProduto = pedido.Produto.TipoProduto.Descricao
+                }
             };
 
             return pedidoAtualizado;
         }
 
-        public async Task<ListarModel> Obter(int pedidoId)
+        public async Task<StatusEnum> Cancelar(int pedidoId)
         {
             var pedido = await _context.Pedido
-                        .Where(p => p.PedidoId == pedidoId)
                         .Include(p => p.Produto)
-                        .ThenInclude(p => p.TipoProduto)
-                        .Select(p => new ListarModel()
-                        {
-                            ComandaId = p.ComandaId,
-                            PedidoId = p.PedidoId,
-                            Quantidade = p.Quantidade,
-                            StatusEnum = p.StatusEnum,
-                            Produto = new ProdutoModel()
-                            {
-                                ProdutoId = p.ProdutoId,
-                                Nome = p.Produto.Nome,
-                                Valor = p.Produto.Valor,
-                                TipoProduto = p.Produto.TipoProduto.Descricao,
-                                QuantidadePermitida = p.Produto.QuantidadePermitida
-                            }
-                        }).FirstOrDefaultAsync();
-
-            _ = pedido ?? throw new Exception("O pedido solicitado nao existe");
-
-            return pedido;
-        }
-
-        public async Task Cancelar(int pedidoId)
-        {
-            var pedido = await _context.Pedido
+                        .Include(p => p.Comanda)
                         .Where(p =>
                             p.PedidoId == pedidoId &&
+                            !p.Comanda.Paga &&
                             p.StatusEnum == StatusEnum.EmAndamento // Somente pedidos em andamento podem ser cancelados
                         )
-                        .Include(p => p.Produto)
                         .FirstOrDefaultAsync();
 
-            _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou seu status nao permite que seja cancelado");
-
-            // Obtendo comanda nao paga para atualizar o valor de acordo com o cancelamento
-            var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == pedido.ComandaId && !c.Paga)
-                        .FirstOrDefaultAsync();
-
-            _ = comanda ?? throw new Exception("A comanda referente ao pedido nao existe ou ja foi encerrada");
+            _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou nao pode mais ser cancelado");
 
             // Se o produto não estiver incluso no rodizio, o valor do pedido será subtraido do valor total da comanda
             if (pedido.Produto.Valor > 0)
-                comanda.Valor -= pedido.Quantidade * pedido.Produto.Valor;
+                pedido.Comanda.Valor -= pedido.Quantidade * pedido.Produto.Valor;
 
             pedido.StatusEnum = StatusEnum.Cancelado;
 
             await _context.SaveChangesAsync();
+
+            return StatusEnum.Cancelado;
         }
 
-        public async Task<ICollection<ListarModel>> BuscarPorComanda(int comandaId)
+        public async Task<StatusEnum> Entregar(int pedidoId)
         {
-            var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == comandaId && !c.Paga)
-                        .Include(c => c.Pedidos)
-                        .ThenInclude(c => c.Produto)
-                        .ThenInclude(c => c.TipoProduto)
+            var pedido = await _context.Pedido
+                        .Include(p => p.Produto)
+                        .Include(p => p.Comanda)
+                        .Where(p =>
+                            p.PedidoId == pedidoId &&
+                            !p.Comanda.Paga &&
+                            p.StatusEnum == StatusEnum.EmAndamento // Permitido entregar apenas pedidos em andamento
+                        )
                         .FirstOrDefaultAsync();
 
-            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
+            _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou nao pode mais ser entregue");
 
-            var pedidos = comanda.Pedidos
-                        .Select(p => new ListarModel
-                        {
-                            ComandaId = p.ComandaId,
-                            PedidoId = p.PedidoId,
-                            Quantidade = p.Quantidade,
-                            StatusEnum = p.StatusEnum,
-                            Produto = new ProdutoModel()
-                            {
-                                ProdutoId = p.ProdutoId,
-                                Nome = p.Produto.Nome,
-                                Valor = p.Produto.Valor,
-                                TipoProduto = p.Produto.TipoProduto.Descricao,
-                                QuantidadePermitida = p.Produto.QuantidadePermitida
-                            },
-                        })
-                        .ToList();
+            pedido.StatusEnum = StatusEnum.Entregue;
 
-            return pedidos;
+            await _context.SaveChangesAsync();
+
+            return StatusEnum.Entregue;
         }
+
     }
 }

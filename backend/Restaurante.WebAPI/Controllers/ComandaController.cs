@@ -19,10 +19,10 @@ namespace Restaurante.WebAPI.Controllers
             return await _service.Obter(comandaId);
         }
 
-        [HttpGet("{mesaId}/mesa")]
-        public async Task<ComandaModel> ObterPorMesa(int mesaId)
+        [HttpGet("{mesaId}/retomar")]
+        public async Task<int> Retomar(int mesaId)
         {
-            return await _service.ObterPorMesa(mesaId);
+            return await _service.Retomar(mesaId);
         }
 
         [HttpPost]

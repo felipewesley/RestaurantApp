@@ -24,6 +24,79 @@ namespace Restaurante.Repositorio.Services.Comanda
             _mesaService = mesaService;
         }
 
+        public async Task<ComandaModel> Obter(int comandaId)
+        {
+            var comanda = await _context.Comanda
+                        .Where(c => c.ComandaId == comandaId && !c.Paga)
+                        .Include(c => c.Pedidos)
+                        .ThenInclude(c => c.Produto)
+                        .ThenInclude(c => c.TipoProduto)
+                        .Select(c => new
+                        {
+                            ComandaId = c.ComandaId,
+                            MesaId = c.MesaId,
+                            DataHoraEntrada = c.DataHoraEntrada,
+                            QuantidadeClientes = c.QuantidadeClientes,
+                            Pedidos = c.Pedidos,
+                            Valor = c.Valor,
+                            Paga = c.Paga
+                        })
+                        .OrderBy(c => c.ComandaId)
+                        .LastOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
+
+            // Cria uma model de Comanda sem a listagem de pedidos
+            var model = new ComandaModel()
+            {
+                ComandaId = comanda.ComandaId,
+                MesaId = comanda.MesaId,
+                DataHoraEntrada = comanda.DataHoraEntrada,
+                QuantidadeClientes = comanda.QuantidadeClientes,
+                Valor = comanda.Valor,
+                Paga = comanda.Paga
+            };
+
+            // Cria uma listagem de PedidoModel dentro da model de Comanda
+            model.Pedidos = comanda.Pedidos
+                .Select(p => new ListarModel()
+                {
+                    ComandaId = p.ComandaId,
+                    PedidoId = p.PedidoId,
+                    Quantidade = p.Quantidade,
+                    DataHoraRealizacao = p.DataHoraRealizacao,
+                    StatusEnum = p.StatusEnum,
+                    Produto = new ProdutoModel()
+                    {
+                        ProdutoId = p.ProdutoId,
+                        Nome = p.Produto.Nome,
+                        Valor = p.Produto.Valor,
+                        TipoProduto = p.Produto.TipoProduto.Descricao,
+                        QuantidadePermitida = p.Produto.QuantidadePermitida
+                    }
+                })
+                .ToList();
+
+            return model;
+        }
+
+        public async Task<int> Retomar(int mesaId)
+        {
+            var comanda = await _context.Comanda
+                            .Where(c => c.MesaId == mesaId)
+                            .OrderBy(c => c.ComandaId)
+                            .LastOrDefaultAsync();
+
+            _ = comanda ?? throw new Exception("A mesa solicitada não tem comanda em aberto");
+
+            if (comanda.Paga)
+                throw new Exception("A comanda referente a mesa solicitada ja foi encerrada");
+
+            var comandaId = comanda.ComandaId;
+
+            return comandaId;
+        }
+
         public async Task<int> Registrar(Models.FormularioModel model)
         {
             model.Validar();
@@ -69,6 +142,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw new Exception("A comanda está em aberto mas a mesa relacionada já foi desocupada");
             }
 
@@ -85,74 +159,6 @@ namespace Restaurante.Repositorio.Services.Comanda
             comanda.DataHoraSaida = DateTime.Now;
 
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<ComandaModel> Obter(int comandaId)
-        {
-            var comanda = await _context.Comanda
-                        .Where(c => c.ComandaId == comandaId && !c.Paga)
-                        .Include(c => c.Pedidos)
-                        .ThenInclude(c => c.Produto)
-                        .ThenInclude(c => c.TipoProduto)
-                        .Select(c => new
-                        {
-                            ComandaId = c.ComandaId,
-                            MesaId = c.MesaId,
-                            DataHoraEntrada = c.DataHoraEntrada,
-                            QuantidadeClientes = c.QuantidadeClientes,
-                            Pedidos = c.Pedidos,
-                            Valor = c.Valor,
-                            Paga = c.Paga
-                        })
-                        .OrderBy(c => c.ComandaId)
-                        .LastOrDefaultAsync();
-
-            _ = comanda ?? throw new Exception("A comanda solicitada não existe ou já foi encerrada");
-
-            // Cria uma model de Comanda sem a listagem de pedidos
-            var model = new ComandaModel()
-            {
-                ComandaId = comanda.ComandaId,
-                MesaId = comanda.MesaId,
-                DataHoraEntrada = comanda.DataHoraEntrada,
-                QuantidadeClientes = comanda.QuantidadeClientes,
-                Valor = comanda.Valor,
-                Paga = comanda.Paga
-            };
-
-            // Cria uma listagem de PedidoModel dentro da model de Comanda
-            model.Pedidos = comanda.Pedidos
-                .Select(p => new ListarModel()
-                {
-                    ComandaId = p.ComandaId,
-                    PedidoId = p.PedidoId,
-                    Produto = new ProdutoModel()
-                    {
-                        ProdutoId = p.ProdutoId,
-                        Nome = p.Produto.Nome,
-                        Valor = p.Produto.Valor,
-                        TipoProduto = p.Produto.TipoProduto.Descricao,
-                        QuantidadePermitida = p.Produto.QuantidadePermitida
-                    },
-                    Quantidade = p.Quantidade,
-                    StatusEnum = p.StatusEnum
-                })
-                .ToList();
-
-            return model;
-        }
-
-        public async Task<ComandaModel> ObterPorMesa(int mesaId)
-        {
-            var comanda = await _context.Comanda
-                            .Where(c => c.MesaId == mesaId)
-                            .OrderBy(c => c.ComandaId)
-                            .LastOrDefaultAsync();
-
-            if (comanda == null || comanda.Paga)
-                throw new Exception("A mesa solicitada não tem comanda em aberto");
-
-            return await Obter(comanda.ComandaId);
         }
     }
 }
