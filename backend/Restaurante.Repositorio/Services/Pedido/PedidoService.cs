@@ -61,6 +61,7 @@ namespace Restaurante.Repositorio.Services.Pedido
                             PedidoId = p.PedidoId,
                             Quantidade = p.Quantidade,
                             StatusEnum = p.StatusEnum,
+                            DataHoraRealizacao = p.DataHoraRealizacao,
                             Produto = new ProdutoModel()
                             {
                                 ProdutoId = p.ProdutoId,
@@ -127,7 +128,8 @@ namespace Restaurante.Repositorio.Services.Pedido
                     Valor = pedido.Produto.Valor,
                     QuantidadePermitida = pedido.Produto.QuantidadePermitida,
                     TipoProduto = pedido.Produto.TipoProduto.Descricao,
-                }
+                },
+                NovoValorComanda = pedido.Comanda.Valor
             };
 
             return pedidoModel;
@@ -171,17 +173,19 @@ namespace Restaurante.Repositorio.Services.Pedido
                     QuantidadePermitida = pedido.Produto.QuantidadePermitida,
                     Valor = pedido.Produto.Valor,
                     TipoProduto = pedido.Produto.TipoProduto.Descricao
-                }
+                },
+                NovoValorComanda = pedido.Comanda.Valor
             };
 
             return pedidoAtualizado;
         }
 
-        public async Task<StatusEnum> Cancelar(int pedidoId)
+        public async Task<ListarModel> Cancelar(int pedidoId)
         {
             var pedido = await _context.Pedido
-                        .Include(p => p.Produto)
                         .Include(p => p.Comanda)
+                        .Include(p => p.Produto)
+                        .ThenInclude(p => p.TipoProduto)
                         .Where(p =>
                             p.PedidoId == pedidoId &&
                             !p.Comanda.Paga &&
@@ -199,10 +203,28 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             await _context.SaveChangesAsync();
 
-            return StatusEnum.Cancelado;
+            var pedidoAtualizado = new ListarModel()
+            {
+                PedidoId = pedido.PedidoId,
+                ComandaId = pedido.ComandaId,
+                Quantidade = pedido.Quantidade,
+                DataHoraRealizacao = pedido.DataHoraRealizacao,
+                StatusEnum = pedido.StatusEnum,
+                Produto = new ProdutoModel
+                {
+                    ProdutoId = pedido.Produto.ProdutoId,
+                    Nome = pedido.Produto.Nome,
+                    QuantidadePermitida = pedido.Produto.QuantidadePermitida,
+                    Valor = pedido.Produto.Valor,
+                    TipoProduto = pedido.Produto.TipoProduto.Descricao
+                },
+                NovoValorComanda = pedido.Comanda.Valor
+            };
+
+            return pedidoAtualizado;
         }
 
-        public async Task<StatusEnum> Entregar(int pedidoId)
+        public async Task<ListarModel> Entregar(int pedidoId)
         {
             var pedido = await _context.Pedido
                         .Include(p => p.Produto)
@@ -220,7 +242,25 @@ namespace Restaurante.Repositorio.Services.Pedido
 
             await _context.SaveChangesAsync();
 
-            return StatusEnum.Entregue;
+            var pedidoAtualizado = new ListarModel()
+            {
+                PedidoId = pedido.PedidoId,
+                ComandaId = pedido.ComandaId,
+                Quantidade = pedido.Quantidade,
+                DataHoraRealizacao = pedido.DataHoraRealizacao,
+                StatusEnum = pedido.StatusEnum,
+                Produto = new ProdutoModel
+                {
+                    ProdutoId = pedido.Produto.ProdutoId,
+                    Nome = pedido.Produto.Nome,
+                    QuantidadePermitida = pedido.Produto.QuantidadePermitida,
+                    Valor = pedido.Produto.Valor,
+                    TipoProduto = pedido.Produto.TipoProduto.Descricao
+                },
+                NovoValorComanda = pedido.Comanda.Valor
+            };
+
+            return pedidoAtualizado;
         }
 
     }

@@ -6,6 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PedidoAlterarModel } from 'src/app/pages/novo-pedido/models/pedido-alterar.model';
 import { PedidoService } from 'src/app/pages/novo-pedido/pedido.service';
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
+import { StdSnackbarService } from 'src/app/shared/ui-elements/std-snackbar/std-snackbar.service';
 
 @Component({
   selector: 'app-editar-pedido-dialog',
@@ -19,6 +20,7 @@ export class EditarPedidoDialogComponent implements OnInit {
   editarPedidoForm: FormGroup;
 
   constructor (
+    private snackBar: StdSnackbarService,
     private pedidoService: PedidoService,
     private dialogRef: MatDialogRef<EditarPedidoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: PedidoListaModel
@@ -47,8 +49,13 @@ export class EditarPedidoDialogComponent implements OnInit {
       novaQuantidade: this.editarPedidoForm.get('novaQuantidade').value
     };
 
-    this.pedidoService.editarPedido(pedidoId, model);
-    this.onCancel();
+    this.pedidoService.editarPedido(pedidoId, model)
+    .subscribe(pedidoModel => {
+
+      this.snackBar.open(`Seu pedido foi alterado! Nova quantidade: ${pedidoModel.quantidade} unidade(s)`, 500);
+      this.pedidoService.atualizarPedidos(pedidoModel);
+      this.onCancel();
+    });
   }
 
   onCancel(): void {

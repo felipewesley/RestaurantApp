@@ -11,8 +11,14 @@ table {
   }
   
   .mat-column-actions {
-    width: 75px;
+    // width: 15px;
     text-align: center;
+    // padding-left: 10px;
+    padding: 0;
+  }
+
+  td.mat-column-actions {
+    padding: 0;
   }
   
   .btn-meus-pedidos {
@@ -21,8 +27,8 @@ table {
   }
   
   .pedidos-pendentes {
-    margin: 0 24px;
-    padding: 0;
+    // margin: 0 24px;
+    // padding: 0;
     box-shadow: 0 3px 11px 0 $shadow-white, 0 3px 3px -2px $shadow-grey, 0 1px 8px 0 $shadow-dark-grey;
   
     &__header {

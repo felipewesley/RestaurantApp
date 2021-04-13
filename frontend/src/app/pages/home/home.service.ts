@@ -1,46 +1,53 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-import { appRoutes } from 'src/app/consts/app-routes';
-import { apiRoutes } from 'src/app/consts/api-routes';
+import { apiRoutes } from 'src/app/consts/api-routes.enum';
 import { environment } from 'src/environments/environment';
 
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 import { ComandaCompletaModel } from './models/comanda-completa.model';
 import { EncerrarComanda } from './models/encerrar-comanda.model';
+import { switchMap, take } from 'rxjs/operators';
 
 const API_URL = `${environment.API_URL}/${apiRoutes.COMANDA}`;
 
 @Injectable()
 export class HomeService {
 
-  private api_url_pedido = environment.API_URL + '/pedido';
+  comandaId: number;
 
-  comandaAtiva: ComandaCompletaModel = {} as ComandaCompletaModel;
+  private _comanda = new BehaviorSubject<ComandaCompletaModel>(null);
 
-  constructor (
-    private http: HttpClient,
-    private router: Router
-  ) { }
-  
-  setGlobalComanda(comandaId: number): Observable<ComandaCompletaModel> {
-    
+  comanda$ = this._comanda.asObservable();
+
+  // comandaAtiva: ComandaCompletaModel = {} as ComandaCompletaModel;
+
+  constructor (private http: HttpClient) { }
+
+  obterComanda(comandaId: number): Observable<ComandaCompletaModel> {
+
     return this.http.get<ComandaCompletaModel>(`${API_URL}/${comandaId}`)
     .pipe(
-      take(1)
+      take(1),
+      switchMap(
+        comanda => {
+          this._comanda.next(comanda);
+          return this.comanda$;
+        }
+      )
     );
   }
+  
+  // iniciarAtendimento(comanda: ComandaCompletaModel): void {
 
-  obterPedidosPendentes(comandaId: number): Observable<PedidoListaModel[]> {
+  //   this._comanda.next(comanda);
+  // }
 
-    return this.http.get<PedidoListaModel[]>(this.api_url_pedido + '/' + comandaId + '/comanda');
-  }
+  encerrarAtendimento(porcentagemGarcom: boolean = false): Observable<number> {
 
-  encerrarAtendimento(porcentagemGarcom: boolean = false): void {
+    const comandaId = this.comandaId;
 
     const model: EncerrarComanda = {
       porcentagemGarcom: porcentagemGarcom
@@ -48,14 +55,16 @@ export class HomeService {
 
     if (confirm('Deseja realmente encerrar a comanda?')) {
 
-      this.http.put(API_URL+ '/' + this.comandaAtiva.comandaId + '/encerrar', model)
-      .subscribe(
-        () => {
-  
-          this.router.navigate([appRoutes.AUTH]);
-        }
-      );
+      return this.http.put<number>(`${API_URL}/${comandaId}/encerrar`, model);
     }
+  }
+
+  atualizarValorComanda(model: PedidoListaModel): void {
+
+    let comanda = this._comanda.getValue();
+
+    comanda.valor = model.novoValorComanda;
+    this._comanda.next(comanda);
   }
 
 }

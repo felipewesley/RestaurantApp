@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -19,9 +19,11 @@ import { TemplateModule } from 'src/app/template/template.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { CardMesaComponent } from './home-page/card-mesa/card-mesa.component';
 import { CardComandaComponent } from './home-page/card-comanda/card-comanda.component';
+
 import { EditarPedidoDialogComponent } from './dialogs/editar-pedido-dialog/editar-pedido-dialog.component';
 import { PedidosPendentesListaComponent } from './pedidos-pendentes-lista/pedidos-pendentes-lista.component';
 import { CancelarPedidoDialogComponent } from './dialogs/cancelar-pedido-dialog/cancelar-pedido-dialog.component';
+import { EncerrarComandaDialogComponent } from './dialogs/encerrar-comanda-dialog/encerrar-comanda-dialog.component';
 
 @NgModule({
   imports: [
@@ -46,10 +48,12 @@ import { CancelarPedidoDialogComponent } from './dialogs/cancelar-pedido-dialog/
     CardMesaComponent,
     CardComandaComponent,
     CancelarPedidoDialogComponent,
-    EditarPedidoDialogComponent
+    EditarPedidoDialogComponent,
+    EncerrarComandaDialogComponent
   ],
   exports: [
     RouterModule
-  ]
+  ],
+  providers: []
 })
 export class HomeModule { }

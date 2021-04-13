@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { filter, map, switchMap } from 'rxjs/operators';
 
-import { appRoutes } from 'src/app/consts/app-routes';
+import { appRoutes } from 'src/app/consts/app-routes.enum';
 import { StatusPedido } from 'src/app/consts/status-pedido.enum';
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
 import { CancelarPedidoDialogComponent } from '../dialogs/cancelar-pedido-dialog/cancelar-pedido-dialog.component';
@@ -19,30 +19,33 @@ import { PedidoService } from '../../novo-pedido/pedido.service';
 export class PedidosPendentesListaComponent implements OnInit {
 
   displayedColumns: string[] = ['actions', 'pedidoId', 'produto', 'quantidade', 'valor', 'status'];
-  dataSource;
+  dataSource: PedidoListaModel[] = [];
 
   @Input() comandaId: number;
 
   pedidos: PedidoListaModel[] = [];
 
-  constructor (
+  constructor(
     private router: Router,
-    private activeRoute: ActivatedRoute,
+    private route: ActivatedRoute,
     private pedidoService: PedidoService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit() {
 
-    this.pedidoService.pedidos$
-    .pipe(
-      // map(p => p.statusEnum === StatusPedido.Cancelado)
-    )
-    .subscribe(pedidos => {
+    this.route.params
+      .pipe(
+        switchMap((params: Params) => {
+          this.comandaId = +params['comandaId'];
+          return this.pedidoService.obterPedidos(this.comandaId);
+        })
+      )
+      .subscribe(pedidos => {
 
-      this.pedidos = pedidos.filter(p => p.statusEnum == StatusPedido.EmAndamento);
-      this.dataSource = this.pedidos;
-    });
+        this.dataSource = pedidos.filter(p => p.statusEnum == StatusPedido.EmAndamento);
+
+      });
   }
 
   editarPedido(pedido: PedidoListaModel): void {
@@ -56,12 +59,12 @@ export class PedidosPendentesListaComponent implements OnInit {
   }
 
   navigateToPedidos(): void {
-    
-    this.router.navigate([ appRoutes.PEDIDOS ], { relativeTo: this.activeRoute });
+
+    this.router.navigate([appRoutes.PEDIDOS], { relativeTo: this.route });
   }
 
   navigateToNovoPedido(): void {
 
-    this.router.navigate([ appRoutes.NOVO_PEDIDO ], { relativeTo: this.activeRoute });
+    this.router.navigate([appRoutes.NOVO_PEDIDO], { relativeTo: this.route });
   }
 }

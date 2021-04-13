@@ -11,14 +11,17 @@
 </mat-toolbar>
 
 <div class="container-comanda-dados">
-  <div class="card-comanda-dados">
-    <app-card-mesa [mesaId]="comanda.mesaId"></app-card-mesa>
+  <!-- <div> -->
+    <div class="container-comanda-dados__card-mesa">
+      <app-card-mesa [mesaId]="comanda.mesaId"></app-card-mesa>
+    <!-- </div> -->
+    <!-- <div class="card-comanda-dados"> -->
+      <app-card-comanda [comanda]="comanda"></app-card-comanda>
+    <!-- </div> -->
   </div>
-  <div class="card-comanda-dados">
-    <app-card-comanda [comanda]="comanda"></app-card-comanda>
+  <div class="container-comanda-dados__card-pedidos-pendentes">
+    <app-pedidos-pendentes-lista [comandaId]="comanda.comandaId"></app-pedidos-pendentes-lista>
   </div>
 </div>
-
-<app-pedidos-pendentes-lista [comandaId]="comanda.comandaId"></app-pedidos-pendentes-lista>
 
 <!-- <app-footer></app-footer> -->

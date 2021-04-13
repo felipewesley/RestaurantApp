@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MesaModel } from 'src/app/pages/auth/models/mesa.model';
 
 @Component({
   selector: 'app-card-mesa',
@@ -9,6 +8,7 @@ import { MesaModel } from 'src/app/pages/auth/models/mesa.model';
 export class CardMesaComponent implements OnInit {
 
   @Input() mesaId: number;
+  valorRodizio: number = 45.0;
 
   constructor() { }
 

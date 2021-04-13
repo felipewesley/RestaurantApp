@@ -5,7 +5,7 @@
     Meus pedidos
   </h1>
 
-  <button mat-mini-fab aria-label="Novo pedido" class="btn-novo-pedido" (click)="navigateToNovoPedido()">
+  <button mat-mini-fab aria-label="Novo pedido" class="btn-novo-pedido" routerLink="./novo">
     <mat-icon>add</mat-icon>
   </button>
 
@@ -75,7 +75,7 @@
               <br>
             </p>
             <p>
-              <span>Hora do pedido: </span> {{ currentDate | date: 'shortTime' }} <br>
+              <span>Hora do pedido: </span> {{ pedido.dataHoraRealizacao | date: 'shortTime' }} <br>
             </p>
           </div>
         </td>

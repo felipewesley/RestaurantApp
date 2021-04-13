@@ -12,8 +12,18 @@
               <span class="info-title-label">
                   Número da mesa: 
               </span>
-              {{ mesaId }}
+              <app-badge color="success">
+                {{ mesaId }}
+              </app-badge>
           </h6>
       </div>
+      <div class="visits-chart__content-info">
+        <h6 class="visits-chart__content-info-title">
+            <span class="info-title-label">
+                Valor do rodízio: 
+            </span>
+            {{ valorRodizio | currency: 'BRL' }}
+        </h6>
+    </div>
   </mat-card-content>
 </mat-card>

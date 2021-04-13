@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
-import { appRoutes } from 'src/app/consts/app-routes';
+import { Subscription } from 'rxjs';
+
 import { PedidoModel } from 'src/app/shared/models/pedido.model';
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
-import { AuthService } from '../auth/auth.service';
-import { HomeService } from '../home/home.service';
+import { PedidoService } from '../novo-pedido/pedido.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lista-pedidos',
@@ -20,29 +21,38 @@ import { HomeService } from '../home/home.service';
     ])
   ]
 })
-export class ListaPedidosComponent implements OnInit {
+export class ListaPedidosComponent implements OnInit, OnDestroy {
+
+  pedidosSubscription: Subscription;
 
   dataSource: PedidoListaModel[] = [];
   columnsToDisplay = ['pedidoId', 'produto', 'quantidade', 'status'];
-  expandedElement: PedidoModel | null;
-
-  currentDate = new Date();
+  // expandedElement: PedidoModel | null;
+  expandedElement: PedidoListaModel | null;
 
   constructor (
-    private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private homeService: HomeService
+    private pedidoService: PedidoService
   ) { }
-
-  navigateToNovoPedido(): void {
-
-    this.router.navigate([ appRoutes.NOVO_PEDIDO ], { relativeTo: this.route.parent });
-  }
 
   ngOnInit() {
 
-    this.homeService.obterPedidosPendentes(this.authService.comandaId)
-      .subscribe(pedidoList => this.dataSource = pedidoList);
+    this.pedidosSubscription = this.route.params
+    .pipe(
+      switchMap((params: Params) => {
+
+        const comandaId = +params['comandaId'];
+        return this.pedidoService.obterPedidos(comandaId);
+      })
+    )
+    .subscribe(pedidos => {
+
+      this.dataSource = pedidos;
+    });
+  }
+
+  ngOnDestroy() {
+
+    this.pedidosSubscription.unsubscribe();
   }
 }

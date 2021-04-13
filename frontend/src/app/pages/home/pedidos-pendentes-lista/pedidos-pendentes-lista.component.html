@@ -5,10 +5,10 @@
         <h5 class="pedidos-pendentes__title">Pedidos pendentes</h5>
 
         <div fxLayout="row" fxLayoutAlign="space-between center">
-            <button mat-flat-button (click)="navigateToPedidos()">
+            <button mat-flat-button routerLink="./pedidos">
                 Meus pedidos
             </button>
-            <button mat-raised-button class="btn-meus-pedidos" (click)="navigateToNovoPedido()">
+            <button mat-raised-button class="btn-meus-pedidos" routerLink="./pedidos/novo">
                 Novo pedido
             </button>
         </div>
@@ -19,8 +19,8 @@
 
         <div class="table-content mat-elevation-z8">
 
-            <app-badge color="warning" *ngIf="pedidos.length === 0; else tablePedidos">
-                Não foram encontrados pedidos relacionados à esta comanda
+            <app-badge color="warning" *ngIf="dataSource.length === 0; else tablePedidos">
+                Não há pedidos pendentes relacionados a esta comanda
             </app-badge>
 
             <ng-template #tablePedidos>

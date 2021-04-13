@@ -19,6 +19,8 @@ import { ListaPedidosModule } from './pages/lista-pedidos/lista-pedidos.module';
 import { AuthService } from './pages/auth/auth.service';
 import { HomeService } from './pages/home/home.service';
 import { PedidoService } from './pages/novo-pedido/pedido.service';
+import { StdSnackbarService } from './shared/ui-elements/std-snackbar/std-snackbar.service';
+import { FinalizarModule } from './pages/finalizar/finalizar.module';
 
 @NgModule({
   declarations: [
@@ -36,13 +38,15 @@ import { PedidoService } from './pages/novo-pedido/pedido.service';
     AuthModule,
     HomeModule,
     ListaPedidosModule,
-    NovoPedidoModule
+    NovoPedidoModule,
+    FinalizarModule
   ],
   exports: [],
   providers: [
     AuthService,
     HomeService,
-    PedidoService
+    PedidoService,
+    StdSnackbarService
   ],
   bootstrap: [AppComponent]
 })

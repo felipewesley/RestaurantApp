@@ -7,24 +7,24 @@ import { environment } from 'src/environments/environment';
 import { TipoProdutoModel } from './models/tipo-produto.model';
 import { ProdutoModel } from 'src/app/shared/models/produto.model';
 
+const API_URL_CATEGORIAS = `${environment.API_URL}/tipoProduto`;
+const API_URL_PRODUTOS = `${environment.API_URL}/produto`;
+
 @Injectable({
   providedIn: 'root'
 })
 export class NovoPedidoService {
 
-  private api_url_categorias = environment.API_URL + '/tipoProduto';
-  private api_url_produtos = environment.API_URL + '/produto';
-
   constructor(private http: HttpClient) { }
 
   obterCategorias(): Observable<TipoProdutoModel[]> {
 
-    return this.http.get<TipoProdutoModel[]>(this.api_url_categorias);
+    return this.http.get<TipoProdutoModel[]>(API_URL_CATEGORIAS);
   }
 
   buscarProdutos(categoriaId: number): Observable<ProdutoModel[]> {
 
-    return this.http.get<ProdutoModel[]>(this.api_url_produtos + '/tipo/' + categoriaId);
+    return this.http.get<ProdutoModel[]>(`${API_URL_PRODUTOS}/tipo/${categoriaId}`);
   }
 
 }

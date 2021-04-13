@@ -1,3 +1,37 @@
+@import "src/app/styles/colors";
+
 .produto-img {
-    width: 250px;
+    width: 150px;
+}
+
+.mat-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.first-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.second-row {
+    display: flex;
+    width: 100%;
+    // text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.second-row input {
+    text-align: center;
+}
+
+.btn-alterar-quantidade {
+    background: $sr-bg-red;
+    margin: 0 10px;
 }

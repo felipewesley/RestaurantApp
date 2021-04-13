@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { HomePageComponent } from './home-page/home-page.component';
 import { ListaPedidosComponent } from '../lista-pedidos/lista-pedidos.component';
 import { NovoPedidoComponent } from '../novo-pedido/novo-pedido.component';
+import { FinalizarComponent } from '../finalizar/finalizar.component';
 
 const routes: Routes = [
     {
@@ -17,12 +18,20 @@ const routes: Routes = [
             {
                 path: '',
                 component: HomePageComponent,
-            },{
-                path: 'pedidos',
-                component: ListaPedidosComponent
             }, {
-                path: 'novo',
-                component: NovoPedidoComponent
+                path: 'finalizar',
+                component: FinalizarComponent
+            }, {
+                path: 'pedidos',
+                children: [
+                    {
+                        path: '',
+                        component: ListaPedidosComponent,
+                    }, {
+                        path: 'novo',
+                        component: NovoPedidoComponent
+                    }
+                ]
             }
         ]
     }

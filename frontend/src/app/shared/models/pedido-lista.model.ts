@@ -8,4 +8,5 @@ export interface PedidoListaModel {
     produto: ProdutoModel;
     quantidade: number;
     statusEnum: StatusPedido;
+    novoValorComanda?: number;
 }

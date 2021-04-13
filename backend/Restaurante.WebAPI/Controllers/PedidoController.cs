@@ -40,14 +40,14 @@ namespace Restaurante.WebAPI.Controllers
         }
 
         [HttpPut("{pedidoId}/cancelar")]
-        public async Task<StatusEnum> Cancelar(int pedidoId)
+        public async Task<ListarModel> Cancelar(int pedidoId)
         {
             return await _service.Cancelar(pedidoId);
         }
 
         // Novo metodo implementado como desafio adicional da task
         [HttpPut("{pedidoId}/entregar")]
-        public async Task<StatusEnum> Entregar(int pedidoId)
+        public async Task<ListarModel> Entregar(int pedidoId)
         {
             return await _service.Entregar(pedidoId);
         }

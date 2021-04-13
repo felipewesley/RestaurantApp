@@ -12,5 +12,6 @@ namespace Restaurante.Repositorio.Services.Pedido.Models
         public int Quantidade { get; set; }
         public DateTime DataHoraRealizacao { get; set; }
         public StatusEnum StatusEnum { get; set; }
+        public double? NovoValorComanda { get; set; }
     }
 }

@@ -104,8 +104,17 @@ namespace Restaurante.Repositorio.Services.Comanda
             if (!_context.Mesa.Any(m => m.MesaId == model.MesaId && !m.Ocupada && m.Capacidade >= model.QuantidadeCliente))
                 throw new Exception("A mesa solicitada nao existe, ja esta ocupada ou nao suporta esta quantidade de pessoas");
 
-            // Ocupando mesa
-            await _mesaService.AtualizarStatus(model.MesaId, MesaEnum.Ocupar);
+            // Colocar funcionalidade dentro de uma transaction
+            try
+            {
+                // Ocupando mesa
+                await _mesaService.AtualizarStatus(model.MesaId, MesaEnum.Ocupar);
+
+            } catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new Exception("A mesa solicitada ja esta ocupada");
+            }
 
             var comanda = new Dominio.Comanda
             {
@@ -124,7 +133,7 @@ namespace Restaurante.Repositorio.Services.Comanda
             return comanda.ComandaId;
         }
 
-        public async Task Encerrar(int comandaId, EncerrarModel model)
+        public async Task<int> Encerrar(int comandaId, EncerrarModel model)
         {
             var comanda = await _context.Comanda
                             .Where(c => c.ComandaId == comandaId && !c.Paga)
@@ -159,6 +168,8 @@ namespace Restaurante.Repositorio.Services.Comanda
             comanda.DataHoraSaida = DateTime.Now;
 
             await _context.SaveChangesAsync();
+
+            return comandaId;
         }
     }
 }

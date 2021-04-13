@@ -1,41 +1,60 @@
 <h4 mat-dialog-title>Novo pedido</h4>
 <form [formGroup]="novoPedidoForm" (ngSubmit)="onSubmit()">
   <div mat-dialog-content>
-    <div>
-      <img src="assets/produtos/product-default.png" [alt]="produto.nome" class="produto-img">
+    <div class="first-row">
+      <div>
+        <img src="assets/produtos/product-default.png" [alt]="produto.nome" class="produto-img">
+      </div>
+  
+      <div class="product-data">
+        <div>
+          <h5>{{ produto.nome }}</h5>
+          <span *ngIf="produto.valor > 0; else incluso">
+            {{ produto.valor | currency: 'BRL' }}
+          </span>
+          <ng-template #incluso>
+            <span>
+              Incluso no rodízio
+            </span>
+          </ng-template>
+          <hr>
+        </div>
+    
+        <mat-chip *ngIf="produto.quantidadePermitida > 0; else quantoQuiser">
+          Quantidade permitida: {{ produto.quantidadePermitida }}&nbsp;
+          <span *ngIf="produto.quantidadePermitida === 1; else spanUnidades">
+            unidade
+          </span>
+          <ng-template #spanUnidades>
+            <span>unidades</span>
+          </ng-template>
+        </mat-chip>
+
+        <ng-template #quantoQuiser>
+          <mat-chip>
+            <span>
+              Peça o quanto quiser!
+            </span>
+          </mat-chip>
+        </ng-template>
+      </div>
     </div>
 
-    <div>
-      <h5>{{ produto.nome }}</h5>
-      <span *ngIf="produto.valor > 0">
-        {{ produto.valor | currency: 'BRL' }}
-      </span>
-      <hr>
-    </div>
-
-    <mat-chip *ngIf="produto.quantidadePermitida > 0">
-      Quantidade permitida: {{ produto.quantidadePermitida }}&nbsp;
-      <span *ngIf="produto.quantidadePermitida === 1; else spanUnidades">
-        unidade
-      </span>
-      <ng-template #spanUnidades>
-        <span>unidades</span>
-      </ng-template>
-    </mat-chip>
-
-    <div>
-        <mat-form-field>
-          <mat-label>Quantidade desejada</mat-label>
-          <input matInput type="number" formControlName="quantidade" placeholder="Quantidade desejada" min="1">
-          <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="novoPedidoForm.get('quantidade').reset()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-form-field>
-      
+    <div class="second-row">
+      <button mat-mini-fab type="button" class="btn-alterar-quantidade" aria-label="Subtrair da quantidade" (click)="alterarQuantidade(-1)">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <mat-form-field>
+        <mat-label>Quantidade</mat-label>
+        <input matInput type="number" formControlName="quantidade" placeholder="Quantidade desejada" min="1" autofocus>
+      </mat-form-field>
+      <button mat-mini-fab type="button" class="btn-alterar-quantidade" aria-label="Adicionar à quantidade" (click)="alterarQuantidade(1)">
+        <mat-icon>add</mat-icon>
+      </button>
     </div>
   </div>
   <div mat-dialog-actions>
-    <button mat-button mat-dialog-close (click)="onCancel()">Fechar</button>
-    <button mat-raised-button type="submit">Confirmar</button>
+    <button mat-button mat-dialog-close type="button" (click)="onCancel()">Fechar</button>
+    <button mat-raised-button type="submit" [disabled]="!novoPedidoForm.valid">Confirmar</button>
   </div>
 </form>

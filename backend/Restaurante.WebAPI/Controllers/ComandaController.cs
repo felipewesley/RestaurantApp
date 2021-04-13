@@ -32,9 +32,9 @@ namespace Restaurante.WebAPI.Controllers
         }
 
         [HttpPut("{comandaId}/encerrar")]
-        public async Task Encerrar(int comandaId, EncerrarModel model)
+        public async Task<int> Encerrar(int comandaId, EncerrarModel model)
         {
-            await _service.Encerrar(comandaId, model);
+            return await _service.Encerrar(comandaId, model);
         }
     }
 }

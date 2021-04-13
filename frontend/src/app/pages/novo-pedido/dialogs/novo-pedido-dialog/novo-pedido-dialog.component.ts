@@ -6,6 +6,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PedidoService } from '../../pedido.service';
 import { ProdutoModel } from 'src/app/shared/models/produto.model';
 import { PedidoFormularioModel } from '../../models/pedido-formulario.model';
+import { switchMap, take } from 'rxjs/operators';
+import { StdSnackbarService } from 'src/app/shared/ui-elements/std-snackbar/std-snackbar.service';
 
 @Component({
   selector: 'app-novo-pedido-dialog',
@@ -19,6 +21,7 @@ export class NovoPedidoDialogComponent implements OnInit {
   produto: ProdutoModel = {} as ProdutoModel;
 
   constructor (
+    private snackBar: StdSnackbarService,
     private pedidoService: PedidoService,
     private dialogRef: MatDialogRef<NovoPedidoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { produtoModel: ProdutoModel}
@@ -33,12 +36,28 @@ export class NovoPedidoDialogComponent implements OnInit {
       quantidade: new FormControl(1, [
         Validators.required,
         Validators.min(1),
-        this.produto.quantidadePermitida == 0 ? Validators.max(999):
-        Validators.max(this.produto.quantidadePermitida)
+        this.produto.quantidadePermitida > 0 ?
+        Validators.max(this.produto.quantidadePermitida) :
+        Validators.max(999)
       ])
+    });
+
+    this.novoPedidoForm.get('quantidade').valueChanges
+    .subscribe(novoValor => {
+      if (novoValor > 2) return false;
     });
   }
   
+  alterarQuantidade(ref: number): void {
+
+    const novaQuantidade = parseInt(this.novoPedidoForm.get('quantidade').value) + ref;
+    
+    // if (novaQuantidade > this.novoPedidoForm.get('quantidade'))
+
+    this.novoPedidoForm.get('quantidade').setValue(novaQuantidade);
+    console.log(this.novoPedidoForm.get('quantidade').errors);
+  }
+
   onSubmit(): void {
     
     const model: PedidoFormularioModel = {
@@ -46,12 +65,16 @@ export class NovoPedidoDialogComponent implements OnInit {
       quantidade: this.novoPedidoForm.get('quantidade').value
     };
     
-    this.dialogRef.afterClosed().subscribe(() => {
-  
-      this.pedidoService.novoPedido(model);
-    });
+    this.pedidoService.novoPedido(model)
+    .pipe(
+      take(1)
+    )
+    .subscribe(novoPedido => {
 
-    this.onCancel();
+      this.snackBar.open('Seu pedido foi salvo com sucesso!');
+      this.pedidoService.atualizarPedidos(novoPedido, true);
+      this.onCancel();
+    });
   }
 
   onCancel() {

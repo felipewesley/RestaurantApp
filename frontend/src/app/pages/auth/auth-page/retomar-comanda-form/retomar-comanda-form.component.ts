@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { appRoutes } from 'src/app/consts/app-routes';
+import { appRoutes } from 'src/app/consts/app-routes.enum';
+import { HomeService } from 'src/app/pages/home/home.service';
 
 import { AuthService } from '../../auth.service';
 
@@ -16,7 +17,8 @@ export class RetomarComandaFormComponent implements OnInit {
 
   constructor (
     private router: Router,
-    private service: AuthService
+    private service: AuthService,
+    private homeService: HomeService
   ) { }
 
   ngOnInit() {
@@ -35,6 +37,10 @@ export class RetomarComandaFormComponent implements OnInit {
     const mesaId = this.retomarForm.get('mesaId').value;
     
     this.service.retomarComanda(mesaId)
-    .subscribe(comandaId => this.router.navigate([ appRoutes.HOME, comandaId ]));
+    .subscribe(comanda => {
+
+      // this.homeService.iniciarAtendimento(comanda);
+      this.router.navigate([ appRoutes.HOME, comanda.comandaId ]);
+    });
   }
 }

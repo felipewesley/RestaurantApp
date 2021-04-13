@@ -1,96 +1,99 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 
-import { AuthService } from '../auth/auth.service';
-import { HomeService } from '../home/home.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
+
+import { apiRoutes } from 'src/app/consts/api-routes.enum';
 import { environment } from 'src/environments/environment';
-import { StatusPedido } from 'src/app/consts/status-pedido.enum';
+
 import { PedidoAlterarModel } from './models/pedido-alterar.model';
 import { PedidoFormularioModel } from './models/pedido-formulario.model';
 import { PedidoListaModel } from 'src/app/shared/models/pedido-lista.model';
+import { HomeService } from '../home/home.service';
+import { ComandaCompletaModel } from '../home/models/comanda-completa.model';
+
+const API_URL = `${environment.API_URL}/${apiRoutes.PEDIDO}`;
 
 @Injectable()
 export class PedidoService {
 
-  private api_url = environment.API_URL + '/pedido';
-
   private _pedidos = new BehaviorSubject<PedidoListaModel[]>([]);
 
-  pedidos: PedidoListaModel;
   pedidos$ = this._pedidos.asObservable();
-
-  novoPedidoForm = new FormGroup({
-    produtoId: new FormControl(null),
-    quantidade: new FormControl(null)
-  });
 
   constructor (
     private homeService: HomeService,
-    private authService: AuthService,
     private http: HttpClient
-  ) {
-    
-    const comandaId = this.authService.comandaId;
+  ) { }
 
-    http.get<PedidoListaModel[]>(this.api_url + '/' + comandaId + '/comanda')
-    .subscribe(pedidos => this._pedidos.next(pedidos));
+  obterPedidos(comandaId: number): Observable<PedidoListaModel[]> {
+
+    return this.http.get<PedidoListaModel[]>(`${API_URL}/${comandaId}/comanda`)
+    .pipe(
+      take(1),
+      switchMap(pedidos => {
+
+        this._pedidos.next(pedidos);
+        return this.pedidos$;
+      })
+    );
   }
 
-  novoPedido(model: PedidoFormularioModel): void {
+  novoPedido(model: PedidoFormularioModel): Observable<PedidoListaModel> {
 
-    model.comandaId = this.homeService.comandaAtiva.comandaId;
-    
-    this.http.post<PedidoListaModel>(this.api_url, model)
+    return this.homeService.comanda$
     .pipe(
-      take(1)
-    )
-    .subscribe(p => {
+      take(1),
+      switchMap((comanda: ComandaCompletaModel) => {
 
-      const pedidos = this._pedidos.getValue();
-      pedidos.push(p);
-
-      this._pedidos.next(pedidos.slice());
-    }, error => {
-
-      console.error(error);
-    });
+        model.comandaId = comanda.comandaId;
+        return this.http.post<PedidoListaModel>(API_URL, model);
+      })
+    );
   }
 
-  editarPedido(pedidoId: number, model: PedidoAlterarModel): void {
+  editarPedido(pedidoId: number, model: PedidoAlterarModel): Observable<PedidoListaModel> {
     
-    const comandaId = this.authService.comandaId;
-
-    model.comandaId = comandaId;
-
-    this.http.put<PedidoListaModel>(this.api_url + '/' + pedidoId, model)
+    return this.homeService.comanda$
     .pipe(
-      take(1)
-    )
-    .subscribe(pedido => {
+      take(1),
+      switchMap((comanda: ComandaCompletaModel) => {
 
-      const pedidos = this._pedidos.getValue()
-                    .map(p => p.pedidoId == pedidoId ? { ...p, quantidade: pedido.quantidade} : p);
-
-      this._pedidos.next(pedidos);
-    });
+        model.comandaId = comanda.comandaId;
+        return this.http.put<PedidoListaModel>(`${API_URL}/${pedidoId}`, model);
+      })
+    );
   }
 
-  cancelarPedido(pedidoId: number): void {
+  cancelarPedido(pedidoId: number): Observable<PedidoListaModel> {
 
-    this.http.put<StatusPedido>(this.api_url + '/' + pedidoId + '/cancelar', {})
+    return this.homeService.comanda$
     .pipe(
-      take(1)
-    )
-    .subscribe(novoStatus => {
+      take(1),
+      switchMap(() => {
+        return this.http.put<PedidoListaModel>(`${API_URL}/${pedidoId}/cancelar`, {});
+      })
+    );
+  }
 
-      let pedidos = this._pedidos.getValue()
-                  .map(p => p.pedidoId == pedidoId ? { ...p, statusEnum: novoStatus } : p);
+  atualizarPedidos(model: PedidoListaModel, novo: boolean = false): void {
 
-      this,this._pedidos.next(pedidos);
-    });
+    let pedidos: PedidoListaModel[];
+
+    if (novo) {
+
+      pedidos = this._pedidos.getValue();
+      pedidos.push(model);
+
+    } else {
+
+      pedidos = this._pedidos.getValue()
+              .map(p => p.pedidoId === model.pedidoId ? model : p);
+    }
+
+    this._pedidos.next(pedidos);
+    this.homeService.atualizarValorComanda(model);
   }
 
 }
