@@ -10,8 +10,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -27,29 +27,29 @@ import { EncerrarComandaDialogComponent } from './dialogs/encerrar-comanda-dialo
 
 @NgModule({
   imports: [
-    CommonModule,
-    HomeRoutingModule,
-    ReactiveFormsModule,
     SharedModule,
-    TemplateModule,
-    MatToolbarModule,
+    CommonModule,
     MatIconModule,
     MatCardModule,
-    MatTableModule,
     MatMenuModule,
+    TemplateModule,
+    MatTableModule,
+    MatInputModule,
+    MatChipsModule,
     MatButtonModule,
     MatDialogModule,
-    MatInputModule,
-    MatChipsModule
+    MatToolbarModule,
+    HomeRoutingModule,
+    ReactiveFormsModule,
   ],
   declarations: [
     HomePageComponent,
-    PedidosPendentesListaComponent,
     CardMesaComponent,
     CardComandaComponent,
-    CancelarPedidoDialogComponent,
     EditarPedidoDialogComponent,
-    EncerrarComandaDialogComponent
+    CancelarPedidoDialogComponent,
+    EncerrarComandaDialogComponent,
+    PedidosPendentesListaComponent,
   ],
   exports: [
     RouterModule

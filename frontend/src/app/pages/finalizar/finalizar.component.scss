@@ -1,0 +1,22 @@
+.card-finalizacao {
+    width: 500px;
+    max-width: 85%;
+    border: none;
+    box-shadow: none;
+    margin-left: auto;
+    margin-right: auto;
+
+    &__title {
+        padding: 10px 0;
+        text-align: center;
+        align-items: center;
+    }
+
+    &__confirm-img {
+        border: none;
+    }
+
+    &__content {
+        border: none;
+    }
+}

@@ -1,3 +1,39 @@
-<p>
-  finalizar works!
-</p>
+<form [formGroup]="encerramentoComandaForm" (ngSubmit)="onSubmit()">
+  <mat-card class="card-finalizacao">
+    <img mat-card-image class="card-finalizacao__confirm-img" src="assets/checked2.gif" alt="Confirmação pagamento" *ngIf="finalizada">
+    <mat-card-content class="card-finalizacao__content">
+      <h4 class="card-finalizacao__content__header">
+          {{ labelEncerramento }}
+      </h4>
+      <p>
+        Detalhes do atendimento
+      </p>
+      <hr>
+      <p>
+        <ul>
+          <li>Código da comanda: {{ comanda.comandaId }}</li>
+          <li>Mesa ocupada: {{ comanda.mesaId }}</li>
+          <li>Quantidade de rodízios: {{ comanda.quantidadeClientes }} pessoas</li>
+          <li>Data/hora início: {{ comanda.dataHoraEntrada | date: 'short' }} </li>
+          <li>Data/hora encerramento: {{ dataHoraEncerramento | date: 'short' }} </li>
+          <li>Valor final: <strong> {{ comanda.valor | currency: 'BRL' }} </strong> </li>
+        </ul>
+        <div *ngIf="!finalizada">
+          <p>
+            <mat-checkbox class="example-margin" color="warn" formControlName="porcentagemGarcom">Adicionar 10% do garçom</mat-checkbox>
+          </p>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button type="button" (click)="verPedidos()">Ver pedidos</button>
+      <button mat-raised-button color="warn" type="submit" [disabled]="finalizada">
+        {{ finalizada ? 'Finalizada' : 'Finalizar' }}
+      </button>
+      <button mat-raised-button color="warn" type="button" routerLink="/auth" *ngIf="finalizada">
+        Ir para a página inicial
+      </button>
+    </mat-card-actions>
+    <mat-card-footer>
+    </mat-card-footer>
+  </mat-card>
+</form>

@@ -22,8 +22,6 @@ export class HomeService {
 
   comanda$ = this._comanda.asObservable();
 
-  // comandaAtiva: ComandaCompletaModel = {} as ComandaCompletaModel;
-
   constructor (private http: HttpClient) { }
 
   obterComanda(comandaId: number): Observable<ComandaCompletaModel> {
@@ -39,24 +37,17 @@ export class HomeService {
       )
     );
   }
-  
-  // iniciarAtendimento(comanda: ComandaCompletaModel): void {
 
-  //   this._comanda.next(comanda);
-  // }
-
-  encerrarAtendimento(porcentagemGarcom: boolean = false): Observable<number> {
-
-    const comandaId = this.comandaId;
+  encerrarAtendimento(comandaId: number, porcentagemGarcom: boolean = false): Observable<number> {
 
     const model: EncerrarComanda = {
       porcentagemGarcom: porcentagemGarcom
     };
 
-    if (confirm('Deseja realmente encerrar a comanda?')) {
-
-      return this.http.put<number>(`${API_URL}/${comandaId}/encerrar`, model);
-    }
+    return this.http.put<number>(`${API_URL}/${comandaId}/encerrar`, model)
+    .pipe(
+      take(1)
+    );
   }
 
   atualizarValorComanda(model: PedidoListaModel): void {

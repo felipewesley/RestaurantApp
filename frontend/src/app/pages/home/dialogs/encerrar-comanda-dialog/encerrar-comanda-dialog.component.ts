@@ -1,8 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { appRoutes } from 'src/app/consts/app-routes.enum';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-encerrar-comanda-dialog',
