@@ -6,10 +6,10 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'auth'
+    redirectTo: 'atendimento'
   }, {
-    path: 'auth',
-    loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule)
+    path: 'atendimento',
+    loadChildren: () => import('./pages/atendimento/atendimento.module').then(m => m.AtendimentoModule)
   }, {
     path: 'home',
     component: LayoutComponent,

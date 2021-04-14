@@ -14,7 +14,7 @@ const API_URL_MESA = `${environment.API_URL}/${apiRoutes.MESA}`;
 const API_URL_COMANDA = `${environment.API_URL}/${apiRoutes.COMANDA}`;
 
 @Injectable()
-export class AuthService {
+export class AtendimentoService {
 
   comandaId: number;
 

@@ -10,7 +10,7 @@ const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/auth'
+        redirectTo: '/atendimento'
     },
     {
         path: ':comandaId',

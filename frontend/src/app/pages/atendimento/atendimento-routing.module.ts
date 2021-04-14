@@ -1,12 +1,12 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
-import { AuthPageComponent } from './auth-page/auth-page.component';
+import { AtendimentoPageComponent } from './atendimento-page/atendimento-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AuthPageComponent
+    component: AtendimentoPageComponent
   }
 ];
 
@@ -17,4 +17,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 
-export class AuthRoutingModule { }
+export class AtendimentoRoutingModule { }

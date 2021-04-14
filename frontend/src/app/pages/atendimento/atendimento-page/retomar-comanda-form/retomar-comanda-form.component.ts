@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { appRoutes } from 'src/app/consts/app-routes.enum';
 import { HomeService } from 'src/app/pages/home/home.service';
 
-import { AuthService } from '../../auth.service';
+import { AtendimentoService } from '../../atendimento.service';
 
 @Component({
   selector: 'app-retomar-comanda-form',
@@ -17,7 +17,7 @@ export class RetomarComandaFormComponent implements OnInit {
 
   constructor (
     private router: Router,
-    private service: AuthService,
+    private service: AtendimentoService,
     private homeService: HomeService
   ) { }
 

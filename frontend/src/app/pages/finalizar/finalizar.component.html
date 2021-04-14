@@ -29,7 +29,7 @@
       <button mat-raised-button color="warn" type="submit" [disabled]="finalizada">
         {{ finalizada ? 'Finalizada' : 'Finalizar' }}
       </button>
-      <button mat-raised-button color="warn" type="button" routerLink="/auth" *ngIf="finalizada">
+      <button mat-raised-button color="warn" type="button" routerLink="/atendimento" *ngIf="finalizada">
         Ir para a página inicial
       </button>
     </mat-card-actions>

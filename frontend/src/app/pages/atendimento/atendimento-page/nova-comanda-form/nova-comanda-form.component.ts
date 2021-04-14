@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { appRoutes } from 'src/app/consts/app-routes.enum';
 import { HomeService } from 'src/app/pages/home/home.service';
-import { AuthService } from '../../auth.service';
+import { AtendimentoService } from '../../atendimento.service';
 import { ComandaFormularioModel } from '../../models/comanda-formulario.model';
 import { MesaModel } from '../../models/mesa.model';
 
@@ -21,7 +21,7 @@ export class NovaComandaFormComponent implements OnInit {
 
   constructor (
     private router: Router,
-    private service: AuthService,
+    private service: AtendimentoService,
     private homeService: HomeService
     ) { }
 

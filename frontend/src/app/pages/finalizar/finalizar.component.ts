@@ -59,7 +59,7 @@ export class FinalizarComponent implements OnInit, OnDestroy {
       }, error => {
 
         this.snackBar.open('A comanda solicitada já foi encerrada');
-        this.router.navigate([ appRoutes.AUTH ]);
+        this.router.navigate([ appRoutes.ATENDIMENTO ]);
       });
   }
 

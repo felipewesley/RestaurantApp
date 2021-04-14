@@ -1,5 +1,5 @@
 export enum appRoutes {
-    AUTH = 'auth',
+    ATENDIMENTO = 'atendimento',
     HOME = 'home',
     PEDIDOS = 'pedidos',
     NOVO_PEDIDO = 'novo',
