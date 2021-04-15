@@ -15,12 +15,14 @@ import { AtendimentoRoutingModule } from './atendimento-routing.module';
 import { AtendimentoPageComponent } from './atendimento-page/atendimento-page.component';
 import { NovaComandaFormComponent } from './atendimento-page/nova-comanda-form/nova-comanda-form.component';
 import { RetomarComandaFormComponent } from './atendimento-page/retomar-comanda-form/retomar-comanda-form.component';
+import { CozinhaLoginComponent } from './atendimento-page/cozinha-login/cozinha-login.component';
 
 @NgModule({
   declarations: [
     AtendimentoPageComponent,
     NovaComandaFormComponent,
     RetomarComandaFormComponent,
+    CozinhaLoginComponent
   ],
   imports: [
     AtendimentoRoutingModule,

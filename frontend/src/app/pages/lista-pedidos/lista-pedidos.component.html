@@ -75,7 +75,13 @@
               <br>
             </p>
             <p>
-              <span>Hora do pedido: </span> {{ pedido.dataHoraRealizacao | date: 'shortTime' }} <br>
+              <span>Hora de realizacao: </span> {{ pedido.dataHoraRealizacao | date: 'shortTime' }} <br>
+            </p>
+            <p *ngIf="pedido.statusEnum == 2" class="text-success"> <!--Entregue-->
+              <span>Hora de entrega: </span> {{ pedido.dataHoraEntrega | date: 'shortTime' }} <br>
+            </p>
+            <p *ngIf="pedido.statusEnum == 3" class="text-danger"> <!--Cancelado-->
+              <span>Hora de cancelamento: </span> {{ pedido.dataHoraCancelamento | date: 'shortTime' }} <br>
             </p>
           </div>
         </td>

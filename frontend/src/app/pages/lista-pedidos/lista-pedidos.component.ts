@@ -47,7 +47,7 @@ export class ListaPedidosComponent implements OnInit, OnDestroy {
     )
     .subscribe(pedidos => {
 
-      this.dataSource = pedidos;
+      this.dataSource = pedidos.sort(p => p.pedidoId);
     });
   }
 

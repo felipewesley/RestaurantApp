@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { CozinhaLayoutComponent } from './template/cozinha-layout/cozinha-layout.component';
 import { LayoutComponent } from './template/layout/layout.component';
 
 const routes: Routes = [
@@ -14,6 +15,10 @@ const routes: Routes = [
     path: 'home',
     component: LayoutComponent,
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+  }, {
+    path: 'cozinha',
+    component: CozinhaLayoutComponent,
+    loadChildren: () => import('./pages/cozinha/cozinha.module').then(m => m.CozinhaModule)
   }
 ];
 

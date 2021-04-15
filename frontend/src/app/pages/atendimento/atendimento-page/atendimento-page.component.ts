@@ -8,7 +8,24 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class AtendimentoPageComponent implements OnInit {
 
+  tituloCozinhaTab: string = 'Ola!';
+
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    let currentDate = new Date;
+
+    if (currentDate.getHours() >= 6 && currentDate.getHours() < 12) {
+      // Periodo da manha
+      this.tituloCozinhaTab = 'Bom dia!';
+
+    } else if (currentDate.getHours() >= 12 && currentDate.getHours() < 18) {
+      // Periodo da tarde
+      this.tituloCozinhaTab = 'Boa tarde!';
+
+    } else {
+      // Periodo da tarde
+      this.tituloCozinhaTab = 'Boa noite!';
+    }
+  }
 }

@@ -9,4 +9,7 @@ export interface PedidoListaModel {
     quantidade: number;
     statusEnum: StatusPedido;
     novoValorComanda?: number;
+    dataHoraRealizacao: Date;
+    dataHoraEntrega?: Date;
+    dataHoraCancelamento?: Date;
 }

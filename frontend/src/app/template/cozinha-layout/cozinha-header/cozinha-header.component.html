@@ -1,0 +1,21 @@
+<mat-toolbar class="header">
+
+  <div class="header__title">
+    <mat-icon class="header__title-icon">ramen_dining</mat-icon>
+    <h6 class="header__title-text">{{ toolbarAppName }}</h6>
+  </div>
+
+  <div class="header__user">
+    <button mat-button [matMenuTriggerFor]="menu" aria-label="Opcoes de usuario">
+      <mat-icon>person_outline</mat-icon>
+      {{ username }}
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/atendimento">
+        <mat-icon>power_settings_new</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+
+</mat-toolbar>

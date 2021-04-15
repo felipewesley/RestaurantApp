@@ -3,5 +3,6 @@ export enum appRoutes {
     HOME = 'home',
     PEDIDOS = 'pedidos',
     NOVO_PEDIDO = 'novo',
-    FINALIZAR = 'finalizar'
+    FINALIZAR = 'finalizar',
+    COZINHA = 'cozinha'
 }

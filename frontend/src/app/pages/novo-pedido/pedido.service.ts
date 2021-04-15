@@ -81,10 +81,12 @@ export class PedidoService {
 
     let pedidos: PedidoListaModel[];
 
+    console.warn('novo Pedido:', model);
+
     if (novo) {
 
       pedidos = this._pedidos.getValue();
-      pedidos.push(model);
+      pedidos.unshift(model);
 
     } else {
 

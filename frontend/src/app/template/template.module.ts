@@ -9,6 +9,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { LayoutComponent } from './layout/layout.component';
+import { CozinhaLayoutComponent } from './cozinha-layout/cozinha-layout.component';
+import { CozinhaHeaderComponent } from './cozinha-layout/cozinha-header/cozinha-header.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   imports: [
@@ -16,12 +20,16 @@ import { LayoutComponent } from './layout/layout.component';
     RouterModule,
     MatToolbarModule,
     MatIconModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatMenuModule,
+    MatButtonModule
   ],
   declarations: [
     HeaderComponent,
     FooterComponent,
-    LayoutComponent
+    LayoutComponent,
+    CozinhaLayoutComponent,
+    CozinhaHeaderComponent
   ],
   exports: [
     LayoutComponent

@@ -21,6 +21,7 @@ import { HomeService } from './pages/home/home.service';
 import { PedidoService } from './pages/novo-pedido/pedido.service';
 import { StdSnackbarService } from './shared/ui-elements/std-snackbar/std-snackbar.service';
 import { FinalizarModule } from './pages/finalizar/finalizar.module';
+import { CozinhaService } from './pages/cozinha/cozinha.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { FinalizarModule } from './pages/finalizar/finalizar.module';
     AtendimentoService,
     HomeService,
     PedidoService,
-    StdSnackbarService
+    StdSnackbarService,
+    CozinhaService
   ],
   bootstrap: [AppComponent]
 })

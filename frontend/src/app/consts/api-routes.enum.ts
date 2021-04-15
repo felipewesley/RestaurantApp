@@ -3,5 +3,6 @@ export enum apiRoutes {
     COMANDA = 'comanda',
     PEDIDO = 'pedido',
     PRODUTO = 'produto',
-    TIPO_PRODUTO = 'tipoProduto'
+    TIPO_PRODUTO = 'tipoProduto',
+    COZINHA = 'cozinha'
 }
