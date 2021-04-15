@@ -27,6 +27,8 @@ namespace Restaurante.Repositorio.Services.Pedido
                             ComandaId = p.ComandaId,
                             Quantidade = p.Quantidade,
                             DataHoraRealizacao = p.DataHoraRealizacao,
+                            DataHoraEntrega = p.DataHoraEntrega,
+                            DataHoraCancelamento = p.DataHoraCancelamento,
                             StatusEnum = p.StatusEnum,
                             Produto = new ProdutoModel()
                             {
@@ -62,6 +64,8 @@ namespace Restaurante.Repositorio.Services.Pedido
                             Quantidade = p.Quantidade,
                             StatusEnum = p.StatusEnum,
                             DataHoraRealizacao = p.DataHoraRealizacao,
+                            DataHoraEntrega = p.DataHoraEntrega,
+                            DataHoraCancelamento = p.DataHoraCancelamento,
                             Produto = new ProdutoModel()
                             {
                                 ProdutoId = p.ProdutoId,
@@ -71,6 +75,7 @@ namespace Restaurante.Repositorio.Services.Pedido
                                 QuantidadePermitida = p.Produto.QuantidadePermitida
                             }
                         })
+                        .OrderByDescending(p => p.PedidoId)
                         .ToList();
 
             return pedidos;
@@ -120,6 +125,8 @@ namespace Restaurante.Repositorio.Services.Pedido
                 ComandaId = pedido.ComandaId,
                 Quantidade = pedido.Quantidade,
                 DataHoraRealizacao = pedido.DataHoraRealizacao,
+                DataHoraEntrega = pedido.DataHoraEntrega,
+                DataHoraCancelamento = pedido.DataHoraCancelamento,
                 StatusEnum = pedido.StatusEnum,
                 Produto = new ProdutoModel()
                 {
@@ -165,6 +172,8 @@ namespace Restaurante.Repositorio.Services.Pedido
                 ComandaId = pedido.ComandaId,
                 Quantidade = pedido.Quantidade,
                 DataHoraRealizacao = pedido.DataHoraRealizacao,
+                DataHoraEntrega = pedido.DataHoraEntrega,
+                DataHoraCancelamento = pedido.DataHoraCancelamento,
                 StatusEnum = pedido.StatusEnum,
                 Produto = new ProdutoModel
                 {
@@ -200,6 +209,7 @@ namespace Restaurante.Repositorio.Services.Pedido
                 pedido.Comanda.Valor -= pedido.Quantidade * pedido.Produto.Valor;
 
             pedido.StatusEnum = StatusEnum.Cancelado;
+            pedido.DataHoraCancelamento = DateTime.Now;
 
             await _context.SaveChangesAsync();
 
@@ -209,45 +219,8 @@ namespace Restaurante.Repositorio.Services.Pedido
                 ComandaId = pedido.ComandaId,
                 Quantidade = pedido.Quantidade,
                 DataHoraRealizacao = pedido.DataHoraRealizacao,
-                StatusEnum = pedido.StatusEnum,
-                Produto = new ProdutoModel
-                {
-                    ProdutoId = pedido.Produto.ProdutoId,
-                    Nome = pedido.Produto.Nome,
-                    QuantidadePermitida = pedido.Produto.QuantidadePermitida,
-                    Valor = pedido.Produto.Valor,
-                    TipoProduto = pedido.Produto.TipoProduto.Descricao
-                },
-                NovoValorComanda = pedido.Comanda.Valor
-            };
-
-            return pedidoAtualizado;
-        }
-
-        public async Task<ListarModel> Entregar(int pedidoId)
-        {
-            var pedido = await _context.Pedido
-                        .Include(p => p.Produto)
-                        .Include(p => p.Comanda)
-                        .Where(p =>
-                            p.PedidoId == pedidoId &&
-                            !p.Comanda.Paga &&
-                            p.StatusEnum == StatusEnum.EmAndamento // Permitido entregar apenas pedidos em andamento
-                        )
-                        .FirstOrDefaultAsync();
-
-            _ = pedido ?? throw new Exception("O pedido solicitado nao existe ou nao pode mais ser entregue");
-
-            pedido.StatusEnum = StatusEnum.Entregue;
-
-            await _context.SaveChangesAsync();
-
-            var pedidoAtualizado = new ListarModel()
-            {
-                PedidoId = pedido.PedidoId,
-                ComandaId = pedido.ComandaId,
-                Quantidade = pedido.Quantidade,
-                DataHoraRealizacao = pedido.DataHoraRealizacao,
+                DataHoraEntrega = pedido.DataHoraEntrega,
+                DataHoraCancelamento = pedido.DataHoraCancelamento,
                 StatusEnum = pedido.StatusEnum,
                 Produto = new ProdutoModel
                 {

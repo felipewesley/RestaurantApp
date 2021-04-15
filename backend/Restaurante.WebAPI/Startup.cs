@@ -10,6 +10,7 @@ using Restaurante.Repositorio.Services.Pedido;
 using Restaurante.Repositorio.Services.Comanda;
 using Restaurante.Repositorio.Services.Produto;
 using Restaurante.Repositorio.Services.TipoProduto;
+using Restaurante.Repositorio.Services.Cozinha;
 
 namespace Restaurante.WebAPI
 {
@@ -37,6 +38,7 @@ namespace Restaurante.WebAPI
             services.AddScoped<PedidoService>();
             services.AddScoped<ProdutoService>();
             services.AddScoped<TipoProdutoService>();
+            services.AddScoped<CozinhaService>();
 
             services.AddControllers();
 

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Restaurante.Repositorio.Services.Pedido;
 using Restaurante.Repositorio.Services.Pedido.Models;
-using Restaurante.Dominio.Enum;
 
 namespace Restaurante.WebAPI.Controllers
 {
@@ -43,13 +42,6 @@ namespace Restaurante.WebAPI.Controllers
         public async Task<ListarModel> Cancelar(int pedidoId)
         {
             return await _service.Cancelar(pedidoId);
-        }
-
-        // Novo metodo implementado como desafio adicional da task
-        [HttpPut("{pedidoId}/entregar")]
-        public async Task<ListarModel> Entregar(int pedidoId)
-        {
-            return await _service.Entregar(pedidoId);
         }
     }
 }
