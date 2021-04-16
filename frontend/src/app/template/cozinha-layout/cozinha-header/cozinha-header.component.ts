@@ -8,7 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class CozinhaHeaderComponent implements OnInit {
 
   username: string = 'user';
-  toolbarAppName = 'Sutekina Ranchi Restaurante';
+  toolbarAppName = 'Sutekina Ranchi';
+  moduleName = 'Cozinha';
 
   constructor() { }
 

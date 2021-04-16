@@ -12,8 +12,8 @@ export class CozinhaLoginComponent implements OnInit {
   loginForm: FormGroup;
 
   defaultUser: CozinhaLoginModel = {
-    username: 'felipe.basso',
-    senha: '123abc'
+    username: 'admin.cozinha',
+    senha: '123456789'
   }
 
   constructor() { }

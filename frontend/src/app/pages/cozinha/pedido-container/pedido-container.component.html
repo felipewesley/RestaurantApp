@@ -1,0 +1,25 @@
+<mat-card class="card">
+  <mat-card-header class="card__header">
+    <mat-card-title class="card__header__title">
+      <span>
+        Mesa: <app-badge color="primary"> {{ pedido.mesaId }} </app-badge>
+      <!--</span>
+      <span class="card__header__title__mesa">-->
+      </span>
+    </mat-card-title>
+    <mat-card-subtitle>
+      <p>Codigo: {{ pedido.pedidoId }} </p>
+      <p>Hora: {{ pedido.dataHoraRealizacao | date: 'shortTime' }} </p>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <ul>
+      <li>
+        {{ pedido.quantidade }} &#10006; {{ pedido.produto.nome }}
+      </li>
+    </ul>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button class="btn-entregar" (click)="entregar()">Entregar</button>
+  </mat-card-actions>
+</mat-card>

@@ -3,17 +3,24 @@ import { CommonModule } from '@angular/common';
 
 import { BadgeComponent } from './ui-elements/badge/badge.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BackPageButtonComponent } from './ui-elements/back-page-button/back-page-button.component';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    BadgeComponent
+    BadgeComponent,
+    BackPageButtonComponent
   ],
   imports: [
     CommonModule,
-    MatSnackBarModule
+    RouterModule,
+    MatSnackBarModule,
+    MatIconModule
   ], 
   exports: [
-    BadgeComponent
+    BadgeComponent,
+    BackPageButtonComponent
   ]
 })
 export class SharedModule { }

@@ -4,5 +4,6 @@ export interface ProdutoModel {
     nome: string;
     valor: number;
     tipoProduto: string;
+    imagem?: string;
     quantidadePermitida: number;
 }

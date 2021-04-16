@@ -1,7 +1,8 @@
 @import "src/app/styles/colors";
 
 .produto-img {
-    width: 150px;
+    width: 175px;
+    margin-right: 25px;
 }
 
 .mat-dialog-content {
@@ -34,4 +35,15 @@
 .btn-alterar-quantidade {
     background: $sr-bg-red;
     margin: 0 10px;
+}
+
+.input-quantidade {
+    display: flex;
+    width: 75px;
+}
+
+.actions {
+    display: flex;
+    float: right;
+    margin-top: 15px;
 }

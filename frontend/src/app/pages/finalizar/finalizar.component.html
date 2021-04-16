@@ -3,7 +3,8 @@
     <img mat-card-image class="card-finalizacao__confirm-img" src="assets/checked2.gif" alt="Confirmação pagamento" *ngIf="finalizada">
     <mat-card-content class="card-finalizacao__content">
       <h4 class="card-finalizacao__content__header">
-          {{ labelEncerramento }}
+        <app-back-page-button></app-back-page-button>
+        {{ labelEncerramento }}
       </h4>
       <p>
         Detalhes do atendimento

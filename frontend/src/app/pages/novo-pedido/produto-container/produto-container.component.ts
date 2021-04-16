@@ -20,7 +20,9 @@ export class ProdutoContainerComponent implements OnInit {
 
   iniciarDialogPedido(): void {
     
-    this.dialog.open(NovoPedidoDialogComponent, { data: {
+    this.dialog.open(NovoPedidoDialogComponent, {
+      width: '500px',
+      data: {
         produtoModel: this.produto
       }
     });

@@ -24,6 +24,7 @@ namespace Restaurante.Repositorio.Services.Produto
                             Nome = p.Nome,
                             Valor = p.Valor,
                             TipoProduto = p.TipoProduto.Descricao,
+                            Imagem = p.Imagem,
                             QuantidadePermitida = p.QuantidadePermitida
                         }).ToListAsync();
 
@@ -41,6 +42,7 @@ namespace Restaurante.Repositorio.Services.Produto
                             Nome = p.Nome,
                             Valor = p.Valor,
                             TipoProduto = p.TipoProduto.Descricao,
+                            Imagem = p.Imagem,
                             QuantidadePermitida = p.QuantidadePermitida
                         }).ToListAsync();
 

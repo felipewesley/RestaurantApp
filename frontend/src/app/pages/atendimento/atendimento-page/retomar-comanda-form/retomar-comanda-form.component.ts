@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { appRoutes } from 'src/app/consts/app-routes.enum';
 import { HomeService } from 'src/app/pages/home/home.service';
+import { StdSnackbarService } from 'src/app/shared/ui-elements/std-snackbar/std-snackbar.service';
 
 import { AtendimentoService } from '../../atendimento.service';
 
@@ -18,7 +19,7 @@ export class RetomarComandaFormComponent implements OnInit {
   constructor (
     private router: Router,
     private service: AtendimentoService,
-    private homeService: HomeService
+    private snackBar: StdSnackbarService
   ) { }
 
   ngOnInit() {
@@ -41,6 +42,10 @@ export class RetomarComandaFormComponent implements OnInit {
 
       // this.homeService.iniciarAtendimento(comanda);
       this.router.navigate([ appRoutes.HOME, comanda.comandaId ]);
+    }, error => {
+
+      this.retomarForm.reset();
+      this.snackBar.open('Nao ha comanda em aberto nesta mesa');
     });
   }
 }

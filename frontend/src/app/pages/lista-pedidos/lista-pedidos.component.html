@@ -1,7 +1,7 @@
 <mat-toolbar class="page-header" role="heading">
 
   <h1>
-    <mat-icon>list</mat-icon>
+    <app-back-page-button></app-back-page-button>
     Meus pedidos
   </h1>
 
@@ -78,10 +78,10 @@
               <span>Hora de realizacao: </span> {{ pedido.dataHoraRealizacao | date: 'shortTime' }} <br>
             </p>
             <p *ngIf="pedido.statusEnum == 2" class="text-success"> <!--Entregue-->
-              <span>Hora de entrega: </span> {{ pedido.dataHoraEntrega | date: 'shortTime' }} <br>
+              Hora de entrega: {{ pedido.dataHoraEntrega | date: 'shortTime' }} <br>
             </p>
             <p *ngIf="pedido.statusEnum == 3" class="text-danger"> <!--Cancelado-->
-              <span>Hora de cancelamento: </span> {{ pedido.dataHoraCancelamento | date: 'shortTime' }} <br>
+              Hora de cancelamento: : {{ pedido.dataHoraCancelamento | date: 'shortTime' }} <br>
             </p>
           </div>
         </td>

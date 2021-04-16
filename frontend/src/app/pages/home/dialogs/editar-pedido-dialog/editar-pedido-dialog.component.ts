@@ -20,8 +20,6 @@ export class EditarPedidoDialogComponent implements OnInit {
   editarPedidoForm: FormGroup;
 
   constructor (
-    private snackBar: StdSnackbarService,
-    private pedidoService: PedidoService,
     private dialogRef: MatDialogRef<EditarPedidoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: PedidoListaModel
   ) {
@@ -43,23 +41,18 @@ export class EditarPedidoDialogComponent implements OnInit {
 
   onSubmit(): void {
 
-    const pedidoId = this.pedido.pedidoId;
-
     const model: PedidoAlterarModel = {
       novaQuantidade: this.editarPedidoForm.get('novaQuantidade').value
     };
 
-    this.pedidoService.editarPedido(pedidoId, model)
-    .subscribe(pedidoModel => {
-
-      this.snackBar.open(`Seu pedido foi alterado! Nova quantidade: ${pedidoModel.quantidade} unidade(s)`, 500);
-      this.pedidoService.atualizarPedidos(pedidoModel);
-      this.onCancel();
+    this.dialogRef.close({
+      status: true,
+      model: model
     });
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this.dialogRef.close({status: false});
   }
 
 }

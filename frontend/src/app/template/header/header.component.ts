@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  toolbarAppName = "Restaurante Sutekina Ranchi";
+  toolbarAppName = "Sutekina Ranchi";
+
+  moduleName = 'Restaurante';
 
   constructor() { }
 

@@ -1,7 +1,10 @@
-
-  <mat-card>Simple card 1</mat-card>
-  <mat-card>Simple card 2</mat-card>
-  <mat-card>Simple card 3</mat-card>
-  <mat-card>Simple card 4</mat-card>
-  <mat-card>Simple card 5</mat-card>
-  <!--<mat-grid-tile>4</mat-grid-tile>-->
+<div class="container" *ngIf="pedidos.length === 0; else listagemPedidos">
+  <app-badge color="warning">
+    Nao ha pedidos em aberto na data de hoje
+  </app-badge>
+</div>
+<ng-template #listagemPedidos>
+  <div class="container">
+    <app-pedido-container *ngFor="let pedido of pedidos" [pedido]="pedido"></app-pedido-container>
+  </div>
+</ng-template>

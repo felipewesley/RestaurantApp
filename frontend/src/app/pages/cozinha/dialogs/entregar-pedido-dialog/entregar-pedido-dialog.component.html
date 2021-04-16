@@ -1,0 +1,39 @@
+<h4 mat-dialog-title>Entrega de pedido</h4>
+<div mat-dialog-content>
+  <div>
+    Pedido para a mesa 
+    <app-badge color="success"> {{ pedido.mesaId }} </app-badge>
+  </div>
+  <div>
+    <ul>
+      <li>
+        <span class="detalhe-pedido-label">
+          Produto: 
+        </span>
+        {{ pedido.produto.nome }}
+      </li>
+      <li>
+        <span class="detalhe-pedido-label">
+          Quantidade: 
+        </span>
+        {{ pedido.quantidade }}
+        <span *ngIf="pedido.quantidade == 1; else spanUnidades">
+          unidade
+        </span>
+        <ng-template #spanUnidades>
+          <span>unidades</span>
+        </ng-template>
+      </li>
+      <li>
+        <span class="detalhe-pedido-label">
+          Hora de realizacao: 
+        </span>
+        {{ pedido.dataHoraRealizacao | date: 'shortTime' }}
+      </li>
+    </ul>
+  </div>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="onCancel()">Fechar</button>
+  <button mat-raised-button (click)="confirmarEntrega()">Entregar</button>
+</div>

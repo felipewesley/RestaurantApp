@@ -8,7 +8,7 @@
     color: $sr-text-green;
 }
 
-.text-danger {
+.text-danger + * {
     color: $sr-text-red;
 }
 
@@ -42,6 +42,9 @@ tr.example-element-row:not(.example-expanded-row):active {
     flex-direction: column;
     justify-content: space-around;
     line-height: 1.5;
+}
+.example-element-detail span {
+    color: $sr-text-label;
 }
 
 .example-element-diagram {
